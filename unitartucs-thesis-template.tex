@@ -78,7 +78,8 @@
 \usepackage{amsmath} 
 \usepackage{amsthm}
 \usepackage{amssymb}
-
+\usepackage{multirow}
+\usepackage{booktabs}
 % Optional calligraphic fonts    
 % \usepackage[mathscr]{eucal}
 
@@ -371,23 +372,73 @@ The relationship between grammar, I-language, and E-language can be visualized b
 \end{center}
 \end{figure}
 
-One observation of the external language is its property on an infinite set of expressions together with the constraint on limited memory of the brain which suggested that I-language holds an abstract and generative structure behind the scenes and plays a crucial role in determining the interpretation\cite{Tanaka_2019}. From those observations on external language, Chomsky has proposed universal grammar (UG) and minimalist program(MP){cite} to describe and characterize the formulation and property of I-language.
- 
-UG hypothesized that human language shares a certain degree of fundamental similarities such as general constraints on grammar and common property on features like lexical categories{cite}, etc., and this unique grammar follows the three-factor of language design{cite}:
+One observation of the external language is its property on an infinite set of expressions together with the constraint on limited memory of the brain which suggested that I-language holds an abstract and generative structure behind the scenes and plays a crucial role in determining the interpretation\cite{Tanaka_2019}. From those observations on external language, Chomsky has proposed universal grammar (UG) and minimalist program(MP) to describe and characterize the formulation and property of I-language.\\
+UG hypothesized that human language shares a certain degree of fundamental similarities such as general constraints on grammar and common property on features like lexical categories\cite{D_browska_2015}, etc., and this unique grammar follows the three-factor of language design\cite{Chomsky_2005}:
 \begin{itemize}
     \item language-independent principles of data processing
     \item structural architecture
     \item computational efficiency
 \end{itemize}
-Those principles above assert the base of MP. In the framework of MP, it proposes a bare phrase structure together with a simple operator - MERGE to construct it.
-The MERGE operator is very simple and takes 2 arguments and combines them to form a new object :\\
-    MERGE($\alpha$,$\beta$)= {K, {$\alpha$,$\beta$} }
+Those principles above assert the base of MP. In the framework of MP, it proposes a bare phrase structure(BPS) together with a simple operator - MERGE to construct it.
+The MERGE operator is very simple and takes 2 syntactic arguments and combines them to form a new syntactic object:\\
+\begin{center} MERGE($\alpha$,$\beta$)= {$K$, {$\alpha$,$\beta$} } \end{center} \\
+Here $\alpha$ and $\beta$ are the two arguments and $K$ is the new object often called "label". The most difficult part here is how to determine the label of the new object, detail can be found in \footnote{LIN331 – Syntactic Theory- https://nlacara.github.io/teaching/331S18/331-7-bps.pdf}
+Here is a visualization example of BPS and MERGE operation with lexical categories (fig:\ref{fig:bps}):
+\begin{figure} [!h]
+\begin{center}
+\includegraphics[width=0.2\textwidth]{figures/BSP_merge_lexical.png}
+\caption{Example on BPS and MERGE (source\: wiki https\:\/\/en.wikipedia.org\/wiki\/Merge_\%28linguistics\%29} 
+\label{fig:bps}
+\end{center}
+\end{figure}
+However, this type of structure can generate syntactically correct but semantically meaningless language as shown by Chomsky in his book " Syntactic Structures".
 
-
-
+\newpage
 \subsection{Theory of Mind (ToM)}
+Theory of Mind has a long history and is an active research field along a broad range of science like developmental or social  psychology, etc, and neuroscience. In the simplest explanation, it can be referred to as the ability of humankind to infer either other's or self's mental state{cite}. However, the term mental state is hard to define and quantify due to its complex and abstract concept and the difference in focus on research with respect to variate fields, but it is generally accepted that the ToM concept is a composition of cognitive skills to understand the belief and emotions{cite}, and base on that, experiment and test on cognitive skills can be developed into 3 categories which summarized in the following table(\ref{tab:TomCognitiveTask}){cite}: 
+
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+\begin{table}[!h]
+\begin{center}
+    
+
+\begin{tabular}{|l|r|l|}
+\hline
+\begin{tabular}[c]{@{}l@{}}Mental\\ State\end{tabular} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Cognitive\\ Skill\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Experiment/\\ Test\end{tabular}}           \\ \hline
+    \multicolumn{1}{|c|}{\multirow{2}{*}{Belief}}          & Shared world knowledge                                                         & \begin{tabular}[c]{@{}l@{}} $\bullet$ Text-based tasks \\ $\bullet$ Non-verbal picture-based tasks \end{tabular} \\ \cline{2-3} 
+\multicolumn{1}{|c|}{}                                 & Interpreting actions                                                           & $\bullet$ False belief tasks                                                                        \\ \hline
+Emotion                                                & Perceiving social cues                                                         & $\bullet$ Facial/Vocal emotion recognition                                                          \\ \hline
+\end{tabular}
+\end{center}
+\caption{Mental State and Related Cognitive Tasks}
+\label{tab:TomCognitiveTask}
+\end{table}
+The above table shows that to access the mental state of belief, one can test the target with either context or false belief base understanding. In the context base test, participants are usually given a textual or picture set of social scenarios, and questions are given related to characters of that scenario either on classification(what the character thinks of) or predication(guessing action taken by the character) to access the inferred mental state of participants. However, there are a number of considerations that need to be careful of as those test demand heavily on working memory and level of language skill. \\
+
+The false-belief test is one step further based on the above tasks which include differences in the mental state of participants and the character in the story{cite}. In this type of experiment, participants are usually given a storyboard that shows a particular event that alters the result but is only known to the participants but not the protagonist of the story. In this way, the participant is asked to predict the action base on the character's belief(false belief: lacking knowledge of the event) and the belief of the participant's mental state(true belief). This test provides a deviation from the reasoning that humans experience daily which is based on true belief{cite}. An example of a false belief story is provided in fig() for reference.
+% Should I give the figure ? seems like just try to extend the pages 
+
+Social cues are another important phenomenon to observe mental state changes. Those cues are usually referred to as gaze, facial expression, vocal changes, etc{cite}. While gaze cues are more focused on attention, facial/vocal recognition is related to determining the emotional state of others. 
+
+
 
 \subsection{Language Model}
+
+In computation linguistics on text contents,  natural language understanding (NLU) is a sub-field under natural language processing (NLP) such that it performs syntactic and semantic analysis based on the contents in order to classify the meaning of the given text input. This problem statement matches perfectly with ToM in trying to infer the idea behind the communication. 
+In order to handle textual data, the raw input of text will go through several numbers of pre-processing  before feeding to any models. Those steps can be g summarized in general as follow :
+        
+        \begin{itemize}[noitemsep,nolistsep]
+            \item Tokenization - extracting individual word
+            \item Stop word removal - removing word that occurs frequently ( ex. "is", "the" etc.)
+            \item Stemming / Lemmatization - Identify the root of the word (ex. connected -> connect )
+            \item Embedding - Transform the word into numerical base representation ( ex. one-hot encoding) 
+        \end{itemize}
+        
+The steps above  are generally grouped into a pipeline to streamline the model process. During the pre-deep learning era, there is a wide range of modeling such as support vector machine(SVM) that is based on statistical aspects, but the accuracy heavily depends on the data and the prior belief on the kernel selection. After the deep learning era, especially after the invention of the Long-short term memory model (LSTM, an expansion of recurrent neural network RNN) and Transformer (BERT) which change the trend from statistical to auto-regressive model.  The main difference between the two is that RNN-type models are equipped with state space learning\cite{cite:5} to enrich the representation of data. 
+
+In neural network model setup, those pre-processed data are fed into the model in sequential order, and depending on the model's architecture,  the number of tokens (words) input variate, for example, BERT usually will take a predefined maximum input length of the text while LSTM can be done in sliding window which takes a sequence of text at a time. The output will be the classification result base on the input sequence and it learns by calculating the loss between the ground truth label and its result.
+
 \newpage
 \section{Literature Survey} 
 \TODO{Mostly related to ToM and language study from developmental study }
