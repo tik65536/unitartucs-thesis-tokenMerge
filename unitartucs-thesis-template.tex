@@ -464,6 +464,8 @@ In neural network model setup, those pre-processed data are fed into the model i
 
 \section{Experiment Setting} 
 
+\subsection{Simulate Incomplete Language Learning} \label{incomplearning}
+
 \subsection{Data Set and Pre-processing}
 The experiment is conducted on the IMDB movie review data set {cite} for sentiment classification. The whole data set consists of 50,000 textual reviews and a target label indicating  positive and negative feedback on the movie. 15,000 reviews are sampled from the data as the training set and 3,000 for testing data. The following table(\ref{tab:dataset}) summarizes the positive and negative class distribution on both the training and test set.
 \begin{table}[!h]
@@ -486,7 +488,7 @@ Those data sets then go through data cleaning(remove html related tags) and pre-
 Since the experiment is conducted on destroying the language, the part of speech(POS) tags are used as a selector to control which part of the text should work on instead of doing it at the token level. The following table(\ref{tab:poscount}) shows the top 10 POS tags count for the pre-processed data set.
 
 \begin{table}[!h]
-\centering
+\begin{center}
 \fontsize{9pt}{9pt}\selectfont
 \begin{tabular}{|c|r|c|c|}
 \hline
@@ -514,11 +516,24 @@ Since the experiment is conducted on destroying the language, the part of speech
 \end{tabular}
      \caption{POS tag count}
     \label{tab:poscount}
+\end{center}
 \end{table}
-\subsection{Model}
+
+\subsection{Token Merge Block}
+As described in \ref{incomplearning}, one of the methods to simulate incomplete language is by merging specific tokens which is done by Conv1D. The merge block also comes with 2 parameters($\alpha$,$\beta$) that use to specify the minimum/maximum token to merge and the maximum token to merge accordingly. These parameters will be used to generate a list of merge sizes randomly. Here is an example on the list generated($\alpha=2$,$\beta=3$) :
+\begin{center}
+$l$=[2,3,3,2,3,2]    
+\end{center}
+
+After tokens pass through the embedding layer, it will result in a tensor size of NxE (N=sequence length, E=embedding dim). This matrix will then transform to a tensor of size NxEx$\beta$ 
 
 
-\subsection{Token Merge}
+\subsection{Full Model Architecture}
+The model used in the experiment is a 3-stacking layer of LSTM network with input from an embedding layer followed by a fully connected layer for output classification. 
+
+Table() and figure() shows a detail description on the model 
+
+
 \newpage
 \section{Result and Discussion} 
 
