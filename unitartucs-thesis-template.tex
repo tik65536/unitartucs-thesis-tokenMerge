@@ -422,12 +422,12 @@ Social cues are another important phenomenon to observe mental state changes. Th
 
 
 
-\subsection{Language Model}
-Since the spark of linguistics, researchers try to model language in a scientific fashion by structural (as described in \ref{introLanguage}) or statistical analysis. In the early day of linguistics which solely relies on hard-crafted rules parsing that was purely symbolic{cite}. When the time came to the digital age, the use of computers largely influenced research, especially in the power to handle huge textual data and the use of machine learning methods which give rise to natural language processing(NLP) for using computers to process human language.
+\subsection{Language Model} \label{introLM}
+Since the spark of linguistics, researchers try to model language in a scientific fashion by structural (as described in \ref{introLanguage}) or statistical analysis. In the early day of linguistics which solely relies on hard-crafted rules parsing that was purely symbolic\cite{Nadkarni_2011}. When the time came to the digital age, the use of computers largely influenced research, especially in the power to handle huge textual data and the use of machine learning methods which give rise to natural language processing(NLP) for using computers to process human language.
 
 In the domain of NLP, it can be subdivided into 2 main categories, natural language understanding(NLU) and natural language generation(NLG). In the simplest form, NLU can be understood as it performs syntactic and semantic analysis based on the contents in order to classify the meaning of the given text input. NLG on the other hand, is the process of generating text that meets some specific requirement with a given input and condition, for example, text translation. 
  
-In order to handle textual data before modeling(NLU or NLG), the data have to go through several numbers of pre-processing  before feeding to any models. Those steps can be summarized in the following {cite}:
+In order to handle textual data before modeling(NLU or NLG), the data have to go through several numbers of pre-processing  before feeding to any models. Those steps can be summarized in the following\cite{Vijayarani_2015}:
         
         \begin{itemize}
             \item Tokenization
@@ -455,17 +455,71 @@ In neural network model setup, those pre-processed data are fed into the model i
 \newpage
 \section{ToM and Language - Literature Survey} 
 \TODO{Mostly related to ToM and language study from developmental study }
-
+\newpage
 
 \section{Language Model - Literature Survey} 
 
-
+\newpage
 
 
 \section{Experiment Setting} 
 
-\section{Token Merge}
+\subsection{Data Set and Pre-processing}
+The experiment is conducted on the IMDB movie review data set {cite} for sentiment classification. The whole data set consists of 50,000 textual reviews and a target label indicating  positive and negative feedback on the movie. 15,000 reviews are sampled from the data as the training set and 3,000 for testing data. The following table(\ref{tab:dataset}) summarizes the positive and negative class distribution on both the training and test set.
+\begin{table}[!h]
+    \centering
+        \begin{tabular}{||c|c| c||} 
+        \hline
+ Train/Test & Number of Review & Percentage(Pos / Neg) \\ 
+ \hline\hline
+ Train  &  15000  & 50\% / 50\% \\ 
+ \hline
+  Test & 3000  & 50\% / 50\%  \\ 
+ \hline
+    \end{tabular}
+     \caption{Training, Testing Set}
+    \label{tab:dataset}
+\end{table}
 
+Those data sets then go through data cleaning(remove html related tags) and pre-processing pipeline as described in \ref{introLM} apart from the last two processes (Stemming/Lemmatization, embedding). \\
+
+Since the experiment is conducted on destroying the language, the part of speech(POS) tags are used as a selector to control which part of the text should work on instead of doing it at the token level. The following table(\ref{tab:poscount}) shows the top 10 POS tags count for the pre-processed data set.
+
+\begin{table}[!h]
+\centering
+\fontsize{9pt}{9pt}\selectfont
+\begin{tabular}{|c|r|c|c|}
+\hline
+\multicolumn{1}{|l|}{Data Set} & POS tag & Positive review & Negative Review \\ \hline
+\multirow{10}{*}{Train}        & NOUN    & 352,846         & 336,466         \\ \cline{2-4} 
+                               & VERB    & 165,504         & 167,988         \\ \cline{2-4} 
+                               & ADJ     & 140,768         & 133,559         \\ \cline{2-4} 
+                               & PROPN   & 86,150          & 60,792          \\ \cline{2-4} 
+                               & ADV     & 37,888          & 40,703          \\ \cline{2-4} 
+                               & NUM     & 10,036          & 10,977          \\ \cline{2-4} 
+                               & ADP     & 4,911           & 5,620           \\ \cline{2-4} 
+                               & DET     & 2,429           & 2,300           \\ \cline{2-4} 
+                               & INTJ    & 2,021           & 3,435           \\ \cline{2-4} 
+                               & X       & 2,008           & 2,292           \\ \hline
+\multirow{10}{*}{Test}         & NOUN    & 74,954          & 69,862          \\ \cline{2-4} 
+                               & VERB    & 32,464          & 32,254          \\ \cline{2-4} 
+                               & ADJ     & 31,073          & 29,371          \\ \cline{2-4} 
+                               & PROPN   & 16,473          & 11,732          \\ \cline{2-4} 
+                               & ADV     & 7,580           & 7,715           \\ \cline{2-4} 
+                               & DET     & 2,069           & 2,005           \\ \cline{2-4} 
+                               & NUM     & 1,870           & 2,073           \\ \cline{2-4} 
+                               & ADP     & 937             & 1,146           \\ \cline{2-4} 
+                               & INTJ    & 359             & 635             \\ \cline{2-4} 
+                               & X       & 344             & 433             \\ \hline
+\end{tabular}
+     \caption{POS tag count}
+    \label{tab:poscount}
+\end{table}
+\subsection{Model}
+
+
+\subsection{Token Merge}
+\newpage
 \section{Result and Discussion} 
 
 
