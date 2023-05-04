@@ -489,7 +489,7 @@ Since the experiment is conducted on destroying the language, the part of speech
 
 \begin{table}[!h]
 \begin{center}
-\fontsize{9pt}{9pt}\selectfont
+\fontsize{8pt}{8pt}\selectfont
 \begin{tabular}{|c|r|c|c|}
 \hline
 \multicolumn{1}{|l|}{Data Set} & POS tag & Positive review & Negative Review \\ \hline
@@ -518,15 +518,46 @@ Since the experiment is conducted on destroying the language, the part of speech
     \label{tab:poscount}
 \end{center}
 \end{table}
-
 \subsection{Token Merge Block}
-As described in \ref{incomplearning}, one of the methods to simulate incomplete language is by merging specific tokens which is done by Conv1D. The merge block also comes with 2 parameters($\alpha$,$\beta$) that use to specify the minimum/maximum token to merge and the maximum token to merge accordingly. These parameters will be used to generate a list of merge sizes randomly. Here is an example on the list generated($\alpha=2$,$\beta=3$) :
+As described in \ref{incomplearning}, one of the methods to simulate incomplete language is by merging specific tokens which is done by function prepareMerge(\ref{alg:prepareMerge}) and Conv1D. There are 3 parameters to define for merging: 
+\begin{enumerate}
+
+    \item $\alpha$ the minimum token to merge 
+    \item $\beta$ the maximum token to merge
+    \item $l$ a random merge list of size equal input sequence length, lower and upper clipped by $\alpha,\beta$ (ex: [2,3,3,2,3,2]) 
+\end{enumerate}
+
+After tokens pass through the embedding layer, it will result in an embedding tensor($\mathbb{E}$) of size NxE (N=sequence length, E=embedding dim). This matrix will then transform to a merge tensor($\methbb{M}$) of size NxEx$\beta$ by selecting the number of tokens to merge($l[i]$) with padding zero at the back if the number of tokens is smaller than $\beta$. The following code demonstrated how the merge is prepared before feeding to Conv1D.
+
+\SetKwComment{Comment}{//}{}
+\begin{algorithm}
+\caption{PrepareMerge}\label{alg:prepareMerge}
+\begin{algorithmic}
+\Comment{E=embedding dim,N=sequence length} 
+\KwData{$l = [2,3,3,2,3,2]$}
+\KwData{$\mathbb{E} = Embedding(tokens).reshape(E,-1)$ } 
+\KwData{$\mathbb{M} = tensor.zero(N,E,\beta)$}
+
+\Comment{Start from the end} 
+$y \gets l.length()-1$\\
+$c \gets l.length()$\\
+\While{$c \neq 0$}{
+$\mathbb{T} = tensor.zero(E,\beta)$ \\
+$m \gets l[y]$\\
+$s \gets (c-m)$\\
+$\mathbb{T} = \mathbb{E}[:,s:c]$\\
+$\mathbb{M}[y] =\mathbb{T}$\\
+$c \gets c-s$\\
+$y \gets y-1$
+
+}
+\end{algorithmic}
+\end{algorithm}
+
+The merge tensor $\mathbb{M}$ will be used as input to Conv1D(k=2,stride=1) so that each slice of $\mathbb{M}$ is transformed to the size of (E,1). The following summarized the size transformation from embedding until merge:
 \begin{center}
-$l$=[2,3,3,2,3,2]    
+(N, E) \rightarrow (N,E,$\beta$) \rightarrow (N,E,1)  
 \end{center}
-
-After tokens pass through the embedding layer, it will result in a tensor size of NxE (N=sequence length, E=embedding dim). This matrix will then transform to a tensor of size NxEx$\beta$ 
-
 
 \subsection{Full Model Architecture}
 The model used in the experiment is a 3-stacking layer of LSTM network with input from an embedding layer followed by a fully connected layer for output classification. 
