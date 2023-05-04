@@ -464,8 +464,6 @@ In neural network model setup, those pre-processed data are fed into the model i
 
 \section{Experiment Setting} 
 
-\subsection{Simulate Incomplete Language Learning} \label{incomplearning}
-
 \subsection{Data Set and Pre-processing}
 The experiment is conducted on the IMDB movie review data set {cite} for sentiment classification. The whole data set consists of 50,000 textual reviews and a target label indicating  positive and negative feedback on the movie. 15,000 reviews are sampled from the data as the training set and 3,000 for testing data. The following table(\ref{tab:dataset}) summarizes the positive and negative class distribution on both the training and test set.
 \begin{table}[!h]
@@ -518,7 +516,35 @@ Since the experiment is conducted on destroying the language, the part of speech
     \label{tab:poscount}
 \end{center}
 \end{table}
-\subsection{Token Merge Block}
+
+\subsection{Simulate Incomplete Language Learning} \label{incomplearning}
+The experiment result from developmental psychology suggested a strong correlation between deficiency in language and ToM. The simplest way to simulate the lack of certain types of words in the language is to skip those in the data set, however, it is not appropriate as those psychology experiments avoid using some type of words, but it didn't change the underline meaning of the sentence.    
+In order to reflect this scenario in the language model, this experiment proposes 2 methods that try to approximate language deficiency, "always wrong" and Merge. 
+
+\subsubsection{Always Wrong}
+The idea behind the method "always wrong" is to trick the model's classification during training at a specific position of the text, since the model is using the output of LSTM for classification, so there is a one-to-one mapping between the result and input token. In this experiment, the position is appointed using POS tag, for example, treat all predictions for ADJ as wrong. The illusion is done by changing the loss value at the corresponding location to 0.5 for the cross-entropy loss function. Figure() shows briefly how the method works, detail of the full model can be found in \ref{modelarch}.
+
+\subsubsection{Token Merge}
+
+
+
+
+\subsection{Model Architecture and Training}\label{modelarch}
+The architecture for the model consists of 4 main blocks which are Embedding, Merge, LSTM, and classification. The following table(\ref{tab:modelsettings}) and diagram(\ref{fig:modelArch}) give a summary and visualization of the parameters setting for those blocks:
+\begin{table}[!h]
+\begin{tabular}{|c|l|}
+\hline
+Block                   & \multicolumn{1}{c|}{Parameters}                                 \\ \hline
+Embedding               & embedding dim=256                                               \\ \hline
+Merge(Conv1D)          & kernel=2,stride=1                                               \\ \hline
+LSTM                    & input dim=256, hidden dim=256, hidden layer=3, bidirection=True \\ \hline
+Classification(Linear) & input dim=256*2 , out dim = 3                                   \\ \hline
+\end{tabular}
+\caption{Model Settings}
+\label{tab:modelsettings}
+\end{table}
+
+\subsubsection{Token Merge Block}
 As described in \ref{incomplearning}, one of the methods to simulate incomplete language is by merging specific tokens which is done by function prepareMerge(\ref{alg:prepareMerge}) and Conv1D. There are 3 parameters to define for merging: 
 \begin{enumerate}
 
@@ -564,21 +590,6 @@ The merge tensor $\mathbb{M}$ will be used as input to Conv1D(k=2,stride=1) so t
 \end{center}
 \end{figure}
 
-\subsection{Model Architecture}
-The architecture for the model consists of 4 main blocks which are Embedding, Merge, LSTM, and classification. The following table(\ref{tab:modelsettings}) and diagram(\ref{fig:modelArch}) give a summary and visualization of the parameters setting for those blocks:
-\begin{table}[!h]
-\begin{tabular}{|c|l|}
-\hline
-Block                   & \multicolumn{1}{c|}{Parameters}                                 \\ \hline
-Embedding               & embedding dim=256                                               \\ \hline
-Merge(Conv1D)          & kernel=2,stride=1                                               \\ \hline
-LSTM                    & input dim=256, hidden dim=256, hidden layer=3, bidirection=True \\ \hline
-Classification(Linear) & input dim=256*2 , out dim = 3                                   \\ \hline
-\end{tabular}
-\caption{Model Settings}
-\label{tab:modelsettings}
-\end{table}
-
 \begin{figure} [!h]
 \begin{center}
 \includegraphics[width=0.6\textwidth]{figures/modelDiagram.png}
@@ -586,18 +597,42 @@ Classification(Linear) & input dim=256*2 , out dim = 3                          
 \label{fig:modelArch}
 \end{center}
 \end{figure}
-
-\subsection{Training}
-The training is done in an auto-regressive and mini-batch setting. The review will be fed to the model by pre-defined sequence length and sliding window as a sequence of blocks. The hidden and cell state of LSTM is initialized to 0 at the start of the review and both states of the current block are fed back to the model together with the next block of input.
+\subsubsection{Training}
+The review will be fed to the model by pre-defined sequence length and sliding window as a sequence of blocks. The hidden and cell state of LSTM is initialized to 0 at the start of the review and both states of the current block are fed back to the model together with the next block of input(fig.\ref{fig:modeFeedBack}). A mini-batch of size 1000 reviews is sampled from the training set as 1 epoch of training, then the test set is fed after each epoch to evaluate the performance of the model. 
 \begin{figure} [!h]
 \begin{center}
-\includegraphics[width=0.6\textwidth]{figures/}
-\caption{Full model Architecture}
-\label{fig:modelArch}
+\includegraphics[width=0.3\textwidth]{figures/autoreg.png}
+\caption{Feed Back}
+\label{fig:modeFeedBack}
 \end{center}
 \end{figure}
+The following tables(\ref{tab:generalsettings},\ref{tab:incompsettings}) summarized the general configuration and the incomplete language training setting for experiment runs.
+\begin{table}[!h]
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+sequence length & mini-batch size & Optimizator              & Loss function \\ \hline
+5,10,25,50,600  & 1000            & Adam(default parameters) & CrossEntropy  \\ \hline
+\end{tabular}
+\end{center}
+\caption{General Settings}
+\label{tab:generalsettings}
+\end{table}
 
-
+\begin{table}[!h]
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\begin{tabular}[c]{@{}l@{}}Incomplete\\ language Method\end{tabular} & \multicolumn{1}{c|}{POS tag}                                    \\ \hline
+Always Wrong                                                         & \multicolumn{1}{c|}{NOUN, ADJ, PROPN , ADJ+NOUN, NOUN+VERB+ADJ} \\ \hline
+Random Merge                                                         & N/A                                                             \\ \hline
+Merge Specific Tags                                                  & NOUN,PROPN,VERB,ADJ,SCONJ,CONJ                                  \\ \hline
+Merge Specific Patten                                                & ADJ+NOUN, NOUN+VERB+ADJ,  NOUN+VERB                             \\ \hline
+\end{tabular}
+\caption{Incomplete Language Setting}
+\label{tab:incompsettings}
+\end{center}
+\end{table}
 
 \newpage
 \section{Result and Discussion} 
