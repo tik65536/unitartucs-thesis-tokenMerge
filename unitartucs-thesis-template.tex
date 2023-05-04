@@ -554,15 +554,31 @@ $y \gets y-1$
 \end{algorithmic}
 \end{algorithm}
 
-The merge tensor $\mathbb{M}$ will be used as input to Conv1D(k=2,stride=1) so that each slice of $\mathbb{M}$ is transformed to the size of (E,1). The following summarized the size transformation from embedding until merge:
+The merge tensor $\mathbb{M}$ will be used as input to Conv1D(k=2,stride=1) so that each slice of $\mathbb{M}$ is transformed to the size of (E,1). The following figure(\ref{fig:prepareMerge}) visualized the size transformation from embedding until merge:
+\begin{figure} [!h]
 \begin{center}
-(N, E) \rightarrow (N,E,$\beta$) \rightarrow (N,E,1)  
+\includegraphics[width=0.4\textwidth]{figures/prepareMerge.png}
+\caption{prepareMerge: N=7, $l=[2,2,3,3,2,3,2]$}
+\label{fig:prepareMerge}
 \end{center}
+\end{figure}
 
 \subsection{Full Model Architecture}
-The model used in the experiment is a 3-stacking layer of LSTM network with input from an embedding layer followed by a fully connected layer for output classification. 
+The architecture for the model consists of 4 main blocks which are Embedding, Merge, LSTM, and classification. The following table(\ref{tab:modelsettings}) and diagram give a summary and visualization of parameters setting for those blocks:
+\begin{table}[!h]
+\begin{tabular}{|c|l|}
+\hline
+Block                   & \multicolumn{1}{c|}{Parameters}                                 \\ \hline
+Embedding               & embedding dim=256                                               \\ \hline
+Merge (Conv1D)          & kernel=2,stride=1                                               \\ \hline
+LSTM                    & input dim=256, hidden dim=256, hidden layer=3, bidirection=True \\ \hline
+Classification (Linear) & input dim=256*2 , out dim = 3                                   \\ \hline
+\end{tabular}
+\caption{Model Settings}
+\label{tab:modelsettings}
+\end{table}
 
-Table() and figure() shows a detail description on the model 
+The model used in the experiment is a 3-stacking layer of LSTM network with input from an embedding layer followed by a fully connected layer for output classification. 
 
 
 \newpage
