@@ -589,6 +589,13 @@ Classification(Linear) & input dim=256*2 , out dim = 3                          
 
 \subsection{Training}
 The training is done in an auto-regressive and mini-batch setting. The review will be fed to the model by pre-defined sequence length and sliding window as a sequence of blocks. The hidden and cell state of LSTM is initialized to 0 at the start of the review and both states of the current block are fed back to the model together with the next block of input.
+\begin{figure} [!h]
+\begin{center}
+\includegraphics[width=0.6\textwidth]{figures/}
+\caption{Full model Architecture}
+\label{fig:modelArch}
+\end{center}
+\end{figure}
 
 
 
