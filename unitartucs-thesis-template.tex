@@ -522,15 +522,32 @@ The experiment result from developmental psychology suggested a strong correlati
 In order to reflect this scenario in the language model, this experiment proposes 2 methods that try to approximate language deficiency, "always wrong" and Merge. 
 
 \subsubsection{Always Wrong}
-The idea behind the method "always wrong" is to trick the model's classification during training at a specific position of the text, since the model is using the output of LSTM for classification, so there is a one-to-one mapping between the result and input token. In this experiment, the position is appointed using POS tag, for example, treat all predictions for ADJ as wrong. The illusion is done by changing the loss value at the corresponding location to 0.5 for the cross-entropy loss function. Figure() shows briefly how the method works, detail of the full model can be found in \ref{modelarch}.
+The idea behind the method "always wrong" is to trick the model's classification during training at a specific position of the text, since the model is using the output of LSTM for classification, so there is a one-to-one mapping between the result and input token. In this experiment, the position is appointed using POS tag, for example, treat all predictions for ADJ as wrong. The illusion is done by changing the loss value at the corresponding location to 0.5 for the cross-entropy loss function. Figure(\ref{fig:alwayswrong}) shows briefly how the method works, detail of the full model can be found in \ref{modelarch}.
+\begin{figure} [!h]
+\begin{center}
+\includegraphics[width=0.2\textwidth]{figures/alwayswrong.png}
+\caption{Trick the model}
+\label{fig:alwayswrong}
+\end{center}
+\end{figure}
 
 \subsubsection{Token Merge}
+The concept of merge tokens origin from the MERGE operator(\ref{introLanguage}) of bare phrase structures, as introduced above, MERGE help to build a structural description set from sentences and assume to take 2 input. This experiment, it is trying to simulate the MERGE in 3 ways:
+\begin{center}
+\begin{enumerate}
+    \item Random Merge
+    \item Merge surrounding words of a specific position
+    \item Merge specific POS pattern
+\end{enumerate}
+\end{center}
+Again, the specific position in the second way is relying on POS tag, for example, merge tokens that must include ADJ, on the other hand, the third way is to merge tokens in a specific ordered pattern such as ADJ+NOUN. The details of merge will be described in \ref{modelMerge}. 
 
+    
 
 
 
 \subsection{Model Architecture and Training}\label{modelarch}
-The architecture for the model consists of 4 main blocks which are Embedding, Merge, LSTM, and classification. The following table(\ref{tab:modelsettings}) and diagram(\ref{fig:modelArch}) give a summary and visualization of the parameters setting for those blocks:
+The architecture for the model consists of 4 main blocks which are Embedding, Merge, LSTM, and classification. The following table(\ref{tab:modelsettings}) and diagram(\ref{fig:modelArch}) give a summary and visualization of the parameters set for those blocks:
 \begin{table}[!h]
 \begin{tabular}{|c|l|}
 \hline
@@ -544,7 +561,7 @@ Classification(Linear) & input dim=256*2 , out dim = 3                          
 \label{tab:modelsettings}
 \end{table}
 
-\subsubsection{Token Merge Block}
+\subsubsection{Token Merge Block} \label{modelMerge}
 As described in \ref{incomplearning}, one of the methods to simulate incomplete language is by merging specific tokens which is done by function prepareMerge(\ref{alg:prepareMerge}) and Conv1D. There are 3 parameters to define for merging: 
 \begin{enumerate}
 
