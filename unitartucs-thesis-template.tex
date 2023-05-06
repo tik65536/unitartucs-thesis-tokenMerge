@@ -701,7 +701,7 @@ Column 3-Other's}
 \label{tab:alwayswrongDegrade}
 \end{table}
 
-In general, the above results show that the "always wrong" method doesn't largely impact the performance, \textbf{with an average degradation from 3\% to 5\%}. Especially, with the sequence length of 5, it shows nearly no difference in comparison to the base case. Although the mean accuracy looks good in this experiment, it shows some differences in the distribution once comparing the inter-quartile range(IQR), and the ratio between the base case shows in the following table(\ref{tab:alwayswrongIQR}).   
+In general, the above results show that the "always wrong" method doesn't largely impact the performance, \textbf{with an average degradation from 3\% to 5\%}. Especially, with the sequence length of 5, it shows nearly no difference in comparison to the base case. Although the mean accuracy looks good in this experiment, it shows some differences in the distribution once comparing the inter-quartile range(IQR), and the ratio between the base case shown in the following table(\ref{tab:alwayswrongIQR}).   
 \begin{table}[!h]
 \fontsize{10pt}{10pt}\selectfont
 \begin{center}
@@ -749,7 +749,11 @@ While the performance of those shorter sequences seems to be invariant to token 
 \end{figure}
 The comparison of the token merge result suggested that the merge on ADJ is different from others' merge significantly on longer sequences, so, in order to confirm the finding, Wilcoxon signed-rank test is used to test the median accuracy of ADJ is different from others, it is done on the result of 25 sequences length with a sampling data point of 290. 
 The test on the null hypothesis which the accuracy median of VERB is the same for ADJ is rejected with p-value $2.05\times10^{-11}$ at 95\% confidence level. On the other hand, the same test is applied for VERB and PROPN, the result shows strong evidence to support the null hypothesis with p-value $0.7$. The details of the statistical test can be found in the appendix(\ref{appendix:signedranktestseq25}). 
-
+\begin{figure} [!h]
+\includegraphics[width=0.3\textwidth]{figures/merge_adj_rand_joinplot.png}
+\caption{Token Merger: Degradation vs Sequence len vs Merge Tag}
+\label{fig:mf}
+\end{figure}
 
 
 
