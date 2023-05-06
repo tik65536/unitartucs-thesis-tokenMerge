@@ -703,6 +703,7 @@ Column 3-Other's}
 
 In general, the above results show that the "always wrong" method doesn't largely impact the performance, \textbf{with an average degradation from 3\% to 5\%}. Especially, with the sequence length of 5, it shows nearly no difference in comparison to the base case. Although the mean accuracy looks good in this experiment, it shows some differences in the distribution once comparing the inter-quartile range(IQR), and the ratio between the base case shows in the following table(\ref{tab:alwayswrongIQR}).   
 \begin{table}[!h]
+\fontsize{10pt}{10pt}\selectfont
 \begin{center}
 \begin{tabular}{|c|c|c|c|}
 \hline
@@ -736,224 +737,19 @@ seq len & Random & NOUN & VERB  & ADJ  & CCONJ & SCONJ \\ \hline
 \caption{Performance Degrade by Random Merge \& POS Tag Merge.}
 \label{tab:mergeDegrade}
 \end{table}
-The result of random merge on all sequences shows roughly the same level of degradation($\approx12\%$). It also noted that in the random merge experiment, the merged pattern is different for short($\leq10$) and long sequences ($\geq25$). The table(\ref{tab:top10RMergeDiff}) below illustrates the differences between them.
+The result of random merge on all sequences shows roughly the same level of degradation($\approx12\%$). It also noted that in the random merge experiment, \textbf{the merged pattern is different} for short($\leq10$) and long sequences ($\geq25$). The detail on pattern differences and test results are attached in the appendix(\ref{appendix:top10RMergeDiff},\ref{appendix:verbMerge},\ref{appendix:adjMerge}) .\\
 
-\begin{table}[!h]
+While the performance of those shorter sequences seems to be invariant to token merge, it is not the same for longer sequences. The performance degradation is increasing according to \textbf{tag ordering: NOUN, VERB, ADJ}. The relation between degradation, sequence length, and tag is visualized in the following diagram(\ref{fig:mergeScatter}).
+\begin{figure} [!h]
 \begin{center}
-\fontsize{10pt}{10pt}\selectfont
-\begin{tabular}{|ll|}
-\hline
-\multicolumn{2}{|c|}{Top 10 Merge Pattern}                      \\ \hline
-\multicolumn{1}{|c|}{$\leq10$}            & \multicolumn{1}{c|}{$\geq25$} \\ \hline
-\multicolumn{1}{|l|}{NOUN\_NOUN}      & ADJ\_ADJ\_ADJ              \\ \hline
-\multicolumn{1}{|l|}{ADJ\_NOUN}       & ADJ\_ADJ                  \\ \hline
-\multicolumn{1}{|l|}{NOUN\_VERB}      & NOUN\_NOUN                \\ \hline
-\multicolumn{1}{|l|}{VERB\_NOUN}      & ADJ\_NOUN                 \\ \hline
-\multicolumn{1}{|l|}{NOUN\_NOUN\_NOUN} & NOUN\_VERB                \\ \hline
-\multicolumn{1}{|l|}{ADJ\_ADJ}        & VERB\_NOUN                \\ \hline
-\multicolumn{1}{|l|}{NOUN\_ADJ}       & NOUN\_NOUN\_NOUN           \\ \hline
-\multicolumn{1}{|l|}{ADJ\_ADJ\_ADJ}    & ADJ\_NOUN\_NOUN           \\ \hline
-\multicolumn{1}{|l|}{ADJ\_NOUN\_NOUN}  & NOUN\_VERB\_NOUN           \\ \hline
-\multicolumn{1}{|l|}{NOUN\_VERB\_NOUN} & NOUN\_ADJ                 \\ \hline
-\end{tabular}
-\caption{Top 10 Random Merge Pattern differences}
-\label{tab:top10RMergeDiff}
-\end{center}
-\end{table}
-While the performance of those shorter sequences seems to be invariant to token merge, it is not the same for longer sequences. The performance degradation is increasing according to \textbf{tag ordering: NOUN, VERB, ADJ}. It
-
-
-\newpage
-\section{How to add figures and pictures to your thesis}
-
-
-Here are a few examples of how to add figures or pictures to your thesis (see Figures~\ref{fig:fnCompModel}, \ref{fig:game-based_proofs}, \ref{fig:proveit_screenshot}).
-
-Rule: All the figures, tables and extras in the thesis have to be referred to somewhere in the text.
-
-
-\begin{figure} [ht] %try to place the figure here (next option top of the page) 
-\begin{center}
-\includegraphics[width=0.8\textwidth]{computational_model_function}
-\caption{The title of the Figure.}
-\label{fig:fnCompModel}
+\includegraphics[width=0.8\textwidth]{figures/tokenmerg1.png}
+\caption{Token Merger: Degradation vs Sequence len vs Merge Tag}
+\label{fig:mergeScatter}
 \end{center}
 \end{figure}
+The comparison of the token merge result suggested that the merge on ADJ is different from others' merge significantly on longer sequences, so, in order to confirm the finding, Wilcoxon signed-rank test is used to test the median accuracy of ADJ is different from others, it is done on the result of 25 sequences length with a sampling data point of 290. 
+The test on the null hypothesis which the accuracy median of VERB is the same for ADJ is rejected with p-value $2.05\times10^{-11}$ at 95\% confidence level. On the other hand, the same test is applied for VERB and PROPN, the result shows strong evidence to support the null hypothesis with p-value $0.7$. The details of the statistical test can be found in the appendix(\ref{appendix:signedranktestseq25}). 
 
-
-
-\begin{figure} [!ht] %if [h] doesn't work, we can force with !
-\begin{center}
-\includegraphics[width=\textwidth]{game-based_proofs}
-\caption{Refer if the figure is not yours~\cite{kamm12}.}
-\label{fig:game-based_proofs}
-\end{center}
-\end{figure}
-
-
-\begin{figure} [p]
-\begin{center}
-\includegraphics[width=\textwidth]{proveit_screenshot}
-\caption{Screenshot of \proveit.}
-\label{fig:proveit_screenshot}
-\end{center}
-\end{figure}
-
-Tip: If you add a screenshot then labeling the parts might help make the text more understandable (panel C vs bottom left part), e.g.
-
-
-\begin{figure} [htbp]
-\begin{tabular}{c c}
-%
-\begin{minipage}{0.45\textwidth}
-\includegraphics[width=\textwidth]{LCA_2_solutions}
-\end{minipage}
-%
-&
-\begin{minipage}{0.55\textwidth}
-\centering
-\begin{tabular}{ l | l |}
-	Node & Decendants \\ \hline
-  1 & 2, 3, 4 \\ \hline
-  2 & 3, 4 \\ \hline
-  3 & \\ \hline
-  4 & \\ \hline
-  5 & 3, 4, 6, 7 \\ \hline
-  6 & 4 \\ \hline
-  7 & 3 \\  \hline
-  8 & 3, 4, 5, 6, 7\\ \hline
-  9 & 3, 4, 5, 6, 7\\ \hline
-\end{tabular}
-\end{minipage}
-\end{tabular}
-%
-\caption{Example how to put two figures parallel to each other.}
-\label{fig:LCA_2_solutions}
-\end{figure}
-
-
-Example: A screenshot of \proveit can be seen on Figure~\ref{fig:proveit_screenshot}. The user first enters the pseudocode of the initial game in panel B. \proveit also keeps track of all the previous games showing the progress on a graph seen in panel A.
-
-There are two figures side by side on Figure~\ref{fig:LCA_2_solutions}.
-
-
-
-\clearpage %if newpage doesn't work
-\section{Other Ways to Represent Data}
-
-\subsection{Tables}
-
-\begin{table}[h]
-\centering
-\caption{Statements in the \proveit language.}
-\begin{tabular}{| l | l |}
-	\hline
-	\bf{Statement} & \bf{Typeset Example} \\
-	\hline
-	assignment & $a := 5 + b$ \\
-	\hline
-	uniform choice & $m <- M$ \\
-	\hline
-	function signature & $f : K \times M -> L$\\
-	\hline
-\end{tabular}
-\label{tab:statements}
-\end{table}
-
-
-\subsection{Lists}
-
-Numbered list example:
-\begin{enumerate}
-	\item item one; 
-	\item item two;
-	\item item three.
-\end{enumerate} 
-
-\subsection{Math mode}
-Example:
-\begin{equation}
-a + b = c + d
-\end{equation}
-Aligning:
-\begin{align*}
-	a &= 5 \\
-	b + c &= a \\
-	a -2*3 &= 5/4
-\end{align*}
-Hint: Variables or equations in text are separated with \$ sign, e.g. $a$, $x - y$.
-
-\paragraph{Inference Rules}
-\[ 
-	\inference[addition]{x : T & y : T}{x + y : T} 
-\]
-Bigger example:
-\[
-\inference[assign]{c := a + b & 
-	\inference[addG]{a : \typeRat & 
-		\inference[var]{b : \typeInt & \typeInt \subseteq \typeRat}{b : \typeRat}
-		}{a + b : \typeRat}
-	}{c : \typeRat}
-\]
-
-
-\subsection{algorithm2e}
-
-\begin{algorithm} [!h]
-	\caption{typeChecking} \label{alg:typeChecking}
-	\KwIn{Abstract syntax tree}
-	\KwResult{Type checking result; In addition, type table \typeF{type\_G} for global variables, \typeF{game} for the main game and \typeF{fun} for each $fun \in F$}
-	\SetKwData{s}{s}
-	\BlankLine
-	
-	\While{something changed in last cycle}{
-		\lForEach{global statement \s} {
-			\parseStatement{\s, \typeF{type\_G}}\;
-		}
-		\ForEach{function $fun$} {
-		\lForEach{statement \s in $fun$} {
-			\parseStatement{\s, \typeF{fun}}\;
-		}
-		}
-		\lForEach{statement \s in game} {
-			\parseStatement{\s, \typeF{game}}\;
-		}
-	}
-	%\eIf{error messages were found}{\Return \False\;}{\Return \True\;}
-\end{algorithm}
-
-\subsection{Pseudocode}
-
-\begin{figure} [htb]
-\begin{lstlisting}
-expression
-  : NUMBER
-  | VARIABLE
-  | '+' expression
-  | expression '+' expression
-  | expression '*' expression
-  | function_name '(' parameters ')'
-  | '(' expression ')'
-\end{lstlisting}
-\caption{Grammar of arithmetic expressions.}
-\label{fig:parser_exp}
-\end{figure}
-
-\subsection{Frame Around Information}
-
-Tip: We can use minipage to create a frame around some important information.
-\begin{figure} [h]
-\frame{
-\begin{minipage}{\textwidth}
-\begin{enumerate}
-	\item integer division ($\opDiv$) -- only usable between \typeInt types
-	\item remainder ($\%$) -- only usable between \typeInt types
-\end{enumerate}
-\end{minipage}
-}
-\caption{Arithmetic operations in \proveit revisited.}
-\label{fig:aritmOp_revisit}
-\end{figure}
 
 
 
@@ -1089,7 +885,50 @@ Tip: We can use minipage to create a frame around some important information.
 \multicolumn{1}{|c|}{50}      & \multicolumn{1}{c|}{0.398} & \multicolumn{1}{c|}{0.349}         & \multicolumn{1}{c|}{0.487}  & \multicolumn{1}{c|}{0.490}         & 0.141 \\ \hline
 \end{tabular}
 \caption{Test Accuracy Details on Merge with ADJ.}
-\label{appendix:verbMerge}
+\label{appendix:adjMerge}
+\end{table}
+
+\begin{table}[!h]
+\begin{center}
+\fontsize{10pt}{10pt}\selectfont
+\begin{tabular}{|ll|}
+\hline
+\multicolumn{2}{|c|}{Top 10 Merge Pattern}                      \\ \hline
+\multicolumn{1}{|c|}{$\leq10$}            & \multicolumn{1}{c|}{$\geq25$} \\ \hline
+\multicolumn{1}{|l|}{NOUN\_NOUN}      & ADJ\_ADJ\_ADJ              \\ \hline
+\multicolumn{1}{|l|}{ADJ\_NOUN}       & ADJ\_ADJ                  \\ \hline
+\multicolumn{1}{|l|}{NOUN\_VERB}      & NOUN\_NOUN                \\ \hline
+\multicolumn{1}{|l|}{VERB\_NOUN}      & ADJ\_NOUN                 \\ \hline
+\multicolumn{1}{|l|}{NOUN\_NOUN\_NOUN} & NOUN\_VERB                \\ \hline
+\multicolumn{1}{|l|}{ADJ\_ADJ}        & VERB\_NOUN                \\ \hline
+\multicolumn{1}{|l|}{NOUN\_ADJ}       & NOUN\_NOUN\_NOUN           \\ \hline
+\multicolumn{1}{|l|}{ADJ\_ADJ\_ADJ}    & ADJ\_NOUN\_NOUN           \\ \hline
+\multicolumn{1}{|l|}{ADJ\_NOUN\_NOUN}  & NOUN\_VERB\_NOUN           \\ \hline
+\multicolumn{1}{|l|}{NOUN\_VERB\_NOUN} & NOUN\_ADJ                 \\ \hline
+\end{tabular}
+\caption{Top 10 Random Merge Pattern differences}
+\label{appendix:top10RMergeDiff}
+\end{center}
+\end{table}
+
+
+\begin{table}[!h]
+\begin{center}
+\fontsize{10pt}{10pt}\selectfont
+\begin{tabular}{|crrr|}
+\hline
+\multicolumn{4}{|c|}{Wilcoxon signed-rank test}                                                                                           \\ \hline
+\multicolumn{1}{|c|}{Tags}            & \multicolumn{1}{c|}{Statistic} & \multicolumn{1}{l|}{p-value}  & \multicolumn{1}{l|}{Reject Null} \\ \hline
+\multicolumn{1}{|c|}{Random VS VERB}  & \multicolumn{1}{r|}{3655}      & \multicolumn{1}{r|}{7.69e-34} & Yes                              \\ \hline
+\multicolumn{1}{|c|}{Random VS PROPN} & \multicolumn{1}{r|}{2819.5}    & \multicolumn{1}{r|}{3.02e-37} & Yes                              \\ \hline
+\multicolumn{1}{|c|}{Random VS ADJ}   & \multicolumn{1}{r|}{462}       & \multicolumn{1}{r|}{3.02e-47} & Yes                              \\ \hline
+\multicolumn{1}{|c|}{VERB VS PROPN}   & \multicolumn{1}{r|}{20583}     & \multicolumn{1}{r|}{0.718}    & No                               \\ \hline
+\multicolumn{1}{|c|}{ADJ VS VERB}     & \multicolumn{1}{r|}{11327.5}   & \multicolumn{1}{r|}{2.05e-11} & Yes                              \\ \hline
+\multicolumn{1}{|c|}{ADJ VS PROPN}    & \multicolumn{1}{r|}{10129.5}   & \multicolumn{1}{r|}{2.72e-14} & Yes                              \\ \hline
+\end{tabular}
+\caption{Signed-rank test on seq len 25}
+\label{appendix:signedranktestseq25}
+\end{center}    
 \end{table}
 
 \newpage
