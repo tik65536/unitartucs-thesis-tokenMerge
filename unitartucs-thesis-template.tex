@@ -522,15 +522,37 @@ The experiment result from developmental psychology suggested a strong correlati
 In order to reflect this scenario in the language model, this experiment proposes 2 methods that try to approximate language deficiency, "always wrong" and Merge. 
 
 \subsubsection{Always Wrong}
-The idea behind the method "always wrong" is to trick the model's classification during training at a specific position of the text, since the model is using the output of LSTM for classification, so there is a one-to-one mapping between the result and input token. In this experiment, the position is appointed using POS tag, for example, treat all predictions for ADJ as wrong. The illusion is done by changing the loss value at the corresponding location to 0.5 for the cross-entropy loss function. Figure() shows briefly how the method works, detail of the full model can be found in \ref{modelarch}.
+The idea behind the method "always wrong" is to trick the model's classification during training at a specific position of the text, since the model is using the output of LSTM for classification, so there is a one-to-one mapping between the result and input token. In this experiment, the position is appointed using POS tag, for example, treat all predictions for ADJ as wrong. The illusion is done by changing the loss value at the corresponding location to 0.5 for the cross-entropy loss function. The purpose of it is to destroy the learning and reflect it has difficulty in understanding the token at that position. Figure(\ref{fig:alwayswrong}) shows briefly how the method works, detail of the full model can be found in \ref{modelarch}.
+\begin{figure} [!h]
+\begin{center}
+\includegraphics[width=0.2\textwidth]{figures/alwayswrong.png}
+\caption{Trick the model on ADJ}
+\label{fig:alwayswrong}
+\end{center}
+\end{figure}
 
-\subsubsection{Token Merge}
+\subsubsection{Token Merge} \label{incompmerge}
+The concept of merge tokens origin from the MERGE operator(\ref{introLanguage}) of bare phrase structures, as introduced above, MERGE help to build a structural description set from sentences and assume to take 2 input. This experiment, it is trying to simulate the MERGE in 3 strategies:
+\begin{center}
+\begin{enumerate}
+    \item Random Merge
+    \item Merge surrounding words of a specific position
+    \item Merge specific POS pattern
+\end{enumerate}
+\end{center}
+Again, the specific position in the second strategy is relying on POS tag, for example, merge tokens that must include ADJ, on the other hand, the third way is to merge tokens in a specific ordered pattern such as ADJ+NOUN. Since it is known that there are common phrases that use in the English language grammar(ex. NOUN phrase), the merge action here is aimed to destroy that structure before it feeds to the model. The details of the merge will be described in \ref{modelMerge}, and the figure(\ref{fig:3waysonmerge}) below shows an example for each strategy.
 
-
+\begin{figure} [!h]
+\begin{center}
+\includegraphics[width=0.7\textwidth]{figures/merge.png}
+\caption{3 ways to Merge}
+\label{fig:3waysonmerge}
+\end{center}
+\end{figure}
 
 
 \subsection{Model Architecture and Training}\label{modelarch}
-The architecture for the model consists of 4 main blocks which are Embedding, Merge, LSTM, and classification. The following table(\ref{tab:modelsettings}) and diagram(\ref{fig:modelArch}) give a summary and visualization of the parameters setting for those blocks:
+The architecture for the model consists of 4 main blocks which are Embedding, Merge, LSTM, and classification. The following table(\ref{tab:modelsettings}) and diagram(\ref{fig:modelArch}) give a summary of the parameters set for each block and visualization for the model:
 \begin{table}[!h]
 \begin{tabular}{|c|l|}
 \hline
@@ -543,11 +565,18 @@ Classification(Linear) & input dim=256*2 , out dim = 3                          
 \caption{Model Settings}
 \label{tab:modelsettings}
 \end{table}
+\newpage
+\begin{figure} [!h]
+\begin{center}
+\includegraphics[width=0.6\textwidth]{figures/modelDiagram.png}
+\caption{Full model Architecture}
+\label{fig:modelArch}
+\end{center}
+\end{figure}
 
-\subsubsection{Token Merge Block}
-As described in \ref{incomplearning}, one of the methods to simulate incomplete language is by merging specific tokens which is done by function prepareMerge(\ref{alg:prepareMerge}) and Conv1D. There are 3 parameters to define for merging: 
+\subsubsection{Token Merge Block} \label{modelMerge}
+As described in \ref{incompmerge}, one of the methods to simulate incomplete language is by merging specific tokens which is done by function prepareMerge(\ref{alg:prepareMerge}) and Conv1D. There are 3 parameters to define for merging: 
 \begin{enumerate}
-
     \item $\alpha$ the minimum token to merge 
     \item $\beta$ the maximum token to merge
     \item $l$ a random merge list of size equal input sequence length, lower and upper clipped by $\alpha,\beta$ (ex: [2,3,3,2,3,2]) 
@@ -590,15 +619,11 @@ The merge tensor $\mathbb{M}$ will be used as input to Conv1D(k=2,stride=1) so t
 \end{center}
 \end{figure}
 
-\begin{figure} [!h]
-\begin{center}
-\includegraphics[width=0.6\textwidth]{figures/modelDiagram.png}
-\caption{Full model Architecture}
-\label{fig:modelArch}
-\end{center}
-\end{figure}
+
 \subsubsection{Training}
-The review will be fed to the model by pre-defined sequence length and sliding window as a sequence of blocks. The hidden and cell state of LSTM is initialized to 0 at the start of the review and both states of the current block are fed back to the model together with the next block of input(fig.\ref{fig:modeFeedBack}). A mini-batch of size 1000 reviews is sampled from the training set as 1 epoch of training, then the test set is fed after each epoch to evaluate the performance of the model. 
+The review will be fed to the model by pre-defined sequence length and sliding window as a sequence of blocks. The hidden and cell state of LSTM is initialized to 0 at the start of the review and both states of the current block are fed back to the model together with the next block of input(fig.\ref{fig:modeFeedBack}). A mini-batch of size 1000 reviews is sampled from the training set as 1 epoch of training, then the test set is fed after each epoch to evaluate the performance of the model. The performance of the model is measured by the average classification result($\hat{\mu}$) of the last 20 tokens sequence, the result is treated as correctly classified if:\\
+$abs(\hat{\mu}-targe)<0.05$
+   
 \begin{figure} [!h]
 \begin{center}
 \includegraphics[width=0.3\textwidth]{figures/autoreg.png}
@@ -624,7 +649,7 @@ sequence length & mini-batch size & Optimizator              & Loss function \\ 
 \begin{tabular}{|l|l|}
 \hline
 \begin{tabular}[c]{@{}l@{}}Incomplete\\ language Method\end{tabular} & \multicolumn{1}{c|}{POS tag}                                    \\ \hline
-Always Wrong                                                         & \multicolumn{1}{c|}{NOUN, ADJ, PROPN , ADJ+NOUN, NOUN+VERB+ADJ} \\ \hline
+Always Wrong                                                         & \multicolumn{1}{c|}{NOUN, VERB, ADJ, ADJ+NOUN, NOUN+VERB+ADJ} \\ \hline
 Random Merge                                                         & N/A                                                             \\ \hline
 Merge Specific Tags                                                  & NOUN,PROPN,VERB,ADJ,SCONJ,CONJ                                  \\ \hline
 Merge Specific Patten                                                & ADJ+NOUN, NOUN+VERB+ADJ,  NOUN+VERB                             \\ \hline
@@ -635,8 +660,107 @@ Merge Specific Patten                                                & ADJ+NOUN,
 \end{table}
 
 \newpage
-\section{Result and Discussion} 
+\section{Experiment Result and Discussion} 
+In this section, the experiment results of the two incomplete languages setup are presented on the test set. First of all, the base case results  for each sequence length are shown in the following table(\ref{tab:basecaseResult}).
 
+\begin{table}[!h]
+\begin{center}
+\begin{tabular}{c|ccccc|}
+\cline{2-5}
+\multicolumn{1}{l|}{}                 & \multicolumn{5}{c|}{Test set Accuracy(\%)}                                                                                         \\ \hline
+\multicolumn{1}{|c|}{sequence length} & \multicolumn{1}{c|}{mean}  & \multicolumn{1}{l|}{quartile 25\%} & \multicolumn{1}{l|}{median} & \multicolumn{1}{l|}{quartile 75\%} & \multicolumn{1}{l|}{IQR} \\ \hline
+\multicolumn{1}{|c|}{5}               & \multicolumn{1}{c|}{0.66}  & \multicolumn{1}{c|}{0.656}         & \multicolumn{1}{c|}{0.668}  & \multicolumn{1}{c|}{0.679} & 0.023                            \\ \hline
+\multicolumn{1}{|c|}{10}              & \multicolumn{1}{c|}{0.681} & \multicolumn{1}{c|}{0.683}         & \multicolumn{1}{c|}{0.701}  & \multicolumn{1}{c|}{0.713} & 0.03                             \\ \hline
+\multicolumn{1}{|c|}{25}              & \multicolumn{1}{c|}{0.708} & \multicolumn{1}{c|}{0.730}         & \multicolumn{1}{c|}{0.740}  & \multicolumn{1}{c|}{0.745} & 0.015                            \\ \hline
+\multicolumn{1}{|c|}{50}              & \multicolumn{1}{c|}{0.762} & \multicolumn{1}{c|}{0.773}         & \multicolumn{1}{c|}{0.778}  & \multicolumn{1}{c|}{0.781}  & 0.008                            \\ \hline
+\multicolumn{1}{|c|}{600}             & \multicolumn{1}{c|}{0.754} & \multicolumn{1}{c|}{0.768}         & \multicolumn{1}{c|}{0.792}  & \multicolumn{1}{c|}{0.801}  &0.033                           \\ \hline
+\end{tabular}
+\caption{Base Case Result (~450 epochs for 2 runs)}
+\label{tab:basecaseResult}
+\end{center}
+\end{table}
+The above base case results show that the mean accuracy is growing together with increasing sequence length of blocks. One thing to notice is that apart from the sequence length of 5, all others' accuracy distribution is left-skewed. The mean accuracy of each sequence length will be used as a baseline to compare the experiment result on those deficiency language training, so, results from onward are \textbf{changed to Ratio Based where the divisor is the mean accuracy of each sequence.} Thus, the interruption of the value from each table below is the \textbf{performance degradation relative to the base case} with 1 representing no changes and 0 means fully degraded.
+
+\subsubsection{Always Wrong Method}
+The result of "always wrong" is separated into 2 categories, the first one is to show the result on only 1 POS tag specified while the second one is using more than 1 POS tag. The performance of the model is listed in the following table(\ref{tab:alwayswrongDegrade}), details of result can be found in (\ref{appendix:alwayswrongonly1},\ref{appendix:alwayswrongADJNOUN})  
+
+\begin{table}[!h]
+\fontsize{10pt}{10pt}\selectfont
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+seq len & Degrade 1 & Degrade 2 & Degrade 3 & Average Degrade \\ \hline
+5       & 1         & 0.97      & 0.95     & 0.97 \\ \hline
+10      & 0.96      & 0.96      & 0.94     & 0.95 \\ \hline
+25      & 0.96      & 0.98      & 0.98     & 0.97  \\ \hline
+50      & 0.95      & 0.94      & 0.97     & 0.95 \\ \hline
+\end{tabular}
+\caption{Performance Degrade by always wrong. \\
+Column 1-(NOUN,VERB, ADJ)\\ 
+Column 2-(ADJ \& NOUN)\\
+Column 3-Other's}
+\label{tab:alwayswrongDegrade}
+\end{table}
+
+In general, the above results show that the "always wrong" method doesn't largely impact the performance, \textbf{with an average degradation from 3\% to 5\%}. Especially, with the sequence length of 5, it shows nearly no difference in comparison to the base case. Although the mean accuracy looks good in this experiment, it shows some differences in the distribution once comparing the inter-quartile range(IQR), and the ratio between the base case shows in the following table(\ref{tab:alwayswrongIQR}).   
+\begin{table}[!h]
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+seq len & (NOUN,VERB,ADJ) & (ADJ \& NOUN) & Other's \\ \hline
+5       & 1.6             & 1.4         & 1.4    \\ \hline
+10      & 0.7             & 1.13         & 1.13    \\ \hline
+25      & 1.26            & 2            & 1.9     \\ \hline
+50      & 3.7             & 5.3          & 1.7     \\ \hline
+\end{tabular}
+\caption{IQR comparison (Ratio) }
+\label{tab:alwayswrongIQR}
+\end{center}
+\end{table}
+
+Those figures suggested that for larger sequences of blocks (ie. >=25), the accuracy distribution is more affected by the method and the most contribution to the change in IQR is by using ADJ and NOUN together.
+A control case of always wrong with "NOUN \& VERB \& ADJ \& PROPN \& ADV \& INTJ" is done and the average accuracy is 0.16. 
+
+\subsubsection{Token Merge}
+The experiment results on token merge are presented in 3 parts, random merge, merge on POS tag, and merge on a specific pattern. The random merge is done with minimum and maximum merge set to 2 and 3 correspondingly. The result is summarized in the following(\ref{tab:mergeDegrade}):
+
+\begin{table}[!h]
+\fontsize{10pt}{10pt}\selectfont
+\begin{tabular}{|c|c|c|l|c|l|l|}
+\hline
+seq len & Random & NOUN & VERB  & ADJ  & CCONJ & SCONJ \\ \hline
+5       & 0.893  &      & 0.9   & 0.95 &       &       \\ \hline
+10      & 0.88   &      & 0.88  & 0.88 &       &       \\ \hline
+25      & 0.87   &      & 0.857 & 0.8  &       &       \\ \hline
+50      & 0.88   &      & 0.854 & 0.52 &       &       \\ \hline
+\end{tabular}
+\caption{Performance Degrade by Random Merge \& POS Tag Merge.}
+\label{tab:mergeDegrade}
+\end{table}
+The result of random merge on all sequences shows roughly the same level of degradation($\approx12\%$). It also noted that in the random merge experiment, the merged pattern is different for short($\leq10$) and long sequences ($\geq25$). The table(\ref{tab:top10RMergeDiff}) below illustrates the differences between them.
+
+\begin{table}[!h]
+\begin{center}
+\fontsize{10pt}{10pt}\selectfont
+\begin{tabular}{|ll|}
+\hline
+\multicolumn{2}{|c|}{Top 10 Merge Pattern}                      \\ \hline
+\multicolumn{1}{|c|}{$\leq10$}            & \multicolumn{1}{c|}{$\geq25$} \\ \hline
+\multicolumn{1}{|l|}{NOUN\_NOUN}      & ADJ\_ADJ\_ADJ              \\ \hline
+\multicolumn{1}{|l|}{ADJ\_NOUN}       & ADJ\_ADJ                  \\ \hline
+\multicolumn{1}{|l|}{NOUN\_VERB}      & NOUN\_NOUN                \\ \hline
+\multicolumn{1}{|l|}{VERB\_NOUN}      & ADJ\_NOUN                 \\ \hline
+\multicolumn{1}{|l|}{NOUN\_NOUN\_NOUN} & NOUN\_VERB                \\ \hline
+\multicolumn{1}{|l|}{ADJ\_ADJ}        & VERB\_NOUN                \\ \hline
+\multicolumn{1}{|l|}{NOUN\_ADJ}       & NOUN\_NOUN\_NOUN           \\ \hline
+\multicolumn{1}{|l|}{ADJ\_ADJ\_ADJ}    & ADJ\_NOUN\_NOUN           \\ \hline
+\multicolumn{1}{|l|}{ADJ\_NOUN\_NOUN}  & NOUN\_VERB\_NOUN           \\ \hline
+\multicolumn{1}{|l|}{NOUN\_VERB\_NOUN} & NOUN\_ADJ                 \\ \hline
+\end{tabular}
+\caption{Top 10 Random Merge Pattern differences}
+\label{tab:top10RMergeDiff}
+\end{center}
+\end{table}
+While the performance of those shorter sequences seems to be invariant to token merge, it is not the same for longer sequences. The performance degradation is increasing according to \textbf{tag ordering: NOUN, VERB, ADJ}. It
 
 
 \newpage
@@ -882,6 +1006,91 @@ Tip: We can use minipage to create a frame around some important information.
 
 \section*{I. Glossary}
 \addcontentsline{toc}{subsection}{I. Glossary}
+\begin{table}[!h]
+\begin{tabular}{c|ccccc|}
+\cline{2-6}
+\multicolumn{1}{l|}{}         & \multicolumn{5}{c|}{Test Set Accuracy \% (NOUN,VERB,ADJ)}                                                                                                     \\ \hline
+\multicolumn{1}{|c|}{seq len} & \multicolumn{1}{c|}{mean}  & \multicolumn{1}{c|}{quartile 25\%} & \multicolumn{1}{l|}{median} & \multicolumn{1}{l|}{quartile 75\%} & \multicolumn{1}{l|}{IQR} \\ \hline
+\multicolumn{1}{|c|}{5}       & \multicolumn{1}{c|}{0.66}  & \multicolumn{1}{c|}{0.65}          & \multicolumn{1}{c|}{0.679}  & \multicolumn{1}{c|}{0.692}         & 0.042                    \\ \hline
+\multicolumn{1}{|c|}{10}      & \multicolumn{1}{c|}{0.66}  & \multicolumn{1}{c|}{0.669}         & \multicolumn{1}{c|}{0.68}   & \multicolumn{1}{c|}{0.69}          & 0.021                    \\ \hline
+\multicolumn{1}{|c|}{25}      & \multicolumn{1}{c|}{0.681} & \multicolumn{1}{c|}{0.711}         & \multicolumn{1}{c|}{0.725}  & \multicolumn{1}{c|}{0.730}         & 0.019                    \\ \hline
+\multicolumn{1}{|c|}{50}      & \multicolumn{1}{c|}{0.727} & \multicolumn{1}{c|}{0.729}         & \multicolumn{1}{c|}{0.761}  & \multicolumn{1}{c|}{0.766}         & 0.037                    \\ \hline
+\end{tabular}
+\caption{Test Accuracy Details on Always Wrong with only 1 POS Tag.}
+\label{appendix:alwayswrongonly1}
+\end{table}
+
+\begin{table}[!h]
+\begin{tabular}{c|ccccc|}
+\cline{2-6}
+\multicolumn{1}{l|}{}         & \multicolumn{5}{c|}{Test Set Accuracy \% (ADJ+NOUN)}                                                                                       \\ \hline
+\multicolumn{1}{|c|}{seq len} & \multicolumn{1}{c|}{mean}  & \multicolumn{1}{c|}{quartile 25\%} & \multicolumn{1}{c|}{median} & \multicolumn{1}{c|}{quartile 75\%} & IQR   \\ \hline
+\multicolumn{1}{|c|}{5}       & \multicolumn{1}{c|}{0.642} & \multicolumn{1}{c|}{0.637}         & \multicolumn{1}{c|}{0.657}  & \multicolumn{1}{c|}{0.669}         & 0.032 \\ \hline
+\multicolumn{1}{|c|}{10}      & \multicolumn{1}{c|}{0.654} & \multicolumn{1}{c|}{0.651}         & \multicolumn{1}{c|}{0.675}  & \multicolumn{1}{c|}{0.685}         & 0.034 \\ \hline
+\multicolumn{1}{|c|}{25}      & \multicolumn{1}{c|}{0.699} & \multicolumn{1}{c|}{0.701}         & \multicolumn{1}{c|}{0.719}  & \multicolumn{1}{c|}{0.731}         & 0.03  \\ \hline
+\multicolumn{1}{|c|}{50}      & \multicolumn{1}{c|}{0.722} & \multicolumn{1}{c|}{0.717}         & \multicolumn{1}{c|}{0.765}  & \multicolumn{1}{c|}{0.771}         & 0.053 \\ \hline
+\end{tabular}
+\caption{Test Accuracy Details on Always Wrong with ADJ & NOUN .}
+\label{appendix:alwayswrongADJNOUN}
+\end{table}
+
+\begin{table}[!h]
+\begin{tabular}{c|ccccc|}
+\cline{2-6}
+\multicolumn{1}{l|}{}         & \multicolumn{5}{c|}{Test Set Accuracy \% (Others)}                                                                                         \\ \hline
+\multicolumn{1}{|c|}{seq len} & \multicolumn{1}{c|}{mean}  & \multicolumn{1}{c|}{quartile 25\%} & \multicolumn{1}{c|}{median} & \multicolumn{1}{c|}{quartile 75\%} & IQR   \\ \hline
+\multicolumn{1}{|c|}{5}       & \multicolumn{1}{c|}{0.66}  & \multicolumn{1}{c|}{0.655}         & \multicolumn{1}{c|}{0.676}  & \multicolumn{1}{c|}{0.687}         & 0.032 \\ \hline
+\multicolumn{1}{|c|}{10}      & \multicolumn{1}{c|}{0.654} & \multicolumn{1}{c|}{0.651}         & \multicolumn{1}{c|}{0.675}  & \multicolumn{1}{c|}{0.685}         & 0.034 \\ \hline
+\multicolumn{1}{|c|}{25}      & \multicolumn{1}{c|}{0.699} & \multicolumn{1}{c|}{0.702}         & \multicolumn{1}{c|}{0.722}  & \multicolumn{1}{c|}{0.731}         & 0.029 \\ \hline
+\multicolumn{1}{|c|}{50}      & \multicolumn{1}{c|}{0.744} & \multicolumn{1}{c|}{0.754}         & \multicolumn{1}{c|}{0.768}  & \multicolumn{1}{c|}{0.771}         & 0.017 \\ \hline
+\end{tabular}
+\caption{Test Accuracy Details on Always Wrong (Others) .}
+\label{appendix:alwayswrongOthers}
+\end{table}
+
+
+\begin{table}[!h]
+\begin{tabular}{c|ccccc|}
+\cline{2-6}
+\multicolumn{1}{l|}{}         & \multicolumn{5}{c|}{Test Set Accuracy \% (Random)}                                                                                         \\ \hline
+\multicolumn{1}{|c|}{seq len} & \multicolumn{1}{c|}{mean}  & \multicolumn{1}{c|}{quartile 25\%} & \multicolumn{1}{c|}{median} & \multicolumn{1}{c|}{quartile 75\%} & IQR   \\ \hline
+\multicolumn{1}{|c|}{5}       & \multicolumn{1}{c|}{0.589} & \multicolumn{1}{c|}{0.548}         & \multicolumn{1}{c|}{0.605}  & \multicolumn{1}{c|}{0.642}         & 0.094 \\ \hline
+\multicolumn{1}{|c|}{10}      & \multicolumn{1}{c|}{0.599} & \multicolumn{1}{c|}{0.572}         & \multicolumn{1}{c|}{0.606}  & \multicolumn{1}{c|}{0.637}         & 0.065 \\ \hline
+\multicolumn{1}{|c|}{25}      & \multicolumn{1}{c|}{0.616} & \multicolumn{1}{c|}{0.594}         & \multicolumn{1}{c|}{0.637}  & \multicolumn{1}{c|}{0.655}         & 0.061 \\ \hline
+\multicolumn{1}{|c|}{50}      & \multicolumn{1}{c|}{0.673} & \multicolumn{1}{c|}{0.669}         & \multicolumn{1}{c|}{0.694}  & \multicolumn{1}{c|}{0.705}         & 0.036 \\ \hline
+\end{tabular}
+\caption{Test Accuracy Details on Random Merge .}
+\label{appendix:randMerge}
+\end{table}
+
+
+\begin{table}[!h]
+\begin{tabular}{c|ccccc|}
+\cline{2-6}
+\multicolumn{1}{l|}{}         & \multicolumn{5}{c|}{Test Set Accuracy \% (VERB)}                                                                                           \\ \hline
+\multicolumn{1}{|c|}{seq len} & \multicolumn{1}{c|}{mean}  & \multicolumn{1}{c|}{quartile 25\%} & \multicolumn{1}{c|}{median} & \multicolumn{1}{c|}{quartile 75\%} & IQR   \\ \hline
+\multicolumn{1}{|c|}{5}       & \multicolumn{1}{c|}{0.595} & \multicolumn{1}{c|}{0.566}         & \multicolumn{1}{c|}{0.612}  & \multicolumn{1}{c|}{0.630}         & 0.064 \\ \hline
+\multicolumn{1}{|c|}{10}      & \multicolumn{1}{c|}{0.602} & \multicolumn{1}{c|}{0.592}         & \multicolumn{1}{c|}{0.634}  & \multicolumn{1}{c|}{0.653}         & 0.061 \\ \hline
+\multicolumn{1}{|c|}{25}      & \multicolumn{1}{c|}{0.607} & \multicolumn{1}{c|}{0.568}         & \multicolumn{1}{c|}{0.616}  & \multicolumn{1}{c|}{0.649}         & 0.081 \\ \hline
+\multicolumn{1}{|c|}{50}      & \multicolumn{1}{c|}{0.651} & \multicolumn{1}{c|}{0.638}         & \multicolumn{1}{c|}{0.671}  & \multicolumn{1}{c|}{0.685}         & 0.047 \\ \hline
+\end{tabular}
+\caption{Test Accuracy Details on Merge with VERB .}
+\label{appendix:verbMerge}
+\end{table}
+
+\begin{table}[!h]
+\begin{tabular}{c|ccccc|}
+\cline{2-6}
+\multicolumn{1}{l|}{}         & \multicolumn{5}{c|}{Test Set Accuracy \% (ADJ)}                                                                                            \\ \hline
+\multicolumn{1}{|c|}{seq len} & \multicolumn{1}{c|}{mean}  & \multicolumn{1}{c|}{quartile 25\%} & \multicolumn{1}{c|}{median} & \multicolumn{1}{c|}{quartile 75\%} & IQR   \\ \hline
+\multicolumn{1}{|c|}{5}       & \multicolumn{1}{c|}{0.597} & \multicolumn{1}{c|}{0.575}         & \multicolumn{1}{c|}{0.608}  & \multicolumn{1}{c|}{0.634}         & 0.059 \\ \hline
+\multicolumn{1}{|c|}{10}      & \multicolumn{1}{c|}{0.605} & \multicolumn{1}{c|}{0.588}         & \multicolumn{1}{c|}{0.612}  & \multicolumn{1}{c|}{0.629}         & 0.041 \\ \hline
+\multicolumn{1}{|c|}{25}      & \multicolumn{1}{c|}{0.567} & \multicolumn{1}{c|}{0.544}         & \multicolumn{1}{c|}{0.575}  & \multicolumn{1}{c|}{0.596}         & 0.052 \\ \hline
+\multicolumn{1}{|c|}{50}      & \multicolumn{1}{c|}{0.398} & \multicolumn{1}{c|}{0.349}         & \multicolumn{1}{c|}{0.487}  & \multicolumn{1}{c|}{0.490}         & 0.141 \\ \hline
+\end{tabular}
+\caption{Test Accuracy Details on Merge with ADJ.}
+\label{appendix:verbMerge}
+\end{table}
 
 \newpage
 
