@@ -813,7 +813,24 @@ One may argue that it is unclear on the token distribution of positive and negat
 In addition to the finding above, the test on toke merge further suggested that syntactic structural play an important role in inferring semantics from the language with the same argument on IV. The merge operation destroys the original structure before feeding for modeling and the different effect caused by it support the hypothesis. 
 
 However, it may criticize that apart from the structure, the merge also destroys the representation of the token and try to merge non-sense word together. It is admitted that those questions are not easy to answer and require more research and experiments, but yet, there are some findings that can be shared in order to prepare a deeper investigation. First of all, it is observed that the weight distribution of the embedding layer doesn't change much in both the base case and merge. This shows that in end-to-end training on classification, the embedding of a token doesn't work like those word2Vec methods which try to assign a token's representation by surrounding tokens and all it needs is a unique representation. Thus, from that point of view, token representation reduces to symbolic representation without any project of human meaning on the numerical value. On the other hand, the inspection of the weight of the merge block(Conv1D) also suggested that the layer does learn since the distribution of weight is changed heavily from the normal distribution that centers around zero to a much more flattened distribution. But the question of what it learns still remains in mystery. 
-
+\begin{figure} [!h] 
+\begin{subfigure}[h]{0.3\linewidth} 
+\includegraphics[width=\linewidth]{figures/Rand}
+\caption{Join distribution plot on Accuracy\\ADJ \& Random}
+\end{subfigure}
+\hfill
+\begin{subfigure}[h]{0.3\linewidth} 
+\includegraphics[width=\linewidth]{figures/merge_adj_verb_joinplot.png}
+\caption{Join distribution plot on Accuracy\\ADJ \& VERB}
+\end{subfigure}
+\hfill
+\begin{subfigure}[h]{0.3\linewidth}
+\includegraphics[width=\linewidth]{figures/merge_verb_propn_joinplot.png}
+\caption{Join distribution plot on Accuracy\\VERB \& PROPN}
+\label{fig:displot1}
+\end{subfigure}
+\end{figure}
+\newpage
 
 
 
