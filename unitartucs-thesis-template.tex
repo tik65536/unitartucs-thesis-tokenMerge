@@ -799,19 +799,26 @@ The result above indicates that the sequence length of 25 on all fixed pattern m
 \clearpage
 \section{Conclusion}
 
-The above experiments have demonstrated two different methods that try to degrade the performance of a small language model in semantics classification. While the result on "always wrong" method shows little affect on the performance of model, it also raise the question on why from statistical point of view as the training is heavily disturb. \\One may argue that it is unclear on the token distribution of positive and negative classes so those tag that are tested are not right on the target. But the point on using POS tag is to avoid this problem. The idea is to treat the data as an observational study and using POS tag as instrumental variable(IV) (fig\ref{fig:alwayswrongasIV}). In this way, the treatment will be normal token when it is off(not in the list of Tag) or disturb token when it is on.
-Moreover,as either positive or negative related token are grouped under part of speech, for example, "good" or "bad" in adjective, so that the disturb on learning is applied in a fair sense. 
+The above experiments have demonstrated two different methods that try to degrade the performance of a small language model in semantics classification. While the result of the "always wrong" method shows little effect on the performance of the model, it also raises the question of why from the statistical point of view as the training is heavily disturbed. \\
+
+One may argue that it is unclear on the token distribution of positive and negative classes so those tags that are tested are not right on the target. But the point of using POS tag is to avoid this problem. The idea is to treat the data as an observational study and use POS tag as an instrumental variable(IV) (fig\ref{fig:combinIV} upper path). In this way, the treatment will be a normal token when it is off(not in the list of tags) or disturb token when it is on. Moreover, either positive or negative related tokens are grouped under part of speech, for example, "good" or "bad" in adjectives, so that the disturb on learning is applied in a fair sense. The interpretation with IV suggested that the effect of tokens with respect to POS Tag partition has a small effect on the outcome and gives supporting evidence to the belief that the learning of language model is not limited to statistics.
 \begin{figure} [!h]
 \begin{center}
-\includegraphics[width=0.6\textwidth]{figures/allwrong_asIV.png}
-\caption{POS Tag as Instrumental Variable}
-\label{fig:alwayswrongasIV}
+\includegraphics[width=0.6\textwidth]{figures/combin_IV.png}
+\caption{Instrumental Variable Hypothesis}
+\label{fig:combinIV}
 \end{center}
 \end{figure}
 
-The interpretation with IV suggested that the effect on token with respect to POS Tag partition has small effect on the outcome and give supporting evidence to the belief that the learning of language model is not limited to statistics.
+In addition to the finding above, the test on toke merge further suggested that syntactic structural play an important role in inferring semantics from the language with the same argument on IV. The merge operation destroys the original structure before feeding for modeling and the different effect caused by it support the hypothesis. 
 
-In additional to the finding above, the test on toke merge further suggested that syntactic structural play an important role on inferring semantic from language.       
+However, it may criticize that apart from the structure, the merge also destroys the representation of the token and try to merge non-sense word together. It is admitted that those questions are not easy to answer and require more research and experiments, but yet, there are some findings that can be shared in order to prepare a deeper investigation. First of all, it is observed that the weight distribution of the embedding layer doesn't change much in both the base case and merge. This shows that in end-to-end training on classification, the embedding of a token doesn't work like those word2Vec methods which try to assign a token's representation by surrounding tokens and all it needs is a unique representation. Thus, from that point of view, token representation reduces to symbolic representation without any project of human meaning on the numerical value. On the other hand, the inspection of the weight of the merge block(Conv1D) also suggested that the layer does learn since the distribution of weight is changed heavily from the normal distribution that centers around zero to a much more flattened distribution. But the question of what it learns still remains in mystery. 
+
+
+
+
+
+
 
 \newpage
 
