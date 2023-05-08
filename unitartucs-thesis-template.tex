@@ -799,8 +799,19 @@ The result above indicates that the sequence length of 25 on all fixed pattern m
 \clearpage
 \section{Conclusion}
 
-The above experiments have demonstrated two different methods that try to degrade the performance of a small language model in semantics classification. While the result on "always wrong" method shows little affect on the performance of model, it also raise the question on why from statistical point of view as the training is heavily disturb. One may argue that it is unclear on the token distribution of positive and negative classes so those tag that are tested are not right on the target. But the point on using POS tag is to avoid this problem. The idea is to treat the data as an observational study since that is no way(or hard) to conduct a randomization trail on the token ,and  the objective is to access the effect of token on the outcome classification. 
+The above experiments have demonstrated two different methods that try to degrade the performance of a small language model in semantics classification. While the result on "always wrong" method shows little affect on the performance of model, it also raise the question on why from statistical point of view as the training is heavily disturb. \\One may argue that it is unclear on the token distribution of positive and negative classes so those tag that are tested are not right on the target. But the point on using POS tag is to avoid this problem. The idea is to treat the data as an observational study and using POS tag as instrumental variable(IV) (fig\ref{fig:alwayswrongasIV}). In this way, the treatment will be normal token when it is off(not in the list of Tag) or disturb token when it is on.
+Moreover,as either positive or negative related token are grouped under part of speech, for example, "good" or "bad" in adjective, so that the disturb on learning is applied in a fair sense. 
+\begin{figure} [!h]
+\begin{center}
+\includegraphics[width=0.6\textwidth]{figures/allwrong_asIV.png}
+\caption{POS Tag as Instrumental Variable}
+\label{fig:alwayswrongasIV}
+\end{center}
+\end{figure}
 
+The interpretation with IV suggested that the effect on token with respect to POS Tag partition has small effect on the outcome and give supporting evidence to the belief that the learning of language model is not limited to statistics.
+
+In additional to the finding above, the test on toke merge further suggested that syntactic structural play an important role on inferring semantic from language.       
 
 \newpage
 
