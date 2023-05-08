@@ -90,7 +90,7 @@
 \usepackage{array}
 \usepackage{tabu}   % Wide lines in tables
 \usepackage{xspace} % Non-eatable spaces in macros
-
+\usepackage{subcaption}
 % Including graphical images and setting the figure directory
 \usepackage{graphicx}
 \graphicspath{{figures/}}
@@ -481,22 +481,22 @@ The experiment is conducted on the IMDB movie review data set {cite} for sentime
     \label{tab:dataset}
 \end{table}
 
-Those data sets then go through data cleaning(remove html related tags) and pre-processing pipeline as described in \ref{introLM} apart from the last two processes (Stemming/Lemmatization, embedding). \\
+Those data sets then go through data cleaning(remove html related tags) and pre-processing pipeline as described in \ref{introLM} apart from the last two processes (Stemming/Lemmatization, embedding). The average token count for each review is 105 (=1,581,851/15,000). \\
 
-Since the experiment is conducted on destroying the language, the part of speech(POS) tags are used as a selector to control which part of the text should work on instead of doing it at the token level. The following table(\ref{tab:poscount}) shows the top 10 POS tags count for the pre-processed data set.
+Since the experiment is conducted on destroying the language, the part of speech(POS) tags are used as a selector to control which part of the text should work on instead of doing it at the token level. The following table(\ref{tab:poscount}) shows the top 10 POS tags count and the corresponding percentage  for the pre-processed data set.
 
 \begin{table}[!h]
 \begin{center}
-\fontsize{8pt}{8pt}\selectfont
+\fontsize{9pt}{9pt}\selectfont
 \begin{tabular}{|c|r|c|c|}
 \hline
 \multicolumn{1}{|l|}{Data Set} & POS tag & Positive review & Negative Review \\ \hline
-\multirow{10}{*}{Train}        & NOUN    & 352,846         & 336,466         \\ \cline{2-4} 
-                               & VERB    & 165,504         & 167,988         \\ \cline{2-4} 
-                               & ADJ     & 140,768         & 133,559         \\ \cline{2-4} 
-                               & PROPN   & 86,150          & 60,792          \\ \cline{2-4} 
-                               & ADV     & 37,888          & 40,703          \\ \cline{2-4} 
-                               & NUM     & 10,036          & 10,977          \\ \cline{2-4} 
+\multirow{10}{*}{Train}        & NOUN    & 352,846(22.3\%) & 336,466(21.2\%) \\ \cline{2-4} 
+                               & VERB    & 165,504(10.4\%)& 167,988(10.6\%) \\ \cline{2-4} 
+                               & ADJ     & 140,768(8.8\%) & 133,559(8.4\%)  \\ \cline{2-4} 
+                               & PROPN   & 86,150(5.4\%)   & 60,792(3.8\%)  \\ \cline{2-4} 
+                               & ADV     & 37,888(2.3\%)   & 40,703(2.5\%)  \\ \cline{2-4} 
+                               & NUM     & 10,036(0.6\%)   & 10,977(0.6\%)  \\ \cline{2-4} 
                                & ADP     & 4,911           & 5,620           \\ \cline{2-4} 
                                & DET     & 2,429           & 2,300           \\ \cline{2-4} 
                                & INTJ    & 2,021           & 3,435           \\ \cline{2-4} 
@@ -621,7 +621,7 @@ The merge tensor $\mathbb{M}$ will be used as input to Conv1D(k=2,stride=1) so t
 
 
 \subsubsection{Training}
-The review will be fed to the model by pre-defined sequence length and sliding window as a sequence of blocks. The hidden and cell state of LSTM is initialized to 0 at the start of the review and both states of the current block are fed back to the model together with the next block of input(fig.\ref{fig:modeFeedBack}). A mini-batch of size 1000 reviews is sampled from the training set as 1 epoch of training, then the test set is fed after each epoch to evaluate the performance of the model. The performance of the model is measured by the average classification result($\hat{\mu}$) of the last 20 tokens sequence, the result is treated as correctly classified if:\\
+The review will be fed to the model by pre-defined sequence length and sliding window as a sequence of blocks. The hidden and cell state of LSTM is initialized to 0 at the start of the review and both states of the current block are fed back to the model together with the next block of input(fig.\ref{fig:modeFeedBack}). Thus, the average prediction made for one review is 105. A mini-batch of size 1000 reviews is sampled from the training set as 1 epoch of training, then the test set is fed after each epoch to evaluate the performance of the model. The performance of the model is measured by the average classification result($\hat{\mu}$) of the last 20 tokens sequence, the result is treated as correctly classified if:\\
 $abs(\hat{\mu}-targe)<0.05$
    
 \begin{figure} [!h]
@@ -701,7 +701,7 @@ Column 3-Other's}
 \label{tab:alwayswrongDegrade}
 \end{table}
 
-In general, the above results show that the "always wrong" method doesn't largely impact the performance, \textbf{with an average degradation from 3\% to 5\%}. Especially, with the sequence length of 5, it shows nearly no difference in comparison to the base case. Although the mean accuracy looks good in this experiment, it shows some differences in the distribution once comparing the inter-quartile range(IQR), and the ratio between the base case shown in the following table(\ref{tab:alwayswrongIQR}).   
+In general, the above results show that the "always wrong" method doesn't largely impact the performance, \textbf{with an average degradation from 3\% to 5\%}. Especially, with the sequence length of 5, it shows nearly no difference in comparison to the base case. It is also stressed that those are from a disrupted training which in average over 50\% of loss value is modified(table\ref{tab:poscount}). Although the mean accuracy looks good in this experiment, it shows some differences in the distribution once comparing the inter-quartile range(IQR), and the ratio between the base case shown in the following table(\ref{tab:alwayswrongIQR}).   
 \begin{table}[!h]
 \fontsize{10pt}{10pt}\selectfont
 \begin{center}
@@ -722,7 +722,7 @@ Those figures suggested that for larger sequences of blocks (ie. >=25), the accu
 A control case of always wrong with "NOUN \& VERB \& ADJ \& PROPN \& ADV \& INTJ" is done and the average accuracy is 0.16. 
 
 \subsubsection{Token Merge}
-The experiment results on token merge are presented in 3 parts, random merge, merge on POS tag, and merge on a specific pattern. The random merge is done with minimum and maximum merge set to 2 and 3 correspondingly. The result is summarized in the following(\ref{tab:mergeDegrade}):
+The experiment results on token merge are presented in 2 parts, the first part will focus on the comparison between random merge and merge on POS tag, followed by the second part on presenting the result of merge with a specific pattern. The random merge is done with minimum and maximum merge set to 2 and 3 correspondingly. The result is summarized in the following(\ref{tab:mergeDegrade}):
 
 \begin{table}[!h]
 \fontsize{10pt}{10pt}\selectfont
@@ -742,27 +742,60 @@ The result of random merge on all sequences shows roughly the same level of degr
 While the performance of those shorter sequences seems to be invariant to token merge, it is not the same for longer sequences. The performance degradation is increasing according to \textbf{tag ordering: NOUN, VERB, ADJ}. The relation between degradation, sequence length, and tag is visualized in the following diagram(\ref{fig:mergeScatter}).
 \begin{figure} [!h]
 \begin{center}
-\includegraphics[width=0.8\textwidth]{figures/tokenmerg1.png}
+\includegraphics[width=0.4\textwidth]{figures/tokenmerg1.png}
 \caption{Token Merger: Degradation vs Sequence len vs Merge Tag}
 \label{fig:mergeScatter}
 \end{center}
 \end{figure}
 The comparison of the token merge result suggested that the merge on ADJ is different from others' merge significantly on longer sequences, so, in order to confirm the finding, Wilcoxon signed-rank test is used to test the median accuracy of ADJ is different from others, it is done on the result of 25 sequences length with a sampling data point of 290. 
-The test on the null hypothesis which the accuracy median of VERB is the same for ADJ is rejected with p-value $2.05\times10^{-11}$ at 95\% confidence level. On the other hand, the same test is applied for VERB and PROPN, the result shows strong evidence to support the null hypothesis with p-value $0.7$. The details of the statistical test can be found in the appendix(\ref{appendix:signedranktestseq25}). 
-\begin{figure} [!h]
-\includegraphics[width=0.3\textwidth]{figures/merge_adj_rand_joinplot.png}
-\caption{Token Merger: Degradation vs Sequence len vs Merge Tag}
-\label{fig:mf}
+The test on the null hypothesis which the accuracy median of VERB is the same for ADJ is rejected with p-value $2.05\times10^{-11}$ at 95\% confidence level. On the other hand, the same test is applied for VERB and PROPN, the result shows strong evidence to support the null hypothesis with p-value $0.7$. The details of the statistical test can be found in the appendix(\ref{appendix:signedranktestseq25}). The following figures show the accuracy distribution on each case(\ref{fig:displot1}) 
+\begin{figure} [!h] 
+\begin{subfigure}[h]{0.3\linewidth} 
+\includegraphics[width=\linewidth]{figures/merge_adj_rand_joinplot.png}
+\caption{Join distribution plot on Accuracy\\ADJ \& Random}
+\end{subfigure}
+\hfill
+\begin{subfigure}[h]{0.3\linewidth}
+\includegraphics[width=\linewidth]{figures/merge_verb_propn_joinplot.png}
+\caption{Join distribution plot on Accuracy\\VERB \& PROPN}
+\label{fig:displot1}
+\end{subfigure}
 \end{figure}
+\newpage
+The experiments result above suggested that the sequence block size will result in different behavior on the performance degradation, and the block size difference can mainly be separated into shorter($\leq10$) and longer($\geq25$), in a result, the fixed pattern merge will switch to focus on sequence length of 10 and 25 and the finding of different merge pattern (\ref{appendix:top10RMergeDiff}). The patterns that are used are oriented with POS tags ADJ, VERB, and NOUN. The table(\ref{tab:fixmerge1},\ref{tab:fixmerge2}) below gives an overview of the degradation according to different patterns, and the details are placed in the appendix(\ref{appendix:adjnounMerge},\ref{appendix:nounverbadjMerge},\ref{appendix:verbnounMerge}).
 
+\begin{table}[!h]
+\fontsize{10pt}{10pt}\selectfont
+\begin{tabular}{|c|c|c|c|}
+\hline
+seq len & \begin{tabular}[c]{@{}c@{}}attributeive adjectives\\ Adj+Noun\end{tabular} & \begin{tabular}[c]{@{}c@{}}predicative adjective\\ Verb+Adj\end{tabular} & \begin{tabular}[c]{@{}c@{}}postpositive adjective\\ Noun+Adj\end{tabular} \\ \hline
+10      & 0.833                                                                      &                                                                          &                                                                           \\ \hline
+25      & 0.549                                                                      &                                                                          &                                                                           \\ \hline
+\end{tabular}
+\caption{Merge fixed pattern(1)}
+\label{tab:fixmerge1}
+\end{table}
+
+\begin{table}[!h]
+\fontsize{10pt}{10pt}\selectfont
+\begin{tabular}{|c|c|c|c|l|}
+\hline
+seq len & \begin{tabular}[c]{@{}c@{}}Object\\ Verb+Noun\end{tabular} & \begin{tabular}[c]{@{}c@{}}Subject\\ Noun+Verb\end{tabular} & Adj+Verb & Noun+Verb+Adj \\ \hline
+10      & 0.698                                                       &                                                            &          & 0.786         \\ \hline
+25      & 0.549                                                       &                                                            &          & 0.646         \\ \hline
+\end{tabular}
+\caption{Merge fixed pattern(2)}
+\label{tab:fixmerge2}
+\end{table}
+
+The result above indicates that the sequence length of 25 on all fixed pattern merges can only achieve $50\%\sim60\%$ of the base case performance and those are already under $0.5$ accuracy which means it fails to learn at all. In contrast to the short sequences which still maintain over $70\%$ performance relative to the base case on some pattern(ADJ+NOUN, NOUN+ADJ+VERB), but also notice that the accuracy is just slightly over $0.5$.
 
 
 \clearpage
 \section{Conclusion}
 
-\TODO{what did you do?} 
-\TODO{What are the results?}
-\TODO{future work?}
+The above experiments have demonstrated two different methods that try to degrade the performance of a small language model in semantics classification. While the result on "always wrong" method shows little affect on the performance of model, it also raise the question on why from statistical point of view as the training is heavily disturb. One may argue that it is unclear on the token distribution of positive and negative classes so those tag that are tested are not right on the target. But the point on using POS tag is to avoid this problem. The idea is to treat the data as an observational study since that is no way(or hard) to conduct a randomization trail on the token ,and  the objective is to access the effect of token on the outcome classification. 
+
 
 \newpage
 
@@ -933,6 +966,45 @@ The test on the null hypothesis which the accuracy median of VERB is the same fo
 \caption{Signed-rank test on seq len 25}
 \label{appendix:signedranktestseq25}
 \end{center}    
+\end{table}
+
+\begin{table}[!h]
+\fontsize{10pt}{10pt}\selectfont
+\begin{tabular}{c|ccccc|}
+\cline{2-6}
+\multicolumn{1}{l|}{}         & \multicolumn{5}{c|}{Test Set Accuracy \% (ADJ+NOUN)}                                                                                       \\ \hline
+\multicolumn{1}{|c|}{seq len} & \multicolumn{1}{c|}{mean}  & \multicolumn{1}{c|}{quartile 25\%} & \multicolumn{1}{c|}{median} & \multicolumn{1}{c|}{quartile 75\%} & IQR   \\ \hline
+\multicolumn{1}{|c|}{10}      & \multicolumn{1}{c|}{0.55}  & \multicolumn{1}{c|}{0.509}         & \multicolumn{1}{c|}{0.541}  & \multicolumn{1}{c|}{0.593}         & 0.084 \\ \hline
+\multicolumn{1}{|c|}{25}      & \multicolumn{1}{c|}{0.389} & \multicolumn{1}{c|}{0.362}         & \multicolumn{1}{c|}{0.490}  & \multicolumn{1}{c|}{0.490}         & 0.128 \\ \hline
+\end{tabular}
+\caption{Test Accuracy Details on Merge ADJ+NOUN.}
+\label{appendix:adjnounMerge}
+\end{table}
+
+\begin{table}[!h]
+\fontsize{10pt}{10pt}\selectfont
+\begin{tabular}{c|ccccc|}
+\cline{2-6}
+\multicolumn{1}{l|}{}         & \multicolumn{5}{c|}{Test Set Accuracy \% (VERB+NOUN)}                                                                                      \\ \hline
+\multicolumn{1}{|c|}{seq len} & \multicolumn{1}{c|}{mean}  & \multicolumn{1}{c|}{quartile 25\%} & \multicolumn{1}{c|}{median} & \multicolumn{1}{c|}{quartile 75\%} & IQR   \\ \hline
+\multicolumn{1}{|c|}{10}      & \multicolumn{1}{c|}{0.461} & \multicolumn{1}{c|}{0.460}         & \multicolumn{1}{c|}{0.490}  & \multicolumn{1}{c|}{0.490}         & 0.030 \\ \hline
+\multicolumn{1}{|c|}{25}      & \multicolumn{1}{c|}{0.370} & \multicolumn{1}{c|}{0.272}         & \multicolumn{1}{c|}{0.445}  & \multicolumn{1}{c|}{0.490}         & 0.218 \\ \hline
+\end{tabular}
+\caption{Test Accuracy Details on Merge VERB+NOUN.}
+\label{appendix:verbnounMerge}
+\end{table}
+
+\begin{table}[!h]
+\fontsize{10pt}{10pt}\selectfont
+\begin{tabular}{c|ccccc|}
+\cline{2-6}
+\multicolumn{1}{l|}{}         & \multicolumn{5}{c|}{Test Set Accuracy \% (NOUN+VERB+ADJ)}                                                                                  \\ \hline
+\multicolumn{1}{|c|}{seq len} & \multicolumn{1}{c|}{mean}  & \multicolumn{1}{c|}{quartile 25\%} & \multicolumn{1}{c|}{median} & \multicolumn{1}{c|}{quartile 75\%} & IQR   \\ \hline
+\multicolumn{1}{|c|}{10}      & \multicolumn{1}{c|}{0.519} & \multicolumn{1}{c|}{0.501}         & \multicolumn{1}{c|}{0.514}  & \multicolumn{1}{c|}{0.529}         & 0.028 \\ \hline
+\multicolumn{1}{|c|}{25}      & \multicolumn{1}{c|}{0.458} & \multicolumn{1}{c|}{0.489}         & \multicolumn{1}{c|}{0.493}  & \multicolumn{1}{c|}{0.499}         & 0.01  \\ \hline
+\end{tabular}
+\caption{Test Accuracy Details on Merge NOUN+VERB+ADJ.}
+\label{appendix:nounverbadjMerge}
 \end{table}
 
 \newpage
