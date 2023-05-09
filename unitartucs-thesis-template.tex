@@ -280,17 +280,15 @@ Bakalaureusetöö (9 EAP)
 \noindent\textbf{Abstract:}
 
 \noindent
-To be done
+The large language models by using deep learning methods give surprising results in achieving  human-level performance in a variety of tasks, especially on it shows the ability of Artificial General Intelligence(AGI) and the understanding of false belief from solely language training. This suggested a strong relationship between the Theory of Mind(ToM) and language training which has been a long study in the field of psychology. However, the influence of external language on internal language is not obvious from the linguistics perspective. Together with Chomsky's theory on generative grammar and the belief in the external language influencing the development of ToM, this thesis gives a hypothesis that there is an interaction between external and internal language, and this dynamic drives the learning behind the large language model. In order to go further in this direction, the thesis takes the first step to investigate the impact of incomplete language learning by two methods: always wrong and token merge method on an LSTM model. The result gives positive support to language structure is also an important factor for language models to understand human text context apart from statistics. 
 
 \vspace*{1ex}
 
-\noindent\textbf{Keywords:}\\
-\TODO{List of keywords}
+\noindent\textbf{Keywords: Artificial Intelligence, Neural Networks, Large Language Model(LLM), Theory of Mind(ToM)}\\
 %Layout, formatting, template
 
+\noindent\textbf{CERCS:P176-Artificial intelligence,H350-Linguistics}
 \vspace*{1ex}
-
-\noindent\textbf{CERCS:}\TODO{CERCS code and name:~\url{https://www.etis.ee/Portal/Classifiers/Details/d3717f7b-bec8-4cd9-8ea4-c89cd56ca46e}}
 
 \vspace*{1ex}
 }}%\newcommand\EngInfo
@@ -299,40 +297,24 @@ To be done
 %=== Info in Estonian
 \newcommand\EstInfo{{%
 \selectlanguage{estonian}
-\noindent\textbf{\large Tüübituletus neljandat järku loogikavalemitele}
+\noindent\textbf{\large Emergent Theory of Mind (ToM) alates
+Tokenide ühendamine}
 \vspace*{1ex}
 
 \noindent\textbf{Lühikokkuvõte:} 
 
 %\noindent ...
 
-\TODO{One or two sentences providing a basic introduction to the field, comprehensible to a scientist in
-any discipline.}
-\TODO{Two to three sentences of
-more detailed background, comprehensible to scientists in related disciplines.}
-\TODO{One sentence clearly stating the general problem being addressed by this particular
-study.}
-\TODO{One sentence summarising the main result (with the words ``here we show´´ or their equivalent).}
-\TODO{Two or three sentences explaining what
-the main result reveals in direct
-comparison to what was thought to be the case previously, or how the main result adds to previous knowledge.}
-\TODO{One or two sentences to put the results into a more general context.}
-\TODO{Two or three sentences to provide a
-broader perspective, readily
-comprehensible to a scientist in any
-discipline, may be included in the first paragraph
-if the editor considers that the accessibility of
-the paper is significantly enhanced by their inclusion.}
+Suured keelemudelid, kasutades süvaõppe meetodeid, annavad üllatavaid tulemusi inimtasemel jõudluse saavutamisel mitmesugustes ülesannetes, eriti see näitab tehisintellekti (AGI) võimekust ja valeuskumuste mõistmist ainult keeleõppest. See viitas tugevale seosele vaimuteooria (ToM) ja keeleõppe vahel, mida on psühholoogia valdkonnas kaua uuritud. Siiski ei ole väliskeele mõju sisekeelele keeleteaduse vaatenurgast ilmne. Koos Chomsky teooriaga generatiivsest grammatikast ja usust, et väliskeel mõjutab ToM-i arengut, annab see lõputöö hüpoteesi, et välise ja sisemise keele vahel on interaktsioon ning see dünaamika juhib õppimist suure keelemudeli taga. Selles suunas edasi liikumiseks astub lõputöö esimene samm, et uurida mittetäieliku keeleõppe mõju kahel meetodil: alati vale ja märgiühendamise meetod LSTM mudelil. Tulemus toetab positiivselt keelestruktuuri, mis on ka keelemudelite jaoks oluline tegur, et mõista lisaks statistikale ka inimteksti konteksti. 
 
 \vspace*{1ex}
 
-\noindent\textbf{Võtmesõnad:}\\
-\TODO{List of keywords}
+\noindent\textbf{Võtmesõnad:CERCS:P176-Artificial intelligence,H350-Linguistics}\\
 %Layout, formatting, template
 
 \vspace*{1ex}
 
-\noindent\textbf{CERCS:}\TODO{CERCS kood ja nimetus:~\url{https://www.etis.ee/Portal/Classifiers/Details/d3717f7b-bec8-4cd9-8ea4-c89cd56ca46e}}
+\noindent\textbf{CERCS:P176-Artificial intelligence,H350-Linguistics}
 
 \vspace*{1ex}
 }}%\newcommand\EstInfo
@@ -469,7 +451,12 @@ English words can exist in different forms like initial, initialed, initialing, 
 \subsubsection{Embedding}
 Tokens are still in textual format after those processes, however, most language models work on numerical space rather than discrete text space, the embedding process is to transform tokens into numerical form as a final step before input to the model. There are varieties of ways to achieve the purpose, the simplest one will be one-hot encoding which turns each token into a binary array with length equal to the size of tokens. The disadvantage of this is it creates a very high dimension and  sparsity matrix to represent tokens which may impact the model's convergence time and performance. Other's methods include bag of words together with term frequency-inverse document frequency(TF-IDF) to assign a numerical value for tokens. However, the trend changed to use Word2Vec after adopting the neural network which uses the vector representation before the output layer as the token's embedding. The task of the neural network can be either using surrounding context(words) to predict the target word or the opposite way. This way, it heavily reduces the embedding dimension in comparison to the one hot-encoding and uses the surrounding context to assign numerical meaning to tokens.\\
  
-During the pre-deep learning era, there is a wide range of modeling such as support vector machine(SVM) that is based on statistical aspects, but the accuracy heavily depends on the data and the prior belief on the kernel selection. After the deep learning era, especially after the invention of the Long-short term memory model (LSTM, an expansion of recurrent neural network RNN) and Transformer (BERT) which change the trend from statistical to auto-regressive model.  The main difference between the two is that RNN-type models are equipped with state space learning\cite{Siegelmann_1995} to enrich the representation of data. \\
+During the pre-deep learning era, there is a wide range of modeling such as support vector machine(SVM) that is based on statistical aspects, but the accuracy heavily depends on the data and the prior belief on the kernel selection. After the deep learning era, especially after the invention of the Long-short term memory model (LSTM, an expansion of recurrent neural network RNN) and Transformer (BERT) which change the trend from statistical to auto-regressive model.  The main difference between the two is that RNN-type models are equipped with state space learning\cite{Siegelmann_1995} to enrich the representation of data while the transformer relies on an attention mechanism to build hidden representation from the input text.\\
+
+RNN has a long and successful history in sequential modeling before the invention of the transformer. The main distinguishing property of RNN from others is its feedback loop that enables influences of the future by information aggregation from the past and current. The architecture of RNN is shows in the following diagram
+
+
+https://commons.wikimedia.org/wiki/File:Recurrent_neural_network_unfold.svg
 
 In neural network model setup, those pre-processed data are fed into the model in sequential order, and depending on the model's architecture,  the number of tokens (words) input variate, for example, BERT usually will take a predefined maximum input length of the text while LSTM can be done in sliding window which takes a sequence of text at a time. The output will be the classification result base on the input sequence and it learns by calculating the loss between the ground truth label and its result.
 
@@ -491,8 +478,8 @@ The research above suggests a strong correlation and the importance of language 
 
 \section{Language Model - Literature Survey} 
 The rise of ChatGPT is storming the world over the past year and it still influencing the world heavily in a wide range of areas. On the research aspect, there is no solid theory that can explain the behavior of those LLM, especially on the generality across different domains of knowledge by simple language training\cite{Bubeck_2023}. The study on\cite{Bubeck_2023} gives a details study on the intelligent ability of LLM and the research on \cite{Kosinski_2023} shows that GPT3.5 solved 90\% of false belief tasks that reached the performance of a seven years old child, it further hypothesized the result of the large language model is attributed to the internal development of ToM as a by-product from solely language training. This hypothesis matches perfectly with the above discussion on the relationship between language and ToM. 
-The basic architecture nowadays for language models is dominated by the transformer which composite of an autoencoder and attention mechanism together, without the recurrent unit involved{cite}. However, the positional information is important in language, it is pushed into the embedding as an extracted feature of tokens to represent the sequential order within the text. The main idea of the transformer is to encode the information from input text by the composition of transformation(attention) which result in a complex hidden space for the decoder to perform the relevant tasks such as predicting a missing word in a sentence or the next word generation{cite}. Since the composition of attention is formed recursively by pairs of pair of words, it forms a hierarchical structure of measurement that reproduce the property of maximum mean discrepancy used in measuring the difference between distribution from their samples{cite} and it usually comes with several attention stacks together to form multi-head attention, which it can be thought of capturing different statistical property from the input data. 
-But the question of the number of attention needed and the efficiency of increasing attention remains unanswered{cite}. 
+The basic architecture nowadays for language models is dominated by the transformer which composite of an autoencoder and attention mechanism together, without the recurrent unit involved\cite{Ghojogh_2020}. However, the positional information is important in language, it is pushed into the embedding as an extracted feature of tokens to represent the sequential order within the text. The main idea of the transformer is to encode the information from input text by the composition of transformation(attention) which result in a complex hidden space for the decoder to perform the relevant tasks such as predicting a missing word in a sentence or the next word generation\cite{Ghojogh_2020}. Since the composition of attention is formed recursively by pairs of pair of words, it forms a hierarchical structure of measurement that reproduce the property of maximum mean discrepancy used in measuring the difference between distribution from their samples\cite{Ghojogh_2020}and it usually comes with several attention stacks together to form multi-head attention, which it can be thought of capturing different statistical property from the input data. 
+But the question of the number of attention needed and the efficiency of increasing attention remains unanswered\cite{Merty_2019}. 
 It is shown that transformer architecture mainly benefits from the attention mechanism which has its own place in statistics but is this statistical property gives rise to such high accuracy or even the enlightenment of ToM still remains unclear.
 
 \newpage
