@@ -356,14 +356,26 @@ The recent development in Large Language Models (LLM) such as ChatCPT has archiv
 
 In linguistics study, the hypothesis proposed by Chomsky\cite{Hauser_2002} suggested there are two senses of faculty of language: internal(I) and external(E) language(details in \ref{introLanguage}), and the study object for linguistics should primarily focus on I-language(though, mind) by modeling from E-language, and this results in the generative grammar. In a high-level overview, the I-language described by Chomsky can be translated into the Theory of Ming(ToM) from psychology, but it is more well defined from the psychology aspect(details in \ref{ToM}) and a large amount of research shows there is a strong correlation between ToM and external language training. However, this type of influence is not captured by the linguistics field.
 
-With all those components described above, this thesis hypothesis that the learning dynamic for those LLM can be described by the following diagram in a top-level view.
+With all those components described above, this thesis proposes a hypothesis that the learning dynamic for those LLM can be described by the following diagram(\ref{fig:LLMhypothesis}) in a top-level view.
 \begin{figure} [!h]
 \begin{center}
-\includegraphics[width=0.2\textwidth]{figures/Ilang_Elang_NLU_NLG.png}
-\caption{} 
-\label{fig:bps}
+\includegraphics[width=0.8\textwidth]{figures/Ilang_Elang_NLU_NLG.png}
+\caption{Hypothesis on LLM's learning dynamic} 
+\label{fig:LLMhypothesis}
 \end{center}
 \end{figure}
+
+The above diagram treats the LLM as the internal language that is composite with two main components from natural language processing(NLP), natural language understanding(NLU), and generation(NLG), with the structure that NLU is supporting NLG and NLG is indirectly influencing back to NLU by external language. 
+
+Since the hypothesis is large in scale, it should be modularized into several parts of research which consist of:
+\begin{enumerate}
+    \item External Influence on Understanding
+    \item Bridging between understanding and generation
+    \item Generative and influence back to Understanding
+\end{enumerate}
+In the thesis, it is focused on the first part of the study.
+
+The paper is organized into 5 sections, the first section is an introduction which will give some overview of the background, followed by two sections of literature review. The experiment details will be described in section four and followed by the result discussion and conclusion.
 
 \subsection{Language} \label{introLanguage}
 Language has variate meanings according to different content and setting, as pointed out in\cite{Hauser_2002}, DNA is a universal language that encodes biological information that is shared along all living organisms on earth, but not the case for communication. In the context of communication, human language also got significantly different from other species in its power of expression which is deeply correlated with the property of human language on hierarchy structured(grammar), generative, and most importantly recursive\cite{Hauser_2002}.  The study of language(Linguistics) is integrated with a wide range of scientific areas from mathematics, philosophy, neuroscience, etc\cite{Gallego_2022}. In viewing language from a biological point of view, bio-linguistics treats it as an evolving organism and reshape the study as the internal and external language (I-Language and E-Language)\cite{Gallego_2022}.  I-language is defined to be a mental mind which is intentional, internal, and individual and represents the computational aspect of language while the E-language is the observable language that humans use in communication\cite{Gallego_2022, Hauser_2002}.  
@@ -420,8 +432,6 @@ Emotion                                                & Perceiving social cues 
 The above table shows that to access the mental state of belief, one can test the target with either context or false belief base understanding. In the context base test, participants are usually given a textual or picture set of social scenarios, and questions are given related to characters of that scenario either on classification(what the character thinks of) or predication(guessing action taken by the character) to access the inferred mental state of participants. However, there are a number of considerations that need to be careful of as those test demand heavily on working memory and level of language skill. \\
 
 The false-belief test is one step further based on the above tasks which include differences in the mental state of participants and the character in the story\cite{Byom_2013}. In this type of experiment, participants are usually given a storyboard that shows a particular event that alters the result but is only known to the participants but not the protagonist of the story. In this way, the participant is asked to predict the action base on the character's belief(false belief: lacking knowledge of the event) and the belief of the participant's mental state(true belief). This test provides a deviation from the reasoning that humans experience daily which is based on true belief\cite{Byom_2013}. An example of a false belief story is provided in fig(\ref{fig:falseBelief}) for reference.
-\newpage
-
 \begin{figure} [!h]
 \begin{center}
 \includegraphics[width=0.4\textwidth]{figures/false_belief_story.jpg}
@@ -465,10 +475,22 @@ In neural network model setup, those pre-processed data are fed into the model i
 
 \newpage
 \section{ToM and Language - Literature Survey} 
-\TODO{Mostly related to ToM and language study from developmental study }
-\newpage
+From the introduction, it is shown that language(I-language) and ToM is strongly coupled in Linguistics and psychology but has different aspects of external language. Linguistics model E-language as data generated from internal, treating internal language as deep structural(or grammar) that is universal to everyone, but psychology is more focused on how \textbf{external language is affecting the development of the mental state}. There is no doubt that language does matter in mental thought, but the question is what's \textbf{the role of language in building up cognitive structures and their uniqueness in that role{cite}.} The investigation of the roles of language in ToM can be summarized into four main focuses{cite}:
+\begin{enumerate}
+    \item No role at all
+    \item Conversational Pragmatics
+    \item Lexical Semantics
+    \item Complementation Syntax
+    \item Synergy (Combine action)
+\end{enumerate}
+While the no role at all suggested that language is only a tool to access and implement the abstract human mind, others give support that language is crucial to the development of ToM in the form of interaction between the surrounding environment during the infant and pre-school age. All those roles for language are conversational based and each of them provides an explanation of how language helps in build-up ToM, for example, conversational pragmatics suggests language as information exchange promotes the understanding of there are different thoughts by others on the same fact, while lexical semantics and complementation syntax are emphasizing the role of language in formulations of abstract concept from lexical mental verb(e.g happy, sad) and sentential complement.
+
+While the above paragraph describes the relationship between language and ToM in a constructive way, much developmental psychology research provides both correlation and training study in order to show the importance of language. Those studies are primarily focusing on false-beliefs understanding ability as it reveals both internal and external beliefs at the same time. In correlation studies, different age groups of children are examined on both false-belief tasks and language testing to identify the relationship between language capability and the performance of ToM{cite}. On the other hand, training study is done by giving variate language training to children and looking for performance differences given by the training. Those training usually variate in the use of words, for example, with or without restriction on the usage of mental verbs (e.g. think, know) and absence of sentential complement sentences{cite}. One of the research{cite} take a step further to investigate language in other forms \- Sign language that is used by deaf people which results in the same conclusion.
+ 
+The research above suggests a strong correlation and the importance of language in the role of ToM development, especially when there is defective during language acquisition, it heavily affects the mental state of understanding in all forms of language.
 
 \section{Language Model - Literature Survey} 
+The rise of ChatGPT is storming the world over the past year and it still influencing the world heavily in a wide range of areas. On the research aspect, there is no solid theory that can explain the behavior of those LLM, especially on the generality across different domains of knowledge by simple language training\cite{Bubeck_2023}. The study on\cite{Bubeck_2023} gives a details study on the intelligent ability of LLM and the research on \cite{Kosinski_2023} shows that GPT3.5 solved 90\% of false belief tasks that reached the performance of a seven years old child, it further hypothesized the result of the large language model is attributed to the internal development of ToM as a by-product from solely language training. This hypothesis matches perfectly with the above discussion on the relationship between language and ToM.   
 
 \newpage
 
@@ -490,7 +512,7 @@ The experiment is conducted on the IMDB movie review data set {cite} for sentime
     \end{tabular}
      \caption{Training, Testing Set}
     \label{tab:dataset}
-\end{table}
+\end{table} 
 
 Those data sets then go through data cleaning(remove html related tags) and pre-processing pipeline as described in \ref{introLM} apart from the last two processes (Stemming/Lemmatization, embedding). The average token count for each review is 105 (=1,581,851/15,000). \\
 
@@ -806,6 +828,8 @@ seq len & \begin{tabular}[c]{@{}c@{}}Object\\ Verb+Noun\end{tabular} & \begin{ta
 
 The result above indicates that the sequence length of 25 on all fixed pattern merges can only achieve $50\%\sim60\%$ of the base case performance and those are already under $0.5$ accuracy which means it fails to learn at all. In contrast to the short sequences which still maintain over $70\%$ performance relative to the base case on some pattern(ADJ+NOUN, NOUN+ADJ+VERB), but also notice that the accuracy is just slightly over $0.5$.
 
+One thing to notice is that the shorter sequence length shows the ability to influence on fixed pattern ADJ+NOUN but not for the longer block which may suggest the structure they acquired may be different. In addition, the shorter and longer sequence of input can be thought of as simulating the sensory-motor aspect\cite{Hauser_2002} on reading capability. 
+
 
 \clearpage
 \section{Conclusion}
@@ -846,7 +870,7 @@ However, it may criticize that apart from the structure, the merge also destroys
 \end{subfigure}
 \end{figure}
 
-This thesis gives preliminary insight into how inference on the mental state by language model may be affected in a very small setting, both on the class to infer(just 2 classes) and model architecture. The result may be very different if the state to infer is increased. Furthermore, the effect on merge and the different behavior on random and fixed pattern merge is questionable on why the random case is still able to learn but not for the fixed one. In addition, the truth behind the structure is still unclear, as it can be in a syntactic form(tree base), computational state(automata), or in a combination of the two. Last but not least, the interaction between natural language understanding and generation is still a missing puzzle in the study of the language model and it is hoped that this research on how internal language may influence by external language initial a tiny step in this direction.
+This thesis gives preliminary insight into how inference on the mental state by language model may be affected in a very small setting, both on the class to infer(just 2 classes) and model architecture. The result may be very different if the state to infer is increased. Furthermore, the effect on merge and the different behavior on random and fixed pattern merge is questionable on why the random case is still able to learn but not for the fixed one. In addition, the truth behind the structure is still unclear, as it can be in a syntactic form(tree base), computational state(automata), a combination of the two, or other types of structures. Last but not least, the interaction between natural language understanding and generation is still a missing puzzle in the study of the language model and it is hoped that this research on how internal language may influence by external language initial a tiny step in this direction.
 
 \newpage
 
@@ -1065,6 +1089,7 @@ This thesis gives preliminary insight into how inference on the mental state by 
 \label{appendix:nounverbadjMerge}
 \end{table}
 
+
 \newpage
 
 %=== Licence in English
@@ -1077,7 +1102,7 @@ This thesis gives preliminary insight into how inference on the mental state by 
 
 \subsection*{Non-exclusive licence to reproduce thesis and make thesis public}
 
-I, \textbf{Alice Cooper}, %author's name
+I, \textbf{Chan Wai Tik}, %author's name
   \licencehint{10mm}{author's name}
 
 \begin{enumerate}
@@ -1086,10 +1111,10 @@ herewith grant the University of Tartu a free permit (non-exclusive licence) to
 \par
 reproduce, for the purpose of preservation, including for adding to the DSpace digital archives until the expiry of the term of copyright,
 \par
-\textbf{Type Inference for Fourth Order Logic Formulae}, %
+\textbf{Emergent Theory of Mind (ToM) from Token Merging}, %
   \licencehint{10mm}{title of thesis}
 \par
-supervised by Axel Rose and May Flower. %supervisor's name
+supervised by Kallol Roy. %supervisor's name
   \licencehint{10mm}{supervisor's name}
 \item
 I grant the University of Tartu a permit to make the work specified in p. 1 available to the public via the web environment of the University of Tartu, including via the DSpace digital archives, under the Creative Commons licence CC BY NC ND 3.0, which allows, by giving appropriate credit to the author, to reproduce, distribute the work and communicate it to the public, and prohibits the creation of derivative works and any commercial use of the work until the expiry of the term of copyright.
@@ -1100,8 +1125,8 @@ I certify that granting the non-exclusive licence does not infringe other person
 \end{enumerate}
 
 \noindent
-Alice Cooper\\ %author's name
-\textbf{\textsl{dd/mm/yyyy}}
+Chan Wai Tik\\ %author's name
+\textbf{\textsl{09/05/2023}}
 }}%\newcommand\EngLicence
 
 
@@ -1114,17 +1139,17 @@ Alice Cooper\\ %author's name
 
 \subsection*{Lihtlitsents lõputöö reprodutseerimiseks ja üldsusele kättesaadavaks tegemiseks}
 
-Mina, \textbf{Alice Cooper}, %author's name
+Mina, \textbf{Chan Wai Tik}, %author's name
   \licencehint{10mm}{autori nimi}
 
 \begin{enumerate}
 \item
 annan Tartu Ülikoolile tasuta loa (lihtlitsentsi) minu loodud teose
 \par
-\textbf{Tüübituletus neljandat järku loogikavalemitele}, %title of thesis
+\textbf{Emergent Theory of Mind (ToM) alates Token Merging}, %title of thesis
     \licencehint{10mm}{lõputöö pealkiri}
 \par
-mille juhendaja(d) on Axel Rose ja May Flower, %supervisor's name(s)
+mille juhendaja(d) on Kallol Roy, %supervisor's name(s)
   \licencehint{10mm}{juhendaja nimi}
 \par
 reprodutseerimiseks eesmärgiga seda säilitada, sealhulgas lisada digitaalarhiivi DSpace kuni autoriõiguse kehtivuse lõppemiseni.
@@ -1138,8 +1163,8 @@ Kinnitan, et lihtlitsentsi andmisega ei riku ma teiste isikute intellektuaaloman
 \end{enumerate}
 
 \noindent
-Alice Cooper\\ %author's name
-\textbf{\textsl{pp.kk.aaaa}}
+Chan Wai Tik\\ %author's name
+\textbf{\textsl{09.05.2023}}
 }}%\newcommand\EstLicence
 
 
