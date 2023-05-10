@@ -753,19 +753,21 @@ A control case of always wrong with "NOUN \& VERB \& ADJ \& PROPN \& ADV \& INTJ
 \subsubsection{Token Merge}
 The experiment results on token merge are presented in 2 parts, the first part will focus on the comparison between random merge and merge on POS tag, followed by the second part on presenting the result of merge with a specific pattern. The random merge is done with minimum and maximum merge set to 2 and 3 correspondingly. The result is summarized in the following(\ref{tab:mergeDegrade}):
 
+
 \begin{table}[!h]
 \fontsize{10pt}{10pt}\selectfont
-\begin{tabular}{|c|c|c|l|c|l|l|}
+\begin{tabular}{|c|c|c|c|c|c|}
 \hline
-seq len & Random & NOUN & VERB  & ADJ  & CCONJ & SCONJ \\ \hline
-5       & 0.893  &      & 0.9   & 0.95 &       &       \\ \hline
-10      & 0.88   &      & 0.88  & 0.88 &       &       \\ \hline
-25      & 0.87   &      & 0.857 & 0.8  &       &       \\ \hline
-50      & 0.88   &      & 0.854 & 0.52 &       &       \\ \hline
+seq len & Random & PROPN & VERB                                                         & ADJ                                                          & NOUN                                                         \\ \hline
+5       & 0.89   &       & 0.90                                                         & 0.90                                                         &                                                              \\ \hline
+10      & 0.88   & 0.84  & 0.86                                                         & 0.81                                                         & 0.78                                                         \\ \hline
+25      & 0.87   & 0.82  & 0.78                                                         &\textbf{0.69} & \textbf{0.59} \\ \hline
+50      & 0.88   & 0.71  & \textbf{0.57} &  \textbf{0.54} & 0.92                                                         \\ \hline
 \end{tabular}
-\caption{Performance Degrade by Random Merge \& POS Tag Merge.}
+\caption{Performance Degrade by Random Merge \& POS Tag Merge.\\ Font in bold = accuracy$<0.5$}
 \label{tab:mergeDegrade}
 \end{table}
+
 The result of random merge on all sequences shows roughly the same level of degradation($\approx12\%$). It also noted that in the random merge experiment, \textbf{the merged pattern is different} for short($\leq10$) and long sequences ($\geq25$). The detail on pattern differences and test results are attached in the appendix(\ref{appendix:top10RMergeDiff},\ref{appendix:verbMerge},\ref{appendix:adjMerge}) .\\
 
 While the performance of those shorter sequences seems to be invariant to token merge, it is not the same for longer sequences. The performance degradation is increasing according to \textbf{tag ordering: NOUN, VERB, ADJ}. The relation between degradation, sequence length, and tag is visualized in the following diagram(\ref{fig:mergeScatter}).
@@ -994,6 +996,33 @@ This thesis gives preliminary insight into how inference on the mental state by 
 \label{appendix:adjMerge}
 \end{table}
 
+\begin{table}[!h]
+\begin{tabular}{c|ccccc|}
+\cline{2-6}
+\multicolumn{1}{l|}{}         & \multicolumn{5}{c|}{Test Set Accuracy \% (NOUN)}                                                                                           \\ \hline
+\multicolumn{1}{|c|}{seq len} & \multicolumn{1}{c|}{mean}  & \multicolumn{1}{c|}{quartile 25\%} & \multicolumn{1}{c|}{median} & \multicolumn{1}{c|}{quartile 75\%} & IQR   \\ \hline
+\multicolumn{1}{|c|}{}        & \multicolumn{1}{c|}{}      & \multicolumn{1}{c|}{}              & \multicolumn{1}{c|}{}       & \multicolumn{1}{c|}{}              &       \\ \hline
+\multicolumn{1}{|c|}{10}      & \multicolumn{1}{c|}{0.532} & \multicolumn{1}{c|}{0.499}         & \multicolumn{1}{c|}{0.530}  & \multicolumn{1}{c|}{0.581}         & 0.082 \\ \hline
+\multicolumn{1}{|c|}{25}      & \multicolumn{1}{c|}{0.422} & \multicolumn{1}{c|}{0.407}         & \multicolumn{1}{c|}{0.489}  & \multicolumn{1}{c|}{0.489}         & 0.080 \\ \hline
+\multicolumn{1}{|c|}{50}      & \multicolumn{1}{c|}{0.703} & \multicolumn{1}{c|}{0.704}         & \multicolumn{1}{c|}{0.721}  & \multicolumn{1}{c|}{0.728}         & 0.024 \\ \hline
+\end{tabular}
+\caption{Test Accuracy Details on Merge with NOUN.}
+\label{appendix:nounMerge}
+\end{table}
+
+\begin{table}[!h]
+\begin{tabular}{c|ccccc|}
+\cline{2-6}
+\multicolumn{1}{l|}{}         & \multicolumn{5}{c|}{Test Set Accuracy \% (PROPN)}                                                                                          \\ \hline
+\multicolumn{1}{|c|}{seq len} & \multicolumn{1}{c|}{mean}  & \multicolumn{1}{c|}{quartile 25\%} & \multicolumn{1}{c|}{median} & \multicolumn{1}{c|}{quartile 75\%} & IQR   \\ \hline
+\multicolumn{1}{|c|}{}        & \multicolumn{1}{c|}{}      & \multicolumn{1}{c|}{}              & \multicolumn{1}{c|}{}       & \multicolumn{1}{c|}{}              &       \\ \hline
+\multicolumn{1}{|c|}{10}      & \multicolumn{1}{c|}{0.548} & \multicolumn{1}{c|}{0.512}         & \multicolumn{1}{c|}{0.550}  & \multicolumn{1}{c|}{0.584}         & 0.072 \\ \hline
+\multicolumn{1}{|c|}{25}      & \multicolumn{1}{c|}{0.586} & \multicolumn{1}{c|}{0.556}         & \multicolumn{1}{c|}{0.603}  & \multicolumn{1}{c|}{0.620}         & 0.064 \\ \hline
+\multicolumn{1}{|c|}{50}      & \multicolumn{1}{c|}{0.546} & \multicolumn{1}{c|}{0.526}         & \multicolumn{1}{c|}{0.543}  & \multicolumn{1}{c|}{0.571}         & 0.045 \\ \hline
+\end{tabular}
+\caption{Test Accuracy Details on Merge with PROPN.}
+\label{appendix:propnMerge}
+\end{table}
 
 \begin{table}[!h]
 \begin{center}
@@ -1078,7 +1107,10 @@ This thesis gives preliminary insight into how inference on the mental state by 
 \end{table}
 
 
-\newpage
+
+
+
+\clearpage
 
 %=== Licence in English
 \newcommand{\licencehint}[2]{\\\hspace*{#1}\textsl(#2)\par}
