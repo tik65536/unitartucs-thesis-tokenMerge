@@ -770,14 +770,24 @@ seq len & Random & PROPN & VERB                                                 
 
 The result of random merge on all sequences shows roughly the same level of degradation($\approx12\%$). It also noted that in the random merge experiment, \textbf{the merged pattern is different} for short($\leq10$) and long sequences ($\geq25$). The detail on pattern differences and test results are attached in the appendix(\ref{appendix:top10RMergeDiff},\ref{appendix:verbMerge},\ref{appendix:adjMerge}) .\\
 
-While the performance of those shorter sequences seems to be invariant to token merge, it is not the same for longer sequences. The performance degradation is increasing according to \textbf{tag ordering: PROPN, VERB, ADJ, NOUN}. The relation between degradation, sequence length, and tag is visualized in the following diagram(\ref{fig:mergeScatter}).
+While the performance of those shorter sequences seems to be invariant to token merge, it is not the same for longer sequences. The performance degradation is increasing according to \textbf{tag ordering: PROPN, VERB, ADJ, NOUN}. The relation between degradation, sequence length, and tag is visualized in the following diagram(\ref{fig:mergeScatter1},\ref{fig:mergeScatter2}).
 \begin{figure} [!h]
 \begin{center}
-\includegraphics[width=0.8\textwidth]{figures/tokenmerg1.png}
+\begin{subfigure}[h]{0.4\linewidth} 
+\includegraphics[width=\linewidth]{figures/tokenmerg1.png}
 \caption{Token Merger: Degradation vs Sequence len vs Merge Tag}
-\label{fig:mergeScatter}
+\label{fig:mergeScatter1}
+\end{subfigure}
+\hfill
+\begin{subfigure}[h]{0.4\linewidth} 
+\includegraphics[width=\linewidth]{figures/tokenmerg2.png}
+\caption{Token Merger: Degradation vs Merge Tag}
+\label{fig:mergeScatter2}
+\end{subfigure}
 \end{center}
 \end{figure}
+
+
 The comparison of the token merge result suggested that the merge on ADJ is different from others' merge significantly on longer sequences, so, in order to confirm the finding, Wilcoxon signed-rank test is used to test the median accuracy of ADJ is different from others, it is done on the result of 25 sequences length with a sampling data point of 290. 
 The test on the null hypothesis which the accuracy median of VERB is the same for ADJ is rejected with p-value $2.05\times10^{-11}$ at 95\% confidence level. On the other hand, the same test is applied for VERB and PROPN, the result shows strong evidence to support the null hypothesis with p-value $0.7$. The details of the statistical test can be found in the appendix(\ref{appendix:signedranktestseq25}). The following figures show the accuracy distribution on each case(\ref{fig:displot1}) 
 \begin{figure} [!h] 
@@ -800,36 +810,34 @@ The test on the null hypothesis which the accuracy median of VERB is the same fo
 \newpage
 The experiments result above suggested that the sequence block size will result in different behavior on the performance degradation, and the block size difference can mainly be separated into shorter($\leq10$) and longer($\geq25$), in a result, the fixed pattern merge will switch to focus on sequence length of 10 and 25 and the finding of different merge pattern (\ref{appendix:top10RMergeDiff}). The patterns that are used are oriented with POS tags ADJ, VERB, and NOUN. The table(\ref{tab:fixmerge1},\ref{tab:fixmerge2}) below gives an overview of the degradation according to different patterns, and the details are placed in the appendix(\ref{appendix:adjnounMerge},\ref{appendix:nounverbadjMerge},\ref{appendix:verbnounMerge}).
 
+
 \begin{table}[!h]
 \fontsize{10pt}{10pt}\selectfont
 \begin{tabular}{|c|c|c|c|}
 \hline
-seq len & \begin{tabular}[c]{@{}c@{}}attributeive adjectives\\ Adj+Noun\end{tabular} & \begin{tabular}[c]{@{}c@{}}predicative adjective\\ Verb+Adj\end{tabular} & \begin{tabular}[c]{@{}c@{}}postpositive adjective\\ Noun+Adj\end{tabular} \\ \hline
-10      & 0.833                                                                      &                                                                          &                                                                           \\ \hline
-25      & 0.549                                                                      &                                                                          &                                                                           \\ \hline
+seq len & \begin{tabular}[c]{@{}c@{}}Predicative Adjective\\ VERB+ADJ\end{tabular} & \begin{tabular}[c]{@{}c@{}}Attributteive Adjectives\\ ADJ+NOUN\end{tabular} & \begin{tabular}[c]{@{}c@{}}Postpositive Adjective\\ NOUN+ADJ\end{tabular} \\ \hline
+10      & 0.862                                                                    & 0.807                                                                       & \textbf{0.718}                                                                     \\ \hline
+25      & \textbf{0.605}                                                           & \textbf{0.602}                                                              &  \textbf{0.339}             \\ \hline
 \end{tabular}
 \caption{Merge fixed pattern(1)}
 \label{tab:fixmerge1}
 \end{table}
 
+
 \begin{table}[!h]
 \fontsize{10pt}{10pt}\selectfont
-\begin{tabular}{|c|c|c|c|l|}
+\begin{tabular}{|c|c|c|c|c|}
 \hline
-seq len & \begin{tabular}[c]{@{}c@{}}Object\\ Verb+Noun\end{tabular} & \begin{tabular}[c]{@{}c@{}}Subject\\ Noun+Verb\end{tabular} & Adj+Verb & Noun+Verb+Adj \\ \hline
-10      & 0.698                                                       &                                                            &          & 0.786         \\ \hline
-25      & 0.549                                                       &                                                            &          & 0.646         \\ \hline
+seq len & \begin{tabular}[c]{@{}c@{}}Subject\\ NOUN+VERB\end{tabular} & NOUNT+VERB+ADJ & ADJ+VERB                                                      & \begin{tabular}[c]{@{}c@{}}Object\\ VERB+NOUN\end{tabular} \\ \hline
+10      & 0.806                                                       & 0.762          & \textbf{0.637}                                                & \textbf{0.676}                                             \\ \hline
+25      & \textbf{0.603}                                              & \textbf{0.646} & \textbf{0.636} & \textbf{0.549}                                             \\ \hline
 \end{tabular}
 \caption{Merge fixed pattern(2)}
 \label{tab:fixmerge2}
 \end{table}
 
-The result above indicates that the sequence length of 25 on all fixed pattern merges can only achieve $50\%\sim60\%$ of the base case performance and those are already under $0.5$ accuracy which means it fails to learn at all. In contrast to the short sequences which still maintain over $70\%$ performance relative to the base case on some pattern(ADJ+NOUN, NOUN+ADJ+VERB), but also notice that the accuracy is just slightly over $0.5$.
+The result above indicates that the sequence length of 25 on all fixed pattern merges can only achieve $50\%\sim60\%$ of the base case performance and those are already under $0.5$ accuracy which means it fails to learn at all. In contrast to the short sequences which still maintain over $70\%$ performance relative to the base case on some pattern(ADJ+NOUN, NOUN+ADJ+VERB), but also notice that the accuracy is just slightly over $0.5$.One thing to notice is that the shorter sequence length shows the ability to influence on fixed pattern ADJ+NOUN but not for the longer block which may suggest the structure they acquired may be different. In addition, the shorter and longer sequence of input can be thought of as simulating the sensory-motor aspect\cite{Hauser_2002} on reading capability. 
 
-One thing to notice is that the shorter sequence length shows the ability to influence on fixed pattern ADJ+NOUN but not for the longer block which may suggest the structure they acquired may be different. In addition, the shorter and longer sequence of input can be thought of as simulating the sensory-motor aspect\cite{Hauser_2002} on reading capability. 
-
-
-\clearpage
 \section{Conclusion}
 
 The above experiments have demonstrated two different methods that try to degrade the performance of a small language model in semantics classification. While the result of the "always wrong" method shows little effect on the performance of the model, it also raises the question of why from the statistical point of view as the training is heavily disturbed. \\
