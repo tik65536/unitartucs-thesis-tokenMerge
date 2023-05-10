@@ -770,10 +770,10 @@ seq len & Random & PROPN & VERB                                                 
 
 The result of random merge on all sequences shows roughly the same level of degradation($\approx12\%$). It also noted that in the random merge experiment, \textbf{the merged pattern is different} for short($\leq10$) and long sequences ($\geq25$). The detail on pattern differences and test results are attached in the appendix(\ref{appendix:top10RMergeDiff},\ref{appendix:verbMerge},\ref{appendix:adjMerge}) .\\
 
-While the performance of those shorter sequences seems to be invariant to token merge, it is not the same for longer sequences. The performance degradation is increasing according to \textbf{tag ordering: NOUN, VERB, ADJ}. The relation between degradation, sequence length, and tag is visualized in the following diagram(\ref{fig:mergeScatter}).
+While the performance of those shorter sequences seems to be invariant to token merge, it is not the same for longer sequences. The performance degradation is increasing according to \textbf{tag ordering: PROPN, VERB, ADJ, NOUN}. The relation between degradation, sequence length, and tag is visualized in the following diagram(\ref{fig:mergeScatter}).
 \begin{figure} [!h]
 \begin{center}
-\includegraphics[width=0.4\textwidth]{figures/tokenmerg1.png}
+\includegraphics[width=0.8\textwidth]{figures/tokenmerg1.png}
 \caption{Token Merger: Degradation vs Sequence len vs Merge Tag}
 \label{fig:mergeScatter}
 \end{center}
