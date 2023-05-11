@@ -750,7 +750,7 @@ seq len & (NOUN,VERB,ADJ) & (ADJ \& NOUN) & Other's \\ \hline
 Those figures suggested that for larger sequences of blocks (ie. >=25), the accuracy distribution is more affected by the method and the most contribution to the change in IQR is by using ADJ and NOUN together.
 A control case of always wrong with "NOUN \& VERB \& ADJ \& PROPN \& ADV \& INTJ" is done and the average accuracy is 0.16. 
 
-\subsubsection{Token Merge}
+\subsubsection{Token Merge - Random Merge and Merge on specific Tag }
 The experiment results on token merge are presented in 2 parts, the first part will focus on the comparison between random merge and merge on POS tag, followed by the second part on presenting the result of merge with a specific pattern. The random merge is done with minimum and maximum merge set to 2 and 3 correspondingly. The result is summarized in the following(\ref{tab:mergeDegrade}):
 
 
@@ -768,9 +768,9 @@ seq len & Random & PROPN & VERB                                                 
 \label{tab:mergeDegrade}
 \end{table}
 
-The result of random merge on all sequences shows roughly the same level of degradation($\approx12\%$). It also noted that in the random merge experiment, \textbf{the merged pattern is different} for short($\leq10$) and long sequences ($\geq25$). The detail on pattern differences and test results are attached in the appendix(\ref{appendix:top10RMergeDiff},\ref{appendix:verbMerge},\ref{appendix:adjMerge}) .\\
+The result of random merge on all sequences length shows roughly the same level of degradation($\approx12\%$). It also noted that in the random merge experiment, \textbf{the merged pattern is different} for short($\leq10$) and long sequences ($\geq25$). The detail on pattern differences and test results are attached in the appendix(\ref{appendix:top10RMergeDiff},\ref{appendix:verbMerge},\ref{appendix:adjMerge}) .\\
 
-While the performance of those shorter sequences seems to be invariant to token merge, it is not the same for longer sequences. The performance degradation is increasing according to \textbf{tag ordering: PROPN, VERB, ADJ, NOUN}. The relation between degradation, sequence length, and tag is visualized in the following diagram(\ref{fig:mergeScatter1},\ref{fig:mergeScatter2}).
+The above table shows a clear difference between short and long sequence lengths such that shorter sequences are more invariant to token merge, but not for longer sequences. The performance degradation is increasing according to the \textbf{tag ordering: PROPN, VERB, ADJ} for both 25 and 50 sequences, but not for NOUN. The following diagram(\ref{fig:mergeScatter1},\ref{fig:mergeScatter2}) provided a better view of the relationship between degradation, tag, and sequence length.
 \begin{figure} [!h]
 \begin{center}
 \begin{subfigure}[h]{0.4\linewidth} 
@@ -787,9 +787,34 @@ While the performance of those shorter sequences seems to be invariant to token 
 \end{center}
 \end{figure}
 
+The above diagrams show a few interesting observations on long sequences. First of all, the curvature of degradation is concave down for a sequence of 25 but concave up for 50 sequence length, this indicates that the drop in performance is more rapid with increasing sequences, this suggested that \textbf{structural importance is positively correlated with increasing sequence length}. 
 
-The comparison of the token merge result suggested that the merge on ADJ is different from others' merge significantly on longer sequences, so, in order to confirm the finding, Wilcoxon signed-rank test is used to test the median accuracy of ADJ is different from others, it is done on the result of 25 sequences length with a sampling data point of 290. 
-The test on the null hypothesis which the accuracy median of VERB is the same for ADJ is rejected with p-value $2.05\times10^{-11}$ at 95\% confidence level. On the other hand, the same test is applied for VERB and PROPN, the result shows strong evidence to support the null hypothesis with p-value $0.7$. The details of the statistical test can be found in the appendix(\ref{appendix:signedranktestseq25}). The following figures show the accuracy distribution on each case(\ref{fig:displot1}) 
+Furthermore, the ordering of degradation by POS tag is the same with ADJ getting the worst performance if excluding NOUN in consideration, however, the merge pattern count from the appendix(\ref{appendix:top10RMergeDiff}) shows that ADJ occurs frequently as well on Random case, thus, it is curious on what casing the performance differences and it is done by studying the frequency count(table \ref{tab:top10AvgMegePatternRandADJ}) on merge pattern for the two strategies
+\begin{table}[!h]
+\fontsize{10pt}{10pt}\selectfont
+\begin{center}
+\begin{tabular}{|llll|}
+\hline
+\multicolumn{4}{|c|}{Top 10 Average Merge Pattern Count \%}                                                        \\ \hline
+\multicolumn{2}{|c|}{Random}                                        & \multicolumn{2}{c|}{ADJ}                     \\ \hline
+\multicolumn{1}{|l|}{ADJ\_ADJ\_ADJ}    & \multicolumn{1}{l|}{0.214} & \multicolumn{1}{l|}{ADJ\_NOUN}       & 0.235 \\ \hline
+\multicolumn{1}{|l|}{ADJ\_ADJ}         & \multicolumn{1}{l|}{0.184} & \multicolumn{1}{l|}{ADJ\_ADJ\_ADJ}   & 0.231 \\ \hline
+\multicolumn{1}{|l|}{NOUN\_NOUN}       & \multicolumn{1}{l|}{0.152} & \multicolumn{1}{l|}{ADJ\_ADJ}        & 0.187 \\ \hline
+\multicolumn{1}{|l|}{ADJ\_NOUN}        & \multicolumn{1}{l|}{0.086} & \multicolumn{1}{l|}{NOUN\_ADJ\_NOUN} & 0.108 \\ \hline
+\multicolumn{1}{|l|}{NOUN\_VERB}       & \multicolumn{1}{l|}{0.086} & \multicolumn{1}{l|}{ADJ\_ADJ\_NOUN}  & 0.071 \\ \hline
+\multicolumn{1}{|l|}{VERB\_NOUN}       & \multicolumn{1}{l|}{0.074} & \multicolumn{1}{l|}{VERB\_ADJ\_NOUN} & 0.067 \\ \hline
+\multicolumn{1}{|l|}{NOUN\_NOUN\_NOUN} & \multicolumn{1}{l|}{0.067} & \multicolumn{1}{l|}{ADJ\_VERB}       & 0.032 \\ \hline
+\multicolumn{1}{|l|}{ADJ\_NOUN\_NOUN}  & \multicolumn{1}{l|}{0.047} & \multicolumn{1}{l|}{NOUN\_ADJ}       & 0.029 \\ \hline
+\multicolumn{1}{|l|}{NOUN\_ADJ}        & \multicolumn{1}{l|}{0.047} & \multicolumn{1}{l|}{ADV\_ADJ\_NOUN}  & 0.021 \\ \hline
+\multicolumn{1}{|l|}{NOUN\_VERB\_NOUN} & \multicolumn{1}{l|}{0.044} & \multicolumn{1}{l|}{DET\_ADJ}        & 0.020 \\ \hline
+\end{tabular}
+\caption{Top 10 Average Merge Pattern(Rand Vs ADJ)}
+\label{tab:top10AvgMegePatternRandADJ}
+\end{center}
+\end{table}
+From the table, the major difference is that ADJ+NOUN comes to the top with the strategy of ADJ, then follow by the top 1 and 2 patterns from the random merge. \textbf{This may suggest that ADJ+NOUN is significant for the degradation.} Another point to note is the pattern NOUN+ADJ+NOUN which may contribute to the degradation, but the count is just slightly over 10\%. However, there is no cue for the different behavior of merging with NOUN on sequence length 50.\\      
+
+Apart from the measure of average degradation of performance, it is also wondered if those tests' accuracy has notably different from each other, so the Wilcoxon signed-rank test is used to test the median accuracy of ADJ is different from others, it is done on the result of 25 sequences length with a sampling data point of 290. The test shows support for the alternative hypothesis that the accuracy median is different between VERB and ADJ with p-value $2.05\times10^{-11}$ at 95\% confidence level. On the other hand, the same test is applied for VERB and PROPN, the result shows strong evidence to support the null hypothesis that their median is equal(p-value $0.7$). The details of the statistical test can be found in the appendix(\ref{appendix:signedranktestseq25}). The following figures show the accuracy distribution for each case(\ref{fig:displot1}): 
 \begin{figure} [!h] 
 \begin{subfigure}[h]{0.3\linewidth} 
 \includegraphics[width=\linewidth]{figures/merge_adj_rand_joinplot.png}
@@ -808,6 +833,7 @@ The test on the null hypothesis which the accuracy median of VERB is the same fo
 \end{subfigure}
 \end{figure}
 \newpage
+\subsubsection{Token Merge - Merge with specific Pattern }
 The experiments result above suggested that the sequence block size will result in different behavior on the performance degradation, and the block size difference can mainly be separated into shorter($\leq10$) and longer($\geq25$), in a result, the fixed pattern merge will switch to focus on sequence length of 10 and 25 and the finding of different merge pattern (\ref{appendix:top10RMergeDiff}). The patterns that are used are oriented with POS tags ADJ, VERB, and NOUN. The table(\ref{tab:fixmerge1},\ref{tab:fixmerge2}) below gives an overview of the degradation according to different patterns, and the details are placed in the appendix(\ref{appendix:adjnounMerge},\ref{appendix:nounverbadjMerge},\ref{appendix:verbnounMerge}).
 
 
@@ -835,6 +861,22 @@ seq len & \begin{tabular}[c]{@{}c@{}}Subject\\ NOUN+VERB\end{tabular} & NOUNT+VE
 \caption{Merge fixed pattern(2)}
 \label{tab:fixmerge2}
 \end{table}
+
+\begin{figure} [!h]
+\begin{center}
+\begin{subfigure}[h]{0.4\linewidth} 
+\includegraphics[width=\linewidth]{figures/tokenmerge_fixpattern1.png}
+\caption{Fixed Pattern Merge: Degradation vs Sequence len vs Merge Tag}
+\label{fig:fixmergeScatter1}
+\end{subfigure}
+\hfill
+\begin{subfigure}[h]{0.4\linewidth} 
+\includegraphics[width=\linewidth]{figures/tokenmerge_fixpattern2.png}
+\caption{Fixed Pattern Merge: Degradation vs Merge Tag}
+\label{fig:fixmergeScatter2}
+\end{subfigure}
+\end{center}
+\end{figure}
 
 The result above indicates that the sequence length of 25 on all fixed pattern merges can only achieve $50\%\sim60\%$ of the base case performance and those are already under $0.5$ accuracy which means it fails to learn at all. In contrast to the short sequences which still maintain over $70\%$ performance relative to the base case on some pattern(ADJ+NOUN, NOUN+ADJ+VERB), but also notice that the accuracy is just slightly over $0.5$.One thing to notice is that the shorter sequence length shows the ability to influence on fixed pattern ADJ+NOUN but not for the longer block which may suggest the structure they acquired may be different. In addition, the shorter and longer sequence of input can be thought of as simulating the sensory-motor aspect\cite{Hauser_2002} on reading capability. 
 
