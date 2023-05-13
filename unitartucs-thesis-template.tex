@@ -280,7 +280,7 @@ Bakalaureusetöö (9 EAP)
 \noindent\textbf{Abstract:}
 
 \noindent
-The large language models by using deep learning methods give surprising results in achieving  human-level performance in a variety of tasks, especially on it shows the ability of Artificial General Intelligence(AGI) and the understanding of false belief from solely language training. This suggested a strong relationship between the Theory of Mind(ToM) and language training which has been a long study in the field of psychology. However, the influence of external language on internal language is not obvious from the linguistics perspective. Together with Chomsky's theory on generative grammar and the belief in the external language influencing the development of ToM, this thesis gives a hypothesis that there is an interaction between external and internal language, and this dynamic drives the learning behind the large language model. In order to go further in this direction, the thesis takes the first step to investigate the impact of incomplete language learning by two methods: always wrong and token merge method on an LSTM model. The result gives positive support to language structure is also an important factor for language models to understand human text context apart from statistics. 
+The large language models by using deep learning methods give surprising results in achieving  human-level performance in a variety of tasks, especially on it shows the ability of Artificial General Intelligence(AGI) and the understanding of false belief from solely language training. This suggested a strong relationship between the Theory of Mind(ToM) and language training which has been a long study in the field of psychology. This rise the question on is it the same for those deep learning language models. In this direction, the thesis focus on the natural language understanding task(semantics classification) and gives a hypothesis that apart from the statistic, language model understanding is built on a deep structure from training. However, this structure is not directly accessible but only through tests, just like those studies of ToM in psychology. Thus, this thesis proposes a method - Token Merge that enables the test of the existence of the structure. The experiment result gives positive feedback on supporting the proposed hypothesis and it also gives an ordering of the importance of performance by grammatical tagging. 
 
 \vspace*{1ex}
 
@@ -305,7 +305,9 @@ Tokenide ühendamine}
 
 %\noindent ...
 
-Suured keelemudelid, kasutades süvaõppe meetodeid, annavad üllatavaid tulemusi inimtasemel jõudluse saavutamisel mitmesugustes ülesannetes, eriti see näitab tehisintellekti (AGI) võimekust ja valeuskumuste mõistmist ainult keeleõppest. See viitas tugevale seosele vaimuteooria (ToM) ja keeleõppe vahel, mida on psühholoogia valdkonnas kaua uuritud. Siiski ei ole väliskeele mõju sisekeelele keeleteaduse vaatenurgast ilmne. Koos Chomsky teooriaga generatiivsest grammatikast ja usust, et väliskeel mõjutab ToM-i arengut, annab see lõputöö hüpoteesi, et välise ja sisemise keele vahel on interaktsioon ning see dünaamika juhib õppimist suure keelemudeli taga. Selles suunas edasi liikumiseks astub lõputöö esimene samm, et uurida mittetäieliku keeleõppe mõju kahel meetodil: alati vale ja märgiühendamise meetod LSTM mudelil. Tulemus toetab positiivselt keelestruktuuri, mis on ka keelemudelite jaoks oluline tegur, et mõista lisaks statistikale ka inimteksti konteksti. 
+Suured keelemudelid, kasutades süvaõppe meetodeid, annavad üllatavaid tulemusi inimtasemel jõudluse saavutamisel mitmesugustes ülesannetes, eriti see näitab tehisintellekti (AGI) võimekust ja valeuskumuste mõistmist ainult keeleõppest. See viitas tugevale seosele vaimuteooria (ToM) ja keeleõppe vahel, mida on psühholoogia valdkonnas kaua uuritud. See tõstatab küsimuse, kas see on sama ka nende süvaõppe keelemudelite puhul. Selles suunas keskendub lõputöö loomuliku keele mõistmise ülesandele (semantiline klassifikatsioon) ja esitab hüpoteesi, et peale statistika põhineb keelemudeli mõistmine koolitusest tulenevale süvastruktuurile. See struktuur ei ole aga otseselt juurdepääsetav, vaid ainult testide kaudu, nagu ka psühholoogia ToM-i uuringud. Seega on käesolevas lõputöös välja pakutud meetod – Token Merge, mis võimaldab testida struktuuri olemasolu. Eksperimendi tulemus annab positiivset tagasisidet väljapakutud hüpoteesi toetamise kohta ning annab ka järjestuse soorituse tähtsuse kohta grammatilise märgistamise teel.
+
+
 
 \vspace*{1ex}
 
@@ -339,21 +341,18 @@ The recent development in Large Language Models (LLM) such as ChatCPT has archiv
 In linguistics study, the hypothesis proposed by Chomsky\cite{Hauser_2002} suggested there are two senses of faculty of language: internal(I) and external(E) language(details in \ref{introLanguage}), and the primary study for linguistics is focused on I-language(though, mind) by modeling from E-language, and this results in the theory of generative grammar and universal grammar. In a high-level overview, the I-language described by Chomsky can be translated into the Theory of Ming(ToM) from psychology, but it is more well defined from the psychology aspect(details in \ref{ToM}) and a large amount of research shows there is a strong correlation between ToM and external language training. However, this type of influence is not captured by the linguistics field. With all those components described above, this thesis proposes a hypothesis that during language training, apart from statistics, a potential deep structure is formed which plays an important role. However, this structure is not directly accessible, thus a new method - token merge is proposed in order to exterminate the existence of such structure. 
 \begin{figure} [!h]
 \begin{center}
-\includegraphics[width=0.8\textwidth]{figures/Ilang_Elang_NLU_NLG.png}
-\caption{Hypothesis on LLM's learning dynamic} 
+\includegraphics[width=0.8\textwidth]{figures/generalview1.png}
+\caption{Hypothesis on testing the existence of deep structure by token merge} 
 \label{fig:LLMhypothesis}
 \end{center}
 \end{figure}
 
-The above diagram treats the LLM as the internal language that is composite with two main components from natural language processing(NLP), natural language understanding(NLU), and generation(NLG), with the structure that NLU is supporting NLG and NLG is indirectly influencing back to NLU by external language. 
-
-Since the hypothesis is large in scale, it should be modularized into several parts of research which consist of:
+The above figure(\ref{fig:LLMhypothesis}) visualized the hypothesis that tries to test in this thesis. The test accuracy distribution will be used as a medium to see if it is significantly different between 3 cases: base case, always wrong, and token merge, those methods are summarized in the following:
 \begin{enumerate}
-    \item External Influence on Understanding
-    \item Bridging between understanding and generation
-    \item Generative and influence back to Understanding
+    \item Always wrong - destroy the conditional probability $P(token|target)$ by disturb training
+    \item Token merge - destroy the language structure in the input text
+    \item language model without any interference
 \end{enumerate}
-In the thesis, it is focused on the first part of the study.
 
 The paper is organized into 5 sections, the first section is an introduction which will give some overview of the background, followed by two sections of literature review. The experiment details will be described in section four and followed by the result discussion and conclusion.
 
@@ -465,7 +464,6 @@ The LSTM is a further development base on the RNN structure which comes with the
 
 The situation has changed after the publication of the paper "Attention is all you need"{cite}. The purposed attention mechanism totally throws away the recurrent network and later becomes the transformer model with multiple-head attention and a deep encoder network. The attention formulation can be briefly described as query retrieval with the query representing the current input token and the key being the reset of the corpus that returns the similarity between the pairs of words, in this sense, it provides a view of global dependence which against the problem of long-term dependence within the textual context. This attention block is further stacked up vertically(Multi-Head) and horizontally(composition transformation) to form the base of all transformer networks.   
 
-\newpage
 \section{ToM and Language - Literature Survey} 
 From the introduction, it is shown that language(I-language) and ToM is strongly coupled in Linguistics and psychology but has different aspects of external language. Linguistics model E-language as data generated from internal, treating internal language as deep structural(or grammar) that is universal to everyone, but psychology is more focused on how \textbf{external language is affecting the development of the mental state}. There is no doubt that language does matter in mental thought, but the question is what's \textbf{the role of language in building up cognitive structures and their uniqueness in that role\cite{Astington_2005}.} The investigation of the roles of language in ToM can be summarized into four main focuses\cite{Astington_2005}:
 \begin{enumerate}
@@ -487,13 +485,11 @@ The basic architecture nowadays for language models is dominated by the transfor
 But the question of the number of attention needed and the efficiency of increasing attention remains unanswered\cite{Merty_2019}. 
 It is shown that transformer architecture mainly benefits from the attention mechanism which has its own place in statistics but is this statistical property gives rise to such high accuracy or even the enlightenment of ToM still remains unclear.
 
-\newpage
-
 
 \section{Experiment Setting} 
 
 \subsection{Data Set and Pre-processing}
-The experiment is conducted on the IMDB movie review data set {cite} for sentiment classification. The whole data set consists of 50,000 textual reviews and a target label indicating  positive and negative feedback on the movie. 15,000 reviews are sampled from the data as the training set and 3,000 for testing data. The following table(\ref{tab:dataset}) summarizes the positive and negative class distribution on both the training and test set.
+The experiment is conducted on the IMDB movie review data set {cite} for sentiment classification to  mimic inferring mental states(ie. good or bad) from the human text. The whole data set consists of 50,000 textual reviews and a target label indicating  positive and negative feedback on the movie. 15,000 reviews are sampled from the data as the training set and 3,000 for testing data. The following table(\ref{tab:dataset}) summarizes the positive and negative class distribution on both the training and test set.
 \begin{table}[!h]
     \centering
         \begin{tabular}{||c|c| c||} 
@@ -511,7 +507,7 @@ The experiment is conducted on the IMDB movie review data set {cite} for sentime
 
 Those data sets then go through data cleaning(remove html related tags) and pre-processing pipeline as described in \ref{introLM} apart from the last two processes (Stemming/Lemmatization, embedding). The average token count for each review is 105 (=1,581,851/15,000). \\
 
-Since the experiment is conducted on destroying the language, the part of speech(POS) tags are used as a selector to control which part of the text should work on instead of doing it at the token level. The following table(\ref{tab:poscount}) shows the top 10 POS tags count and the corresponding percentage  for the pre-processed data set.
+Since the experiment is conducted on destroying the language, the part of speech(POS) tags are used as metadata to control which part of the text should work on instead of doing it at individual token level. The following table(\ref{tab:poscount}) shows the top 10 POS tags count and the corresponding percentage  for the pre-processed data set.
 
 \begin{table}[!h]
 \begin{center}
@@ -550,7 +546,11 @@ The experiment result from developmental psychology suggested a strong correlati
 In order to reflect this scenario in the language model, this experiment proposes 2 methods that try to approximate language deficiency, "always wrong" and Merge. 
 
 \subsubsection{Always Wrong}
-The idea behind the method "always wrong" is to trick the model's classification during training at a specific position of the text, since the model is using the output of LSTM for classification, so there is a one-to-one mapping between the result and input token. In this experiment, the position is appointed using POS tag, for example, treat all predictions for ADJ as wrong. The illusion is done by changing the loss value at the corresponding location to 0.5 for the cross-entropy loss function. The purpose of it is to destroy the learning and reflect it has difficulty in understanding the token at that position. Figure(\ref{fig:alwayswrong}) shows briefly how the method works, detail of the full model can be found in \ref{modelarch}.
+In the Bayesian inference setting for semantic classification, the relationship between the target and token is usually formulated as:\\
+\begin{center}
+    $P(target|tokens)=P(tokens|target)\timesP(target)$  
+\end{center}
+In simple words, the posterior probability is modeled by the influence of data and prior probability. Since the prior distribution is different by case, the only way to destroy the posterior is through the conditional probability part($P(tokens|target)$), which is the main idea behind the method "always wrong". In order to trick the model's classification during training at a specific position of the input text, it takes advantage of the LSTM's output layer that each output is corresponding to the input token position, so that it is possible to have a one-to-one mapping between the result and input token. In this experiment, the position is selected using POS tag, for example, treat all predictions on input token with ADJ tag as wrong. The illusion is done by changing the loss value at the corresponding location to 0.5 for the cross-entropy loss function. Figure(\ref{fig:alwayswrong}) shows briefly how the method works, detail of the full model can be found in \ref{modelarch}.
 \begin{figure} [!h]
 \begin{center}
 \includegraphics[width=0.2\textwidth]{figures/alwayswrong.png}
@@ -560,7 +560,7 @@ The idea behind the method "always wrong" is to trick the model's classification
 \end{figure}
 
 \subsubsection{Token Merge} \label{incompmerge}
-The concept of merge tokens origin from the MERGE operator(\ref{introLanguage}) of bare phrase structures, as introduced above, MERGE help to build a structural description set from sentences and assume to take 2 input. This experiment, it is trying to simulate the MERGE in 3 strategies:
+The concept of merge tokens origin from the MERGE operator(\ref{introLanguage}) of bare phrase structures, as introduced above, MERGE help to build a structural description set from sentences and assume to take 2 input. In this experiment, 3 strategies are used to simulate the MERGE:
 \begin{center}
 \begin{enumerate}
     \item Random Merge
@@ -586,8 +586,9 @@ The architecture for the model consists of 4 main blocks which are Embedding, Me
 \hline
 Block                   & \multicolumn{1}{c|}{Parameters}                                 \\ \hline
 Embedding               & embedding dim=256                                               \\ \hline
-Merge(Conv1D)          & kernel=2,stride=1                                               \\ \hline
+Merge(Conv1D x2 )       & kernel=2,stride=1                                               \\ \hline
 LSTM                    & input dim=256, hidden dim=256, hidden layer=3, bidirection=True \\ \hline
+LSTM Input sequence          & 5,10,25,50,600                                                  \\ \hline
 Classification(Linear) & input dim=256*2 , out dim = 3                                   \\ \hline
 \end{tabular}
 \caption{Model Settings}
@@ -649,8 +650,8 @@ The merge tensor $\mathbb{M}$ will be used as input to Conv1D(k=2,stride=1) so t
 
 
 \subsubsection{Training}
-The review will be fed to the model by pre-defined sequence length and sliding window as a sequence of blocks. The hidden and cell state of LSTM is initialized to 0 at the start of the review and both states of the current block are fed back to the model together with the next block of input(fig.\ref{fig:modeFeedBack}). Thus, the average prediction made for one review is 105. A mini-batch of size 1000 reviews is sampled from the training set as 1 epoch of training, then the test set is fed after each epoch to evaluate the performance of the model. The performance of the model is measured by the average classification result($\hat{\mu}$) of the last 20 tokens sequence, the result is treated as correctly classified if:\\
-$abs(\hat{\mu}-targe)<0.05$
+The model is fed with review by streaming a sequence of blocks, and the block size and the sliding windows are set to those pre-defined LSTM input sequence lengths. At the beginning of each review, the hidden and cell state of LSTM is initialized to 0 and both states of the current block are then fed back to the model together with the next block of input(fig.\ref{fig:modeFeedBack}). So, the average prediction made for one review is around 105 times. A mini-batch of size 1000 reviews is sampled from the training set as 1 epoch of training, then the test set is fed after each epoch for evaluation. The performance of the model is measured by the classification made on the last 20 tokens ($\hat{\mu}$), the result is treated as correctly classified if:\\
+$mean(abs(\hat{\mu}-targe))<0.05$ (ie. at most 1 token prediction is wrong)
    
 \begin{figure} [!h]
 \begin{center}
@@ -687,7 +688,6 @@ Merge Specific Patten                                                & ADJ+NOUN,
 \end{center}
 \end{table}
 
-\newpage
 \section{Experiment Result and Discussion} 
 In this section, the experiment results of the two incomplete languages setup are presented on the test set. First of all, the base case results  for each sequence length are shown in the following table(\ref{tab:basecaseResult}).
 
@@ -729,7 +729,7 @@ Column 3-Other's}
 \label{tab:alwayswrongDegrade}
 \end{table}
 
-In general, the above results show that the "always wrong" method doesn't largely impact the performance, \textbf{with an average degradation from 3\% to 5\%}. Especially, with the sequence length of 5, it shows nearly no difference in comparison to the base case. It is also stressed that those are from a disrupted training which in average over 50\% of loss value is modified(table\ref{tab:poscount}). Although the mean accuracy looks good in this experiment, it shows some differences in the distribution once comparing the inter-quartile range(IQR), and the ratio between the base case shown in the following table(\ref{tab:alwayswrongIQR}).   
+In general, the above results show that the "always wrong" method doesn't largely impact the performance, \textbf{with an average degradation from 3\% to 5\%}. Especially, with the sequence length of 5, it shows nearly no difference in comparison to the base case. It is also stressed that those are from a disrupted training which on average over 50\% of loss value is modified(table\ref{tab:poscount}). Although the mean accuracy looks good in this experiment, it shows some differences in the distribution once comparing the inter-quartile range(IQR), and the ratio between the base case shown in the following table(\ref{tab:alwayswrongIQR}).   
 \begin{table}[!h]
 \fontsize{10pt}{10pt}\selectfont
 \begin{center}
@@ -754,6 +754,7 @@ The experiment results on token merge are presented in 2 parts, the first part w
 
 
 \begin{table}[!h]
+\begin{center}
 \fontsize{10pt}{10pt}\selectfont
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline
@@ -765,11 +766,10 @@ seq len & Random & PROPN & VERB                                                 
 \end{tabular}
 \caption{Performance Degrade by Random Merge \& POS Tag Merge.\\ Font in bold = accuracy$<0.5$}
 \label{tab:mergeDegrade}
+\end{center}
 \end{table}
 
-The result of random merge on all sequences length shows roughly the same level of degradation($\approx12\%$). It also noted that in the random merge experiment, \textbf{the merged pattern is different} for short($\leq10$) and long sequences ($\geq25$). The detail on pattern differences and test results are attached in the appendix(\ref{appendix:top10RMergeDiff},\ref{appendix:verbMerge},\ref{appendix:adjMerge}) .\\
-
-The above table shows a clear difference between short and long sequence lengths such that shorter sequences are more invariant to token merge, but not for longer sequences. The performance degradation is increasing according to the \textbf{tag ordering: PROPN, VERB, ADJ} for both 25 and 50 sequences, but not for NOUN. The following diagram(\ref{fig:mergeScatter1},\ref{fig:mergeScatter2}) provided a better view of the relationship between degradation, tag, and sequence length.
+The result of random merge on all sequences length shows roughly the same level of degradation($\approx12\%$). It also noted that in the random merge experiment, \textbf{the merged pattern is different} for short($\leq10$) and long sequences ($\geq25$). The detail on pattern differences and test results are attached in the appendix(\ref{appendix:top10RMergeDiff},\ref{appendix:verbMerge},\ref{appendix:adjMerge}). The above table shows a clear difference between short and long sequence lengths such that shorter sequences are more invariant to token merge, but not for longer sequences. The performance degradation is increasing according to the \textbf{tag ordering: PROPN, VERB, ADJ} for both 25 and 50 sequences, but not for NOUN. The following diagram(\ref{fig:mergeScatter1},\ref{fig:mergeScatter2}) provided a better view of the relationship between degradation, tag, and sequence length.
 \begin{figure} [!h]
 \begin{center}
 \begin{subfigure}[h]{0.4\linewidth} 
@@ -786,7 +786,7 @@ The above table shows a clear difference between short and long sequence lengths
 \end{center}
 \end{figure}
 
-The above diagrams show a few interesting observations on long sequences. First of all, the curvature of degradation is concave down for a sequence of 25 but concave up for 50 sequence length, this indicates that the drop in performance is more rapid with increasing sequences, this suggested that \textbf{structural importance is positively correlated with increasing sequence length}. 
+Those diagrams show a few interesting observations on long sequences. First of all, the curvature of degradation is concave down for a sequence of 25 but concave up for 50 sequence length, this indicates that the drop in performance is more rapid with increasing sequences, this suggested that \textbf{structural importance is positively correlated with increasing sequence length}. 
 
 Furthermore, the ordering of degradation by POS tag is the same with ADJ getting the worst performance if excluding NOUN in consideration, however, the merge pattern count from the appendix(\ref{appendix:top10RMergeDiff}) shows that ADJ occurs frequently as well on Random case, thus, it is curious on what casing the performance differences and it is done by studying the frequency count(table \ref{tab:top10AvgMegePatternRandADJ}) on merge pattern for the two strategies
 \begin{table}[!h]
@@ -831,7 +831,7 @@ Apart from the measure of average degradation of performance, it is also wondere
 \label{fig:displot1}
 \end{subfigure}
 \end{figure}
-\newpage
+
 \subsubsection{Token Merge - Merge with specific Pattern }
 The experiments result above suggested that the sequence block size will result in different behavior on the performance degradation which can mainly be separated into shorter($\leq10$) and longer($\geq25$), so, the fixed pattern merge testing will switch to focus on sequence length of 10 and 25 on different merge pattern. The patterns that are used are concerned with POS tags ADJ, VERB, and NOUN as a result of the previous section which gives insight into the pattern ADJ+NOUN may affect the underlying structure. The tables(\ref{tab:fixmerge1},\ref{tab:fixmerge2}) and diagram(\ref{fig:fixmergeScatter1},\ref{fig:fixmergeScatter2})below give an overview of the degradation according to different patterns, and the details are placed in the appendix(\ref{appendix:adjnounMerge},\ref{appendix:nounverbadjMerge},\ref{appendix:verbnounMerge}).
 
@@ -903,12 +903,12 @@ Those findings also give rise to many questions from the statistical aspect. One
 \begin{figure} [!h]
 \begin{center}
 \includegraphics[width=0.5\textwidth]{figures/alwayswrong_IV_detail.png}
-\caption{Destroying the token distribution by disturb training}
+\caption{Disturb training to destroy the token statistic}
 \label{fig:alwayswrongdetails}
 \end{center}
 \end{figure}
 
-\label{text:alwayswrongArg}Another thought from the statistical side is that the model still keeps counting on the occurrence of tokens since from the observation that the embedding weight doesn't change much from the initial(\ref{context:embeddoesntchange}), so it can still infer statistics property from the data. This question makes a strong argument for the existence of grammar structure constructed by the model, but if the argument holds, the merge performance won't be different much in comparison to the always wrong method. For instance, let's think of merging two words, "good" and "movie" into "gomodoive" by the Conv1D and it converges to this representation, then the model will still count this human non-sense word "gomodoive" to positive semantics, and not degrade much on the accuracy. The concept is illustrated in the following figure(\ref{fig:merge_nonsense}).The difference between always wrong and merge performance suggests that there is a structural building up by the model during the training process. \\
+\label{text:alwayswrongArg}Another thought from the statistical side is that the model still keeps counting on the occurrence of tokens since from the observation that the embedding weight doesn't change much from the initial(\ref{context:embeddoesntchange}), so it can still infer statistics property from the data. This question makes a strong argument for the existence of grammar structure constructed by the model, but if the argument holds, the merge performance won't be different much in comparison to the always wrong method. For instance, let's think of merging two words, "good" and "movie" into "gomodoive" by the Conv1D and it converges to this representation, then the model will still count this human non-sense word "gomodoive" to positive semantics, and not degrade much on the accuracy. The concept is illustrated in the following figure(\ref{fig:merge_nonsense}). The difference between always wrong and merge performance suggests that there is a structural building up by the model during the training process. \\
 \begin{figure}[!h] 
     \centering
     \includegraphics[width=0.6\textwidth]{figures/merge_countingArg.png}
@@ -1092,8 +1092,7 @@ This thesis gives preliminary insight into the existence of structure inside a l
 \end{table}
 
 \begin{table}[!h]
-\begin{center}
-\fontsize{10pt}{10pt}\selectfont
+
 \begin{tabular}{|ll|}
 \hline
 \multicolumn{2}{|c|}{Top 10 Merge Pattern}                      \\ \hline
@@ -1111,13 +1110,12 @@ This thesis gives preliminary insight into the existence of structure inside a l
 \end{tabular}
 \caption{Top 10 Random Merge Pattern differences}
 \label{appendix:top10RMergeDiff}
-\end{center}
+
 \end{table}
 
 
 \begin{table}[!h]
-\begin{center}
-\fontsize{10pt}{10pt}\selectfont
+
 \begin{tabular}{|crrr|}
 \hline
 \multicolumn{4}{|c|}{Wilcoxon signed-rank test}                                                                                           \\ \hline
@@ -1131,11 +1129,10 @@ This thesis gives preliminary insight into the existence of structure inside a l
 \end{tabular}
 \caption{Signed-rank test on seq len 25}
 \label{appendix:signedranktestseq25}
-\end{center}    
+  
 \end{table}
 
 \begin{table}[!h]
-\fontsize{10pt}{10pt}\selectfont
 \begin{tabular}{c|ccccc|}
 \cline{2-6}
 \multicolumn{1}{l|}{}         & \multicolumn{5}{c|}{Test Set Accuracy \% (ADJ+NOUN)}                                                                                       \\ \hline
@@ -1148,7 +1145,7 @@ This thesis gives preliminary insight into the existence of structure inside a l
 \end{table}
 
 \begin{table}[!h]
-\fontsize{10pt}{10pt}\selectfont
+
 \begin{tabular}{c|ccccc|}
 \cline{2-6}
 \multicolumn{1}{l|}{}         & \multicolumn{5}{c|}{Test Set Accuracy \% (VERB+NOUN)}                                                                                      \\ \hline
@@ -1161,7 +1158,7 @@ This thesis gives preliminary insight into the existence of structure inside a l
 \end{table}
 
 \begin{table}[!h]
-\fontsize{10pt}{10pt}\selectfont
+
 \begin{tabular}{c|ccccc|}
 \cline{2-6}
 \multicolumn{1}{l|}{}         & \multicolumn{5}{c|}{Test Set Accuracy \% (NOUN+VERB+ADJ)}                                                                                  \\ \hline
@@ -1172,7 +1169,6 @@ This thesis gives preliminary insight into the existence of structure inside a l
 \caption{Test Accuracy Details on Merge NOUN+VERB+ADJ.}
 \label{appendix:nounverbadjMerge}
 \end{table}
-
 
 
 
