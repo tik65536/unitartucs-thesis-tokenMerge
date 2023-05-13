@@ -884,10 +884,10 @@ The result above indicates that the sequence length of 25 on all fixed pattern m
 
 The above experiments have demonstrated two different methods that try to degrade the performance of a small language model in semantics classification. The findings from those experiments can be summarized in the following 5 points:
 \begin{enumerate}
-    \item Tricking the model by giving partially wrong information won't harm the accuracy much, but it affects the distribution of accuracy.
-    \item Destroying language structure by token merge is much more harmful to the model to infer mental concepts (good/bad)
+    \item Tricking the model by manipulating $P(token|target)$ won't harm the accuracy much, but it affects the distribution of accuracy.
+    \item Destroying language structure by token merge is much more harmful on the model to infer mental concepts (good/bad), thus giving support on language model do form structure from training. 
     \item Sequence length is negatively correlated with the model's accuracy on token merge.
-    \item Shorter sequence of input is invariant to structure change with the price on accuracy.
+    \item Shorter sequence of input is invariant to structural changes with the price on accuracy.
     \item There is an ordering on the model's performance with token merge with respect to POS tags.
 \end{enumerate}
 
