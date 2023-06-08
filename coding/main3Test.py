@@ -252,16 +252,19 @@ bernoulli= Bernoulli(torch.tensor([interventionP]))
 preprocessP= Bernoulli(torch.tensor([preprocess]))
 model=PredictLSTMIntervionP(n_vocab,embeddingDim,seqlen,seqlen,minmerge,maxmerge,batchsize,GRU,hiddenLayer,hiddenSize,bidirectional,True,numOfConvBlock,groupRelu,convpredict,kernelsize,mergeRate)
 weightHistory={}
+gate=['igone','forget','learn','output']
 print(model.predict.weight.shape)
 for name,para in model.RNN.named_parameters():
     if("weight" in name):
         print(f'{name} {para.data.shape}')
-        data=torch.abs(para.data[:seqlen,:].detach().cpu())
+        data=torch.abs(para.data.detach().cpu())
         weightHistory[name]={}
         weightHistory[name]['previous']=data
-        weightHistory[name]['birthrate']=[]
-        weightHistory[name]['deathrate']=[]
-        weightHistory[name]['previous_pop']=torch.count_nonzero(data)
+        for gidx in range(len(gate)):
+            weightHistory[name][gate[gidx]]={}
+            weightHistory[name][gate[gidx]]['birthrate']=[]
+            weightHistory[name][gate[gidx]]['deathrate']=[]
+            weightHistory[name][gate[gidx]]['previous_pop']=torch.count_nonzero(data[gidx*hiddenSize:(gidx*hiddenSize)+hiddenSize,:])
 if(numOfConvBlock>0):
     for name,para in model.conv1d.named_parameters():
         if("weight" in name):
@@ -415,16 +418,20 @@ for epoch in range(epochs):
             writer.add_histogram(f'LSTM_{name}',para.data,trainbatchcount)
             if("weight" in name):
                 previousweight = weightHistory[name]['previous']
-                currentweight = torch.abs(para.data[:seqlen,:].detach().cpu())
-                diff = torch.flatten(previousweight-currentweight)
-                br=len(torch.where(diff>0)[0])
-                dr=len(torch.where(diff<0)[0])
-                init=weightHistory[name]['previous_pop']
-                weightHistory[name]['previous_pop']=torch.count_nonzero(currentweight)
+                currentweight = torch.abs(para.data.detach().cpu())
                 weightHistory[name]['previous']=currentweight
-                weightHistory[name]['birthrate'].append(br/init)
-                weightHistory[name]['deathrate'].append(dr/init)
-                writer.add_scalars(f'{name}_population',{'birth':(br/init),'death':(dr/init)},trainbatchcount)
+                for gidx in range(len(gate)):
+                    g = gate[gidx]
+                    previousGateWeight = previousweight[gidx*hiddenSize:gidx*hiddenSize+hiddenSize,:]
+                    currentGateWeight = currentweight[gidx*hiddenSize:gidx*hiddenSize+hiddenSize,:]
+                    diff = torch.flatten(previousGateWeight-currentGateWeight)
+                    br=len(torch.where(diff>0)[0])
+                    dr=len(torch.where(diff<0)[0])
+                    init=weightHistory[name][g]['previous_pop']
+                    weightHistory[name][g]['previous_pop']=torch.count_nonzero(currentGateWeight)
+                    weightHistory[name][g]['birthrate'].append(br/init)
+                    weightHistory[name][g]['deathrate'].append(dr/init)
+                    writer.add_scalars(f'{name}_{g}_population',{'birth':(br/init),'death':(dr/init)},trainbatchcount)
         if(numOfConvBlock>0):
             for name,para in model.conv1d.named_parameters():
                 writer.add_histogram(f'Conv1D_{name}',para.data,trainbatchcount)
