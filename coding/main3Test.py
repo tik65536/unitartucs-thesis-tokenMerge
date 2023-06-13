@@ -427,11 +427,13 @@ for epoch in range(epochs):
                     diff = torch.flatten(previousGateWeight-currentGateWeight)
                     br=len(torch.where(diff>0)[0])
                     dr=len(torch.where(diff<0)[0])
+                    freeze=len(torch.where(diff==0)[0])
                     init=weightHistory[name][g]['previous_pop']
                     weightHistory[name][g]['previous_pop']=torch.count_nonzero(currentGateWeight)
                     weightHistory[name][g]['birthrate'].append(br/init)
                     weightHistory[name][g]['deathrate'].append(dr/init)
-                    writer.add_scalars(f'{name}_{g}_population',{'birth':(br/init),'death':(dr/init)},trainbatchcount)
+                    writer.add_scalars(f'{name}_{g}_population',{'birth':(br/init),'death':(dr/init),'freeze':(freeze/init)},trainbatchcount)
+                    writer.add_scalar(f'{name}_{g}_prePop',init,trainbatchcount)
         if(numOfConvBlock>0):
             for name,para in model.conv1d.named_parameters():
                 writer.add_histogram(f'Conv1D_{name}',para.data,trainbatchcount)
