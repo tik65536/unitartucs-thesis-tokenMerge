@@ -434,6 +434,7 @@ for epoch in range(epochs):
                     weightHistory[name][g]['deathrate'].append(dr/init)
                     writer.add_scalars(f'{name}_{g}_population',{'birth':(br/init),'death':(dr/init),'freeze':(freeze/init)},trainbatchcount)
                     writer.add_scalar(f'{name}_{g}_prePopNorm',torch.norm(currentweight),trainbatchcount)
+                    writer.add_histogram(f'{name}_{g}',currentweight,trainbatchcount)
         if(numOfConvBlock>0):
             for name,para in model.conv1d.named_parameters():
                 writer.add_histogram(f'Conv1D_{name}',para.data,trainbatchcount)
