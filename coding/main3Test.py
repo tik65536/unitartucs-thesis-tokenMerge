@@ -636,31 +636,34 @@ for epoch in range(epochs):
                 diffcount+=np.sum(poslist!=permuteposlist,axis=-1)
                 pred,state,mergeidx =model(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
                 g=time.time()
-                ns,ps,btwgroups,nwidx,pwidx,_,_ = CellStateSimility(state[1],nidx,pidx,weight)
-                negCellStateSimility.append(ns)
-                posCellStateSimility.append(ps)
-                btwGroupSimility.append(btwgroups.detach().cpu().numpy())
-                nmind[:,i//seqlen]=nwidx
-                pmind[:,i//seqlen]=pwidx
+                if(GRU=False):
+                    ns,ps,btwgroups,nwidx,pwidx,_,_ = CellStateSimility(state[1],nidx,pidx,weight)
+                    negCellStateSimility.append(ns)
+                    posCellStateSimility.append(ps)
+                    btwGroupSimility.append(btwgroups.detach().cpu().numpy())
+                    nmind[:,i//seqlen]=nwidx
+                    pmind[:,i//seqlen]=pwidx
                 loss=criterion(pred,t)
                 losses.append(loss.item())
                 pred=torch.nn.functional.softmax(pred,dim=1)
                 pred=pred.permute(0,2,1).detach().cpu().numpy()
                 predict_history[:,i:i+seqlen,:]=pred
             avgloss=np.mean(losses)
-            avgNegSimiality=np.mean(negCellStateSimility)
-            avgPosSimiality=np.mean(posCellStateSimility)
-            avgNegSimialityMedian=np.median(negCellStateSimility)
-            avgPosSimialityMedian=np.median(posCellStateSimility)
-            avgbtwGroupSimiality=np.mean(btwGroupSimility)
-            avgbtwGroupSimialityMedian=np.median(btwGroupSimility)
+            if(GRU==False):
+                avgNegSimiality=np.mean(negCellStateSimility)
+                avgPosSimiality=np.mean(posCellStateSimility)
+                avgNegSimialityMedian=np.median(negCellStateSimility)
+                avgPosSimialityMedian=np.median(posCellStateSimility)
+                avgbtwGroupSimiality=np.mean(btwGroupSimility)
+                avgbtwGroupSimialityMedian=np.median(btwGroupSimility)
             vallosses.append(avgloss)
-            valNegSimility.append(avgNegSimiality)
-            valPosSimility.append(avgPosSimiality)
-            valbtwGroupSimility.append(avgbtwGroupSimiality)
-            valNegSimilityMedian.append(avgNegSimialityMedian)
-            valPosSimilityMedian.append(avgPosSimialityMedian)
-            valbtwGroupSimilityMedian.append(avgbtwGroupSimialityMedian)
+            if(GRU==False):
+                valNegSimility.append(avgNegSimiality)
+                valPosSimility.append(avgPosSimiality)
+                valbtwGroupSimility.append(avgbtwGroupSimiality)
+                valNegSimilityMedian.append(avgNegSimialityMedian)
+                valPosSimilityMedian.append(avgPosSimialityMedian)
+                valbtwGroupSimilityMedian.append(avgbtwGroupSimialityMedian)
             est_prediction=[]
             est_prediction2=[]
             est_magnitude=[]
@@ -705,19 +708,20 @@ for epoch in range(epochs):
             negidx2 = [ negsampletext.index(id2tok[x]) for x in trainneglabel if(id2tok[x] in negsampletext)  ]
             posidx = [ possampletext.index(id2tok[x]) for x in trainneglabel if(id2tok[x] in possampletext) ]
             posidx2 = [ possampletext.index(id2tok[x]) for x in trainposlabel if(id2tok[x] in possampletext) ]
-            nimg = make_grid(torch.logit(img[nidx[:10]]),nrow=2,padding=5,normalize=False,pad_value=0.8)
-            pimg = make_grid(torch.logit(img[pidx[:10]]),nrow=2,padding=5,normalize=False,pad_value=0.8)
-            nimg = nimg.unsqueeze(dim=1)
-            pimg = pimg.unsqueeze(dim=1)
+            #nimg = make_grid(torch.logit(img[nidx[:10]]),nrow=2,padding=5,normalize=False,pad_value=0.8)
+            #pimg = make_grid(torch.logit(img[pidx[:10]]),nrow=2,padding=5,normalize=False,pad_value=0.8)
+            #nimg = nimg.unsqueeze(dim=1)
+            #pimg = pimg.unsqueeze(dim=1)
             writer.add_scalars(f'Validation Batch NegProb',{'mean':np.mean(nprob),'q25':np.quantile(nprob,0.25),'median':np.median(nprob),'q75':np.quantile(nprob,0.75)},valbatchcount)
             writer.add_scalars(f'Validation Batch PosProb',{'mean':np.mean(pprob),'q25':np.quantile(pprob,0.25),'median':np.median(pprob),'q75':np.quantile(pprob,0.75)},valbatchcount)
             writer.add_scalars('Validation ClassificationReport Neg Class',cr[key[0]],valbatchcount)
             writer.add_scalars('Validation ClassificationReport Pos Class',cr[key[1]],valbatchcount)
             writer.add_scalars('Validation ClassificationReport MacroAvg',cr['macro avg'],valbatchcount)
-            writer.add_image(f'Validation NegImg', nimg, valbatchcount,dataformats='NCHW')
-            writer.add_image(f'Validation PosImg', pimg, valbatchcount,dataformats='NCHW')
-            writer.add_histogram('Neg Validation Mind',nmind,valbatchcount)
-            writer.add_histogram('Pos Validation Mind',pmind,valbatchcount)
+            #writer.add_image(f'Validation NegImg', nimg, valbatchcount,dataformats='NCHW')
+            #writer.add_image(f'Validation PosImg', pimg, valbatchcount,dataformats='NCHW')
+            if(GRU==False):
+                writer.add_histogram('Neg Validation Mind',nmind,valbatchcount)
+                writer.add_histogram('Pos Validation Mind',pmind,valbatchcount)
             negendidx=idxarray[nidx[negsampleidx]]
             posendidx=idxarray[pidx[possampleidx]]
             axes[1].set_title(f'GT:{target[nidx[negsampleidx]]} Pred:{est_prediction[nidx[negsampleidx]]},{est_prediction2[nidx[negsampleidx]]}')
@@ -748,7 +752,10 @@ for epoch in range(epochs):
             plt.cla()#
             diffcount=np.mean(diffcount/idxarray)
             valavgdiffcount.append(diffcount)
-            print(f'Epoch: {epoch:2d} Batch ValDoc#{(d+batchsize):5d}, Switch:{int(switch):1d}, Preprocess:{int(preprocessswitch):1d}, AvgLoss:{avgloss:0.3f}, AvgAccy:{batchaccy:0.3f}, AvgAccy2:{batchaccy2:0.3f}, DiffPOS:{diffcount:2.3f}, NS:({avgNegSimiality:0.3f},{avgNegSimialityMedian:0.3f}), PS:({avgPosSimiality:0.3f},{avgPosSimialityMedian:0.3f}), btwGroup:({avgbtwGroupSimiality:0.3f},{avgbtwGroupSimialityMedian:0.3f})',flush=True)
+            if(GRU==False):
+                print(f'Epoch: {epoch:2d} Batch ValDoc#{(d+batchsize):5d}, Switch:{int(switch):1d}, Preprocess:{int(preprocessswitch):1d}, AvgLoss:{avgloss:0.3f}, AvgAccy:{batchaccy:0.3f}, AvgAccy2:{batchaccy2:0.3f}, DiffPOS:{diffcount:2.3f}, NS:({avgNegSimiality:0.3f},{avgNegSimialityMedian:0.3f}), PS:({avgPosSimiality:0.3f},{avgPosSimialityMedian:0.3f}), btwGroup:({avgbtwGroupSimiality:0.3f},{avgbtwGroupSimialityMedian:0.3f})',flush=True)
+            else:
+                print(f'Epoch: {epoch:2d} Batch ValDoc#{(d+batchsize):5d}, Switch:{int(switch):1d}, Preprocess:{int(preprocessswitch):1d}, AvgLoss:{avgloss:0.3f}, AvgAccy:{batchaccy:0.3f}, AvgAccy2:{batchaccy2:0.3f}, DiffPOS:{diffcount:2.3f}',flush=True)
             valbatchcount+=1
         avgValloss=np.mean(vallosses)
         valAvgAccy = np.mean(valAvgAccy)
@@ -766,7 +773,10 @@ for epoch in range(epochs):
         writer.add_scalar(f'Validation AvgLoss',avgValloss,epoch)
         writer.add_scalar(f'Validation AvgAccy',np.mean(valAvgAccy),epoch)
         writer.add_scalar(f'Validation AvgAccy2',np.mean(valAvgAccy2),epoch)
-    print(f'Epoch: {epoch:2d} Validation Finished, Avg Loss:{avgValloss:0.6f}, AvgAccy:{valAvgAccy:0.3f}, AvgAccy2:{valAvgAccy2:0.3f}, DiffPOS:{valavgdiffcount:2.3f}, AvgNS:({valNS:0.3f},{valNSM:0.3f}), AvgPS:({valPS:0.3f},{valNS:0.3f}), AvgBTG:({valbtwS:0.3f},{valbtwGM:0.3f})',flush=True)
+    if(GRU==False):
+        print(f'Epoch: {epoch:2d} Validation Finished, Avg Loss:{avgValloss:0.6f}, AvgAccy:{valAvgAccy:0.3f}, AvgAccy2:{valAvgAccy2:0.3f}, DiffPOS:{valavgdiffcount:2.3f}, AvgNS:({valNS:0.3f},{valNSM:0.3f}), AvgPS:({valPS:0.3f},{valNS:0.3f}), AvgBTG:({valbtwS:0.3f},{valbtwGM:0.3f})',flush=True)
+    else:
+        print(f'Epoch: {epoch:2d} Validation Finished, Avg Loss:{avgValloss:0.6f}, AvgAccy:{valAvgAccy:0.3f}, AvgAccy2:{valAvgAccy2:0.3f}, DiffPOS:{valavgdiffcount:2.3f}',flush=True)
     #print(f'Epoch: {epoch:2d} Validation Finished, Merge: {valmergeStatistic.most_common(n=10)}',flush=True)
     with open(f'{tensorboardpath}/trainOverAllTop10_MergeStatistic_{epoch}.pkl','wb') as f:
         pickle.dump(overallTop10Merge,f)
