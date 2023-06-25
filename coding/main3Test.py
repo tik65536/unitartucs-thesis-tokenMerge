@@ -636,7 +636,7 @@ for epoch in range(epochs):
                 diffcount+=np.sum(poslist!=permuteposlist,axis=-1)
                 pred,state,mergeidx =model(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
                 g=time.time()
-                if(GRU=False):
+                if(GRU==False):
                     ns,ps,btwgroups,nwidx,pwidx,_,_ = CellStateSimility(state[1],nidx,pidx,weight)
                     negCellStateSimility.append(ns)
                     posCellStateSimility.append(ps)
