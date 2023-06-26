@@ -637,7 +637,7 @@ for epoch in range(epochs):
                 pred,state,mergeidx =model(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
                 g=time.time()
                 if(GRU==False):
-                    ns,ps,btwgroups,nwidx,pwidx,_,_ = CellStateSimility(state[1],nidx,pidx,weight)
+                    ns,ps,btwgroups,nwidx,pwidx,_,_ = CellStateSimility(state[0],nidx,pidx,weight)
                     negCellStateSimility.append(ns)
                     posCellStateSimility.append(ps)
                     btwGroupSimility.append(btwgroups.detach().cpu().numpy())
