@@ -252,7 +252,7 @@ print(f'Vocab len: {n_vocab}',flush=True)
 bernoulli= Bernoulli(torch.tensor([interventionP]))
 preprocessP= Bernoulli(torch.tensor([preprocess]))
 model=PredictLSTMIntervionP(n_vocab,embeddingDim,seqlen,seqlen,minmerge,maxmerge,batchsize,GRU,hiddenLayer,hiddenSize,bidirectional,True,numOfConvBlock,groupRelu,convpredict,kernelsize,mergeRate)
-model.load_state_dict(torch.load(weightfile))
+model.load_state_dict(torch.load(weightPath))
 criterion = torch.nn.CrossEntropyLoss()
 gate=['igone','forget','learn','output']
 print(model.predict.weight.shape)
@@ -331,7 +331,7 @@ with torch.no_grad():
             poslist = tokenpos[:,i:i+seqlen]
             permuteposlist = poslist[:,permuteidx]
             diffcount+=np.sum(poslist!=permuteposlist,axis=-1)
-            pred,state,mergeidx =model(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
+            pred,state,mergeidx =model.testRotation(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
             g=time.time()
             loss=criterion(pred,t)
             losses.append(loss.item())
@@ -420,5 +420,4 @@ with torch.no_grad():
     valAvgAccy = np.mean(valAvgAccy)
     valAvgAccy2 = np.mean(valAvgAccy2)
     print(f'Validation Finished, Avg Loss:{avgValloss:0.6f}, AvgAccy:{valAvgAccy:0.3f}, AvgAccy2:{valAvgAccy2:0.3f}',flush=True)
-#print(f'Epoch: {epoch:2d} Validation Finished, Merge: {valmergeStatistic.most_common(n=10)}',flush=True)
 print("")
