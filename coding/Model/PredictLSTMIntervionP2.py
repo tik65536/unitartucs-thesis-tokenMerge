@@ -3,7 +3,7 @@ from torch import nn
 import numpy as np
 from collections import OrderedDict
 from torch.distributions.poisson import Poisson
-import n_sphere
+from scipy import ndimage
 import math
 #try:
 #     set_start_method('spawn')
@@ -223,9 +223,11 @@ class PredictLSTMIntervionP(nn.Module):
             o=o.permute(0,2,1)
         return o,state,mergeidx
 
-    def testRotation(self, x, state,switch=0,permuteidx=None,onlyMerge=None,poslist=None,consecutive=False,degree=1):
+    def testRotation(self, x, state,switch=0,permuteidx=None,onlyMerge=None,poslist=None,consecutive=False,degree=0):
         x = x[:,permuteidx]
         poslist=poslist[:,permuteidx]
+        w=self.embeddingSpace.weights.cpu().to_numpy()
+        self.embeddingSpace.weights=torch.from_numpy(ndimage.rotate(w, degree, reshape=False)).to(self.device)
         if(self.GRU==False):
             h_state=state[0].to(self.device)
             c_state=state[1].to(self.device)
@@ -295,9 +297,6 @@ class PredictLSTMIntervionP(nn.Module):
             for i in range(self.batchsize):
                 lstminput[i,:,:,:]=self.mergeConv1D(tmp[i,:,:,:])
         lstminput=lstminput.reshape(self.batchsize,self.seqlen,self.embedding_dim)
-        for e in range(self.batchsize):
-            t=n_sphere.convert_spherical(lstminput[e])+(degree*math.pi)
-            lstminput[e]=n_sphere.convert_rectangular(t).float()
         o,state = self.RNN(lstminput,(h_state,c_state)) if (self.GRU==False) else self.RNN(lstminput,h_state)
         if(self.convpredict==True):
             o = o.permute(0,2,1) # N,H,L
