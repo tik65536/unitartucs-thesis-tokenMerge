@@ -1,23 +1,17 @@
-import pandas as pd
 import numpy as np
 import torch
 import re
-import os
 import itertools
-from datasets import load_dataset
 import spacy
 import argparse
-from torch.utils.tensorboard import SummaryWriter
-from Model.PredictLSTMIntervionP2 import PredictLSTMIntervionP
 from torch.distributions.bernoulli import Bernoulli
-from torchvision.utils import make_grid
-import datetime
 import pickle
 from matplotlib import pyplot as plt
 from sklearn.metrics import classification_report
 import warnings
-from collections import Counter
 import time
+import datetime
+import os
 warnings.filterwarnings('ignore')
 
 #Reference https://muhark.github.io/python/ml/nlp/2021/10/21/word2vec-from-scratch.html
@@ -33,38 +27,10 @@ def clean_review(text):
     #clean_text = re.sub('[^a-zA-Z\']', ' ', clean_text)
     #clean_text = clean_text.lower()
     return clean_text.lower()
-def CellStateSimility(cellstate,nidx,pidx,weight):
-    minlen =len(pidx) if (len(nidx)>len(pidx)) else len(nidx)
-    cstate=cellstate.view(hiddenLayer, 2 if(bidirectional==True) else 1, batchsize, hiddenSize)
-    negCellState = torch.nn.functional.normalize(cstate[-1,0,nidx,:].reshape(-1,hiddenSize))
-    posCellState = torch.nn.functional.normalize(cstate[-1,0,pidx,:].reshape(-1,hiddenSize))
-    n=torch.triu(torch.mm(negCellState,negCellState.T),diagonal=1)
-    p=torch.triu(torch.mm(posCellState,negCellState.T),diagonal=1)
-    btwgroup = torch.triu(torch.mm(negCellState[:minlen,:],posCellState[:minlen,:].T),diagonal=1)
-    nridx,ncidx=torch.triu_indices(n.shape[0],n.shape[1],offset=1)
-    pridx,pcidx=torch.triu_indices(p.shape[0],p.shape[1],offset=1)
-    btwgridx,btwgcidx=torch.triu_indices(btwgroup.shape[0],btwgroup.shape[1],offset=1)
-    n = n[nridx,ncidx]
-    p = p[pridx,pcidx]
-    btwgroup=btwgroup[btwgridx,btwgcidx]
-    negSimiality=torch.mean(n).detach().cpu().numpy()
-    posSimiality=torch.mean(p).detach().cpu().numpy()
-    btwGroupSimiality=torch.mean(btwgroup)
-    n = torch.abs(torch.mm(negCellState,weight.T))
-    p = torch.abs(torch.mm(posCellState,weight.T))
-    negCellwordSimiality,negCellwordIdx = torch.min(n,dim=1)
-    posCellwordSimiality,posCellwordIdx = torch.min(p,dim=1)
-    negCellwordSimiality= negCellwordSimiality.detach().cpu().numpy()
-    posCellwordSimiality= posCellwordSimiality.detach().cpu().numpy()
-    negCellwordIdx= negCellwordIdx.detach().cpu().numpy()
-    posCellwordIdx= posCellwordIdx.detach().cpu().numpy()
-    return negSimiality,posSimiality,btwGroupSimiality,negCellwordIdx,posCellwordIdx,negCellwordSimiality,posCellwordSimiality
 
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-epoch', type=int, default=20,
-                    help='Epoch to run')
 
 parser.add_argument('-batch', type=int, default=5,
                     help='BatchSize')
@@ -72,26 +38,10 @@ parser.add_argument('-batch', type=int, default=5,
 parser.add_argument('-maxlen', type=int, default=600,
                     help='Max text len')
 
-parser.add_argument('-biasTrain', type=int, default=0,
-                    help='Use Bias Training Set')
-
-parser.add_argument('-trainSize', type=int, default=15000,
-                    help='Train Set : 15000 or 5000')
-
-parser.add_argument('-optstep', type=int, default=1,
-                    help='#Seq per Opt Step')
-
-parser.add_argument('-dynamicOpt', type=int, default=1,
-                    help='#Switching Opt Step')
-
-parser.add_argument('-RMS', type=int, default=0,
-                    help='RMSprop')
 
 parser.add_argument('-preprocesstext', type=float, default=1,
                     help='Remove Stop word and Pun')
 
-parser.add_argument('-embeddingDim', type=int, default=128,
-                    help='Embedding Dim')
 
 parser.add_argument('-seqlen', type=int, default=5,
                     help='Seq Len for reading token')
@@ -99,48 +49,9 @@ parser.add_argument('-seqlen', type=int, default=5,
 parser.add_argument('-slide', type=int, default=1,
                     help='Seqlen Sliding')
 
-parser.add_argument('-GRU', type=int, default=0,
-                    help='Use GRU')
-
-parser.add_argument('-hiddenLayer', type=int, default=20,
-                    help='Hidden Layer of LSTM')
-
-parser.add_argument('-hiddenSize', type=int, default=128,
-                    help='Hidden Size of LSTM')
-
-parser.add_argument('-bidirection', type=int, default=0,
-                    help='0 = false for bi-direction')
-
-parser.add_argument('-withHiddenState', type=int, default=1,
-                    help='Carry Forward the hidden and cell state')
-
-parser.add_argument('-numconv1d', type=int, default=1,
-                    help='Number of Conv1D')
-
-parser.add_argument('-groupRelu', type=int, default=1,
-                    help='ReLU for Conv1d , 0,1,2')
-
-parser.add_argument('-convpredict', type=int, default=0,
-                    help='Use Conv1D predict')
-
-parser.add_argument('-predictkernelsize', type=int, default=2,
-                    help='Kernel Size for predict Conv1D')
 
 parser.add_argument('-interventionP', type=float, default=0.5,
                     help='Probability for intervention')
-
-parser.add_argument('-mergeRate', type=int, default=2,
-                    help='Merge Rate')
-
-parser.add_argument('-maxmerge', type=int, default=4,
-                    help='max merge token size')
-
-parser.add_argument('-minmerge', type=int, default=2,
-                    help='min merge token size')
-
-parser.add_argument('-remark', type=str, default='',
-                    help='Remark on filename')
-
 
 parser.add_argument('-permuteidx', nargs="*", default=None,
                     help='Permute Token idx')
@@ -154,66 +65,34 @@ parser.add_argument('-consecutive', type=int, default=0,
 parser.add_argument('-weight', type=str, default=None,
                     help='Weight File Name')
 
+parser.add_argument('-rotate', type=float, default=0,
+                    help='Degree of Rotation')
 args = parser.parse_args()
 seqlen=args.seqlen
 batchsize=args.batch
-embeddingDim=args.embeddingDim
-epochs = args.epoch
-hiddenSize=args.hiddenSize
-hiddenLayer=args.hiddenLayer
-maxmerge=args.maxmerge
-minmerge=args.minmerge
 interventionP=args.interventionP
 sliding=args.slide
-bidirectional= True if (args.bidirection==1) else False
 preprocess = args.preprocesstext
-convpredict = True if (args.convpredict==1) else False
-RMS = True if (args.RMS==1) else False
-GRU = True if (args.GRU==1) else False
-optstep = args.optstep
-optstep = optstep*seqlen
-dynamicOpt = True if (args.dynamicOpt==1) else False
-retain=True if (optstep>1) else False
-bias = True if (args.biasTrain==1) else False
-carryforward = True if (args.withHiddenState==1) else False
-kernelsize= args.predictkernelsize
-groupRelu = args.groupRelu
 maxlen =args.maxlen
-remark = args.remark
-trainSize=args.trainSize
-numOfConvBlock=args.numconv1d
 permuteidx = list(range(seqlen)) if(args.permuteidx is None) else [ int(x) for x in args.permuteidx ]
-mergeRate =args.mergeRate
 onlyMerge=args.onlyMerge
 consecutive = True if(args.consecutive==1) else False
 weightfile= args.weight
+degree=args.rotate
 
 assert weightfile is not None,"Weight File Name is None"
 print(f'Run Para : {args}',flush=True)
 
 weightPath=f'./LSTMWeight/{weightfile}'
 
+validationPlot=f"./validationPlot_{datetime.datetime.now().strftime('%Y%m%d-%H%M%S')}_Degree_{degree}/"
+os.mkdir(validationPlot)
+
 #valbatchsize=2
 #imdb_dataset = load_dataset('imdb', split=['train[10000:10010]', 'train[10000:10010]', 'test[:20]'])
 #imdb_dataset = load_dataset('imdb')
-if(bias):
-    with open('./bias_pos_trainpd.plk','rb') as f:
-        train_pd = pickle.load(f)
-else:
-    imdb_dataset = load_dataset('imdb', split=['train[5000:20000]']) if(trainSize==15000) else load_dataset('imdb',split=['train[10000:15000]'])
-    train_pd=pd.DataFrame(columns=["text","label"])
-    train_pd["text"]=imdb_dataset[0]['text']
-    train_pd["label"]=imdb_dataset[0]['label']
-    train_pd['text']=train_pd['text'].apply(lambda x: clean_review(x))
-    start=''
-    c = 5 if(seqlen>=maxlen) else seqlen
-    for i in range(c):
-        start+='s0s '
-    train_pd['text']=start+train_pd['text']+' e0s'
 with open('./testpd.plk','rb') as f:
     test_pd = pickle.load(f)
-print(f'Traing PD shape : {train_pd.shape}',flush=True)
-print(train_pd["label"].describe().T)
 print(f'Test PD shape : {test_pd.shape}',flush=True)
 print(test_pd["label"].describe().T)
 vocab=None
@@ -222,14 +101,8 @@ vocab=None
 with  open('./Master_vocab.pkl','rb') as f:
     vocab=pickle.load(f)
 
-if(bias):
-    with open('./bias_pos_traincounter.plk','rb') as f:
-        traincounter=pickle.load(f)
-    del traincounter['s0s']
-    del traincounter['e0s']
-else:
-    with open('./traincounter.plk','rb') as f:
-        traincounter=pickle.load(f)
+with open('./traincounter.plk','rb') as f:
+    traincounter=pickle.load(f)
 reverse_traincounter=sorted(traincounter.items(), key=lambda pair: pair[1])
 
 
@@ -332,7 +205,7 @@ with torch.no_grad():
             poslist = tokenpos[:,i:i+seqlen]
             permuteposlist = poslist[:,permuteidx]
             diffcount+=np.sum(poslist!=permuteposlist,axis=-1)
-            pred,state,mergeidx =model.testRotation(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
+            pred,state,mergeidx =model.testRotation(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive,degree)
             g=time.time()
             loss=criterion(pred,t)
             losses.append(loss.item())
@@ -410,7 +283,7 @@ with torch.no_grad():
         [ axes[i].legend() for i in range(4) ]
         fig.suptitle(f'Batch Accy : {batchaccy} {batchaccy2}')
         plt.tight_layout()
-        fig.savefig(f'./Validation_{valbatchcount}_switch{int(switch)}_preprocess{int(preprocessswitch)}_{avgloss:0.6f}_plot.png',dpi=400)
+        fig.savefig(f'./{validationPlot}Validation_{valbatchcount}_switch{int(switch)}_preprocess{int(preprocessswitch)}_{avgloss:0.6f}_plot.png',dpi=400)
         [ axes[i].clear() for i in range(4) ]
         plt.cla()#
         diffcount=np.mean(diffcount/idxarray)
