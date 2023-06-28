@@ -83,6 +83,7 @@ class PredictLSTMIntervionP(nn.Module):
         self.embeddingSpace = nn.Embedding(
                 num_embeddings=self.n_vocab,
                 embedding_dim=self.embedding_dim,
+                max_norm=1
             ).to(self.device)
         #self.embeddingSpace2=torch.nn.Embedding(num_embeddings=self.n_vocab,embedding_dim=self.embedding_dim).to(self.device)
         layer_list=list()
