@@ -129,9 +129,9 @@ preprocessP= Bernoulli(torch.tensor([preprocess]))
 model=torch.load(weightPath)
 criterion = torch.nn.CrossEntropyLoss()
 gate=['igone','forget','learn','output']
-print(model.predict.weight.shape)
 test_text=test_pd['text']
 test_label=test_pd['label']
+print(f'Embedding Shape: {model.embeddingSpace.weight.shape}')
 with torch.no_grad():
     vallosses=[]
     valAvgAccy=[]

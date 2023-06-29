@@ -228,10 +228,17 @@ class PredictLSTMIntervionP(nn.Module):
     def testRotation(self, x, state,switch=0,permuteidx=None,onlyMerge=None,poslist=None,consecutive=False,degree=0):
         x = x[:,permuteidx]
         poslist=poslist[:,permuteidx]
-        t=n_sphere.convert_spherical(self.embeddingSpace.weight.detach().cpu())+(degree*math.pi)
-        print(t.shape)
-        t=n_sphere.convert_rectangular(t)
-        self.embeddingSpace.weight=torch.nn.Parameter(t.float().to(self.device))
+        w=self.embeddingSpace.weight.detach().cpu()
+        w_T = w
+        for widx in range(len(w)):
+            try:
+                t=n_sphere.convert_spherical(w[widx])
+                t[:-2]+=(degree*math.pi)
+                t=n_sphere.convert_rectangular(t)
+                w_T[widx]=t
+            except ValueError:
+                pass
+        self.embeddingSpace.weight=torch.nn.Parameter(w_T.float().to(self.device))
         if(self.GRU==False):
             h_state=state[0].to(self.device)
             c_state=state[1].to(self.device)
