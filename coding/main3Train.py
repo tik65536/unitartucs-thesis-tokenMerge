@@ -626,8 +626,8 @@ for epoch in range(epochs):
             target=test_label[d:d+batchsize].to_numpy()
             nidx=np.where(target==0)[0]
             pidx=np.where(target==1)[0]
-            nmind=np.zeros((len(nidx),maxlen//seqlen))
-            pmind=np.zeros((len(pidx),maxlen//seqlen))
+            #nmind=np.zeros((len(nidx),maxlen//seqlen))
+            #pmind=np.zeros((len(pidx),maxlen//seqlen))
             c=1 if (seqlen>=maxlen) else (maxlen-seqlen)
             for i in range(0,c,sliding):
                 sequence=sequences[:,i:i+seqlen]
@@ -642,8 +642,8 @@ for epoch in range(epochs):
                     negCellStateSimility.append(ns)
                     posCellStateSimility.append(ps)
                     btwGroupSimility.append(btwgroups.detach().cpu().numpy())
-                    nmind[:,i//seqlen]=nwidx
-                    pmind[:,i//seqlen]=pwidx
+                    #nmind[:,i//seqlen]=nwidx
+                    #pmind[:,i//seqlen]=pwidx
                 loss=criterion(pred,t)
                 losses.append(loss.item())
                 pred=torch.nn.functional.softmax(pred,dim=1)
@@ -720,9 +720,9 @@ for epoch in range(epochs):
             writer.add_scalars('Validation ClassificationReport MacroAvg',cr['macro avg'],valbatchcount)
             #writer.add_image(f'Validation NegImg', nimg, valbatchcount,dataformats='NCHW')
             #writer.add_image(f'Validation PosImg', pimg, valbatchcount,dataformats='NCHW')
-            if(GRU==False):
-                writer.add_histogram('Neg Validation Mind',nmind,valbatchcount)
-                writer.add_histogram('Pos Validation Mind',pmind,valbatchcount)
+            #if(GRU==False):
+            #    writer.add_histogram('Neg Validation Mind',nmind,valbatchcount)
+            #    writer.add_histogram('Pos Validation Mind',pmind,valbatchcount)
             negendidx=idxarray[nidx[negsampleidx]]
             posendidx=idxarray[pidx[possampleidx]]
             axes[1].set_title(f'GT:{target[nidx[negsampleidx]]} Pred:{est_prediction[nidx[negsampleidx]]},{est_prediction2[nidx[negsampleidx]]}')
