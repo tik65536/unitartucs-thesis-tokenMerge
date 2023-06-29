@@ -248,12 +248,7 @@ class PredictLSTMIntervionP(nn.Module):
         mergeidx=[]
         if(switch==0):
             x=torch.tensor(x).to(self.device)
-<<<<<<< HEAD
-            lstminput = self.embeddingSpace(x).reshape(self.batchsize,self.seqlen,self.embedding_dim) # Embedding Layer
-            print(lstminput.type())
-=======
             lstminput = self.embeddingSpace(x).reshape(self.batchsize,self.seqlen,self.embedding_dim).float() # Embedding Layer
->>>>>>> 5c09869bc40c3f4f65bb0b3106111ee108e6c1cd
         else:
             # For each Token Strategy
             # Temp Tensor to hold input to Conv1D , Max Merge Token == 4 ,if no merge (ie. 1 token), the max Batch Size of Conv1D is == Seqlen
