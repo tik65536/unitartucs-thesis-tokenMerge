@@ -35,7 +35,7 @@ def clean_review(text):
     return clean_text.lower()
 def CellStateSimility(cellstate,nidx,pidx,weight):
     minlen =len(pidx) if (len(nidx)>len(pidx)) else len(nidx)
-    cstate=cellstate.view(hiddenLayer, -1, batchsize, hiddenSize)
+    cstate=cellstate.view(hiddenLayer, -1, batchsize, hiddenSize*(2 if(bidirectional==True) else 1))
     #cstate=cellstate.view(hiddenLayer, 2 if(bidirectional==True) else 1, batchsize, hiddenSize)
     negCellState = torch.nn.functional.normalize(cstate[-1,0,nidx,:].reshape(-1,hiddenSize))
     posCellState = torch.nn.functional.normalize(cstate[-1,0,pidx,:].reshape(-1,hiddenSize))
