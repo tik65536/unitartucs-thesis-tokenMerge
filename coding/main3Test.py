@@ -67,8 +67,11 @@ parser.add_argument('-consecutive', type=int, default=0,
 parser.add_argument('-weight', type=str, default=None,
                     help='Weight File Name')
 
-parser.add_argument('-rotate', type=float, default=0,
-                    help='Degree of Rotation')
+parser.add_argument('-rotate', type=int, default=0,
+                    help='Rotate or not')
+
+parser.add_argument('-degree', type=float, default=0,
+                    help='Degree to rotate')
 args = parser.parse_args()
 seqlen=args.seqlen
 batchsize=args.batch
@@ -80,7 +83,8 @@ permuteidx = list(range(seqlen)) if(args.permuteidx is None) else [ int(x) for x
 onlyMerge=args.onlyMerge
 consecutive = True if(args.consecutive==1) else False
 weightfile= args.weight
-degree=args.rotate
+rotate = True if (args.rotate==1) else False
+degree = args.degree
 
 assert weightfile is not None,"Weight File Name is None"
 print(f'Run Para : {args}',flush=True)
@@ -134,18 +138,18 @@ gate=['igone','forget','learn','output']
 test_text=test_pd['text']
 test_label=test_pd['label']
 print(f'Embedding Shape: {model.embeddingSpace.weight.shape}')
-w=model.embeddingSpace.weight.detach().cpu().numpy()
-for widx in range(len(w)):
-    try:
-        t=n_sphere.convert_spherical(w[widx])
-        t[1]+=(degree*math.pi)
-        t[2]+=(degree*math.pi)
-        t=n_sphere.convert_rectangular(t)
-        w[widx]=t.astype(float)
-    except ValueError:
-        pass
-
-model.embeddingSpace.weight=torch.nn.Parameter(torch.tensor(w,dtype=float).to(device))
+if(rotate):
+    w=model.embeddingSpace.weight.detach().cpu().numpy()
+    for widx in range(len(w)):
+        try:
+            t=n_sphere.convert_spherical(w[widx])
+            t[1]+=(degree*math.pi)
+            t[2]+=(degree*math.pi)
+            t=n_sphere.convert_rectangular(t)
+            w[widx]=t.astype(float)
+        except ValueError:
+            pass
+    model.embeddingSpace.weight=torch.nn.Parameter(torch.tensor(w,dtype=float).to(device))
 
 with torch.no_grad():
     vallosses=[]
