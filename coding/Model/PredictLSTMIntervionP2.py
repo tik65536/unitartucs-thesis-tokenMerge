@@ -228,7 +228,7 @@ class PredictLSTMIntervionP(nn.Module):
     def testRotation(self, x, state,switch=0,permuteidx=None,onlyMerge=None,poslist=None,consecutive=False,degree=0):
         x = x[:,permuteidx]
         poslist=poslist[:,permuteidx]
-        w=self.embeddingSpace.weight.detach().cpu()
+        w=self.embeddingSpace.weight.detach().cpu().numpy()
         w_T = w
         for widx in range(len(w)):
             try:
@@ -238,7 +238,7 @@ class PredictLSTMIntervionP(nn.Module):
                 w_T[widx]=t
             except ValueError:
                 pass
-        self.embeddingSpace.weight=torch.nn.Parameter(w_T.float().to(self.device))
+        self.embeddingSpace.weight=torch.nn.Parameter(torch.tensor(w_T,dtype=float).to(self.device))
         if(self.GRU==False):
             h_state=state[0].to(self.device)
             c_state=state[1].to(self.device)
