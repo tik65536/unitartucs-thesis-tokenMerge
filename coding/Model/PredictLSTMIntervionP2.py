@@ -3,9 +3,6 @@ from torch import nn
 import numpy as np
 from collections import OrderedDict
 from torch.distributions.poisson import Poisson
-from scipy import ndimage
-import n_sphere
-import math
 #try:
 #     set_start_method('spawn')
 #except RuntimeError:
@@ -225,20 +222,9 @@ class PredictLSTMIntervionP(nn.Module):
             o=o.permute(0,2,1)
         return o,state,mergeidx
 
-    def testRotation(self, x, state,switch=0,permuteidx=None,onlyMerge=None,poslist=None,consecutive=False,degree=0):
+    def testRotation(self, x, state,switch=0,permuteidx=None,onlyMerge=None,poslist=None,consecutive=False):
         x = x[:,permuteidx]
         poslist=poslist[:,permuteidx]
-        w=self.embeddingSpace.weight.detach().cpu().numpy()
-        for widx in range(len(w)):
-            try:
-                t=n_sphere.convert_spherical(w[widx])
-                t[1]+=(degree*math.pi)
-                t[2]+=(degree*math.pi)
-                t=n_sphere.convert_rectangular(t)
-                w[widx]=t.astype(float)
-            except ValueError:
-                pass
-        self.embeddingSpace.weight=torch.nn.Parameter(torch.tensor(w,dtype=float).to(self.device))
         if(self.GRU==False):
             h_state=state[0].to(self.device)
             c_state=state[1].to(self.device)

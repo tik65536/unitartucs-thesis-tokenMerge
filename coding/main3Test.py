@@ -12,6 +12,8 @@ import warnings
 import time
 import datetime
 import os
+import n_sphere
+import math
 warnings.filterwarnings('ignore')
 
 #Reference https://muhark.github.io/python/ml/nlp/2021/10/21/word2vec-from-scratch.html
@@ -132,6 +134,19 @@ gate=['igone','forget','learn','output']
 test_text=test_pd['text']
 test_label=test_pd['label']
 print(f'Embedding Shape: {model.embeddingSpace.weight.shape}')
+w=model.embeddingSpace.weight.detach().cpu().numpy()
+for widx in range(len(w)):
+    try:
+        t=n_sphere.convert_spherical(w[widx])
+        t[1]+=(degree*math.pi)
+        t[2]+=(degree*math.pi)
+        t=n_sphere.convert_rectangular(t)
+        w[widx]=t.astype(float)
+    except ValueError:
+        pass
+
+model.embeddingSpace.weight=torch.nn.Parameter(torch.tensor(w,dtype=float).to(device))
+
 with torch.no_grad():
     vallosses=[]
     valAvgAccy=[]
@@ -205,7 +220,7 @@ with torch.no_grad():
             poslist = tokenpos[:,i:i+seqlen]
             permuteposlist = poslist[:,permuteidx]
             diffcount+=np.sum(poslist!=permuteposlist,axis=-1)
-            pred,state,mergeidx =model.testRotation(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive,degree)
+            pred,state,mergeidx =model.testRotation(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
             g=time.time()
             loss=criterion(pred,t)
             losses.append(loss.item())
