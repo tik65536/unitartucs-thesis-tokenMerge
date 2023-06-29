@@ -139,17 +139,17 @@ test_text=test_pd['text']
 test_label=test_pd['label']
 print(f'Embedding Shape: {model.embeddingSpace.weight.shape}')
 if(rotate):
-    w=model.embeddingSpace.weight.detach().cpu().numpy()
+    w=model.embeddingSpace.weight.detach().cpu()
     for widx in range(len(w)):
         try:
-            t=n_sphere.convert_spherical(w[widx])
+            t=n_sphere.convert_spherical(w[widx].reshape(1,-1))
             t[1]+=(degree*math.pi)
             t[2]+=(degree*math.pi)
-            t=n_sphere.convert_rectangular(t)
-            w[widx]=t.astype(float)
+            t=n_sphere.convert_rectangular(t).float()
+            w[widx]=t
         except ValueError:
             pass
-    model.embeddingSpace.weight=torch.nn.Parameter(torch.tensor(w,dtype=float).to(device))
+    model.embeddingSpace.weight=torch.nn.Parameter(torch.tensor(w).to(device))
 
 with torch.no_grad():
     vallosses=[]
