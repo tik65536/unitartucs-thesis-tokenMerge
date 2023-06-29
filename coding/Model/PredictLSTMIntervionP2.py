@@ -229,16 +229,16 @@ class PredictLSTMIntervionP(nn.Module):
         x = x[:,permuteidx]
         poslist=poslist[:,permuteidx]
         w=self.embeddingSpace.weight.detach().cpu().numpy()
-        w_T = w
         for widx in range(len(w)):
             try:
                 t=n_sphere.convert_spherical(w[widx])
-                t[:-2]+=(degree*math.pi)
+                t[1]+=(degree*math.pi)
+                t[2]+=(degree*math.pi)
                 t=n_sphere.convert_rectangular(t)
-                w_T[widx]=t.astype(float)
+                w[widx]=t.astype(float)
             except ValueError:
                 pass
-        self.embeddingSpace.weight=torch.nn.Parameter(torch.tensor(w_T,dtype=float).to(self.device))
+        self.embeddingSpace.weight=torch.nn.Parameter(torch.tensor(w,dtype=float).to(self.device))
         if(self.GRU==False):
             h_state=state[0].to(self.device)
             c_state=state[1].to(self.device)
@@ -248,8 +248,12 @@ class PredictLSTMIntervionP(nn.Module):
         mergeidx=[]
         if(switch==0):
             x=torch.tensor(x).to(self.device)
+<<<<<<< HEAD
             lstminput = self.embeddingSpace(x).reshape(self.batchsize,self.seqlen,self.embedding_dim) # Embedding Layer
             print(lstminput.type())
+=======
+            lstminput = self.embeddingSpace(x).reshape(self.batchsize,self.seqlen,self.embedding_dim).float() # Embedding Layer
+>>>>>>> 5c09869bc40c3f4f65bb0b3106111ee108e6c1cd
         else:
             # For each Token Strategy
             # Temp Tensor to hold input to Conv1D , Max Merge Token == 4 ,if no merge (ie. 1 token), the max Batch Size of Conv1D is == Seqlen
