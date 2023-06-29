@@ -235,7 +235,7 @@ class PredictLSTMIntervionP(nn.Module):
                 t=n_sphere.convert_spherical(w[widx])
                 t[:-2]+=(degree*math.pi)
                 t=n_sphere.convert_rectangular(t)
-                w_T[widx]=t
+                w_T[widx]=t.astype(float)
             except ValueError:
                 pass
         self.embeddingSpace.weight=torch.nn.Parameter(torch.tensor(w_T,dtype=float).to(self.device))
