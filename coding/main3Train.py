@@ -639,11 +639,11 @@ for epoch in range(epochs):
                 negbackward=hs[-1,1,nidx,:].reshape(-1,hiddenSize)
                 posbackward=hs[-1,1,pidx,:].reshape(-1,hiddenSize)
                 if(GRU==False):
-                    ns,ps,btwgroups,nwidx,pwidx,_,_ = CellStateSimility(negforward,posforward,nidx,pidx,weight)
+                    ns,ps,btwgroups,nwidx,pwidx = CellStateSimility(negforward,posforward,nidx,pidx,weight)
                     negFCellStateSimility.append(ns)
                     posFCellStateSimility.append(ps)
                     FbtwGroupSimility.append(btwgroups)
-                    ns,ps,btwgroups,nwidx,pwidx,_,_ = CellStateSimility(negbackward,posbackward,nidx,pidx,weight)
+                    ns,ps,btwgroups,nwidx,pwidx = CellStateSimility(negbackward,posbackward,nidx,pidx,weight)
                     negBCellStateSimility.append(ns)
                     posBCellStateSimility.append(ps)
                     BbtwGroupSimility.append(btwgroups)
