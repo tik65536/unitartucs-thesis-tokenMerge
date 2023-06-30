@@ -53,7 +53,7 @@ def CellStateSimility(nstate,pstate,nidx,pidx,weight):
     btwgroup=btwgroup[btwgridx,btwgcidx]
     negSimiality=torch.mean(n).detach().cpu().numpy()
     posSimiality=torch.mean(p).detach().cpu().numpy()
-    btwGroupSimiality=torch.mean(btwgroup).detach().cpu.numpy()
+    btwGroupSimiality=torch.mean(btwgroup).detach().cpu().numpy()
     n = torch.abs(torch.mm(negCellState,weight.T))
     p = torch.abs(torch.mm(posCellState,weight.T))
     _,negCellwordIdx = torch.min(n,dim=1)
