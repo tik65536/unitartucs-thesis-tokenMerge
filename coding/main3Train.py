@@ -570,7 +570,7 @@ for epoch in range(epochs):
         valBNegSimility,valBPosSimility,valBbtwGroupSimility,valBNegSimilityMedian,valBPosSimilityMedian,valBbtwGroupSimilityMedian=[],[],[],[],[],[]
         switchcount=0
         tokendist=[]
-        weight = torch.nn.functional.normalize(model.embeddingSpace.weight,dim=-1)
+        weight = torch.nn.functional.normalize(model.embeddingSpace.weight,dim=-1).detach().cpu()
         valavgdiffcount=[]
         for d in range(0,len(test_text),batchsize):
             diffcount=np.zeros((batchsize,))
