@@ -656,6 +656,16 @@ for epoch in range(epochs):
                 pred=pred.permute(0,2,1).detach().cpu().numpy()
                 predict_history[:,i:i+seqlen,:]=pred
             if(GRU==False):
+                negFCellStateSimility=np.array(negFCellStateSimility)
+                posFCellStateSimility=np.array(posFCellStateSimility)
+                negBCellStateSimility=np.array(negBCellStateSimility)
+                posBCellStateSimility=np.array(posBCellStateSimility)
+                valFNegSimility.append(np.mean(negFCellStateSimility[idx2[nidx]]))
+                valFPosSimility.append(np.mean(posFCellStateSimility[idx2[pidx]]))
+                valFNegSimilityMedian.append(np.median(negFCellStateSimility[idx2[nidx]]))
+                valFPosSimilityMedian.append(np.median(posFCellStateSimility[idx2[pidx]]))
+                valFbtwGroupSimility.append(np.mean(FbtwGroupSimility))
+                valFbtwGroupSimilityMedian.append(np.median(FbtwGroupSimility))
                 valBNegSimility.append(np.mean(negBCellStateSimility[idx2[nidx]]))
                 valBPosSimility.append(np.mean(posBCellStateSimility[idx2[pidx]]))
                 valBNegSimilityMedian.append(np.median(negBCellStateSimility[idx2[nidx]]))
