@@ -419,18 +419,18 @@ for epoch in range(epochs):
             writer.add_histogram(f'LSTM_{name}',para.data,trainbatchcount)
             if("weight" in name):
                 previousweight = weightHistory[name]['previous']
-                currentweight = torch.abs(para.data.detach().cpu())
+                currentweight = para.data.detach().cpu()
                 weightHistory[name]['previous']=currentweight
                 for gidx in range(len(gate)):
                     g = gate[gidx]
                     previousGateWeight = previousweight[gidx*hiddenSize:gidx*hiddenSize+hiddenSize,:]
                     currentGateWeight = currentweight[gidx*hiddenSize:gidx*hiddenSize+hiddenSize,:]
-                    diff = torch.flatten(previousGateWeight-currentGateWeight)
+                    diff = torch.flatten(previousGateWeight-torch.abs(currentGateWeight))
                     br=len(torch.where(diff>0)[0])
                     dr=len(torch.where(diff<0)[0])
                     freeze=len(torch.where(diff==0)[0])
                     init=weightHistory[name][g]['previous_pop']
-                    weightHistory[name][g]['previous_pop']=torch.count_nonzero(currentGateWeight)
+                    weightHistory[name][g]['previous_pop']=torch.count_nonzero(torch.abs(currentGateWeight))
                     weightHistory[name][g]['birthrate'].append(br/init)
                     weightHistory[name][g]['deathrate'].append(dr/init)
                     writer.add_scalars(f'{name}_{g}_population',{'birth':(br/init),'death':(dr/init),'freeze':(freeze/init)},trainbatchcount)
