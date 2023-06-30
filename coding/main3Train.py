@@ -648,12 +648,6 @@ for epoch in range(epochs):
                     posBCellStateSimility.append(ps)
                     BbtwGroupSimility.append(btwgroups)
                     idx2=np.round(idxarray/25).astype(int)
-                    valBNegSimility.append(np.mean(negBCellStateSimility[idx2[nidx]]))
-                    valBPosSimility.append(np.mean(posBCellStateSimility[idx2[pidx]]))
-                    valBNegSimilityMedian.append(np.median(negBCellStateSimility[idx2[nidx]]))
-                    valBPosSimilityMedian.append(np.median(posBCellStateSimility[idx2[pidx]]))
-                    valBbtwGroupSimility.append(np.mean(BbtwGroupSimility))
-                    valBbtwGroupSimilityMedian.append(np.median(BbtwGroupSimility))
                     #nmind[:,i//seqlen]=nwidx
                     #pmind[:,i//seqlen]=pwidx
                 loss=criterion(pred,t)
@@ -661,6 +655,13 @@ for epoch in range(epochs):
                 pred=torch.nn.functional.softmax(pred,dim=1)
                 pred=pred.permute(0,2,1).detach().cpu().numpy()
                 predict_history[:,i:i+seqlen,:]=pred
+            if(GRU==False):
+                valBNegSimility.append(np.mean(negBCellStateSimility[idx2[nidx]]))
+                valBPosSimility.append(np.mean(posBCellStateSimility[idx2[pidx]]))
+                valBNegSimilityMedian.append(np.median(negBCellStateSimility[idx2[nidx]]))
+                valBPosSimilityMedian.append(np.median(posBCellStateSimility[idx2[pidx]]))
+                valBbtwGroupSimility.append(np.mean(BbtwGroupSimility))
+                valBbtwGroupSimilityMedian.append(np.median(BbtwGroupSimility))
             avgloss=np.mean(losses)
             vallosses.append(avgloss)
             est_prediction=[]
