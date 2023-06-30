@@ -224,7 +224,7 @@ with torch.no_grad():
             poslist = tokenpos[:,i:i+seqlen]
             permuteposlist = poslist[:,permuteidx]
             diffcount+=np.sum(poslist!=permuteposlist,axis=-1)
-            pred,state,mergeidx =model.testRotation(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
+            pred,state,mergeidx =model(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
             g=time.time()
             loss=criterion(pred,t)
             losses.append(loss.item())
