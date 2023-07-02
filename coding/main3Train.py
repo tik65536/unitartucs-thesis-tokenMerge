@@ -36,8 +36,8 @@ def clean_review(text):
 
 def rnnOutputSimility(negout,posout,minlen):
     #shape : batch x seq x hiddenSize
-    negnorm = torch.mean(torch.norm(negout,dim=1),dim=0).detch().cpu().numpy()
-    posnorm = torch.mean(torch.norm(posout,dim=1),dim=0).detch().cpu().numpy()
+    negnorm = torch.mean(torch.norm(negout,dim=1),dim=0).detach().cpu().numpy()
+    posnorm = torch.mean(torch.norm(posout,dim=1),dim=0).detach().cpu().numpy()
     negout = torch.nn.functional.normalize(negout,dim=-1)
     posout = torch.nn.functional.normalize(posout,dim=-1)
     ns,ps,btws=np.zeros(seqlen),np.zeros(seqlen),np.zeros(seqlen)
