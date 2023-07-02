@@ -583,7 +583,7 @@ for epoch in range(epochs):
         valAvgAccy2=[]
         valFNegSimility,valFPosSimility,valFbtwGroupSimility,valFNegSimilityMedian,valFPosSimilityMedian,valFbtwGroupSimilityMedian=[],[],[],[],[],[]
         valBNegSimility,valBPosSimility,valBbtwGroupSimility,valBNegSimilityMedian,valBPosSimilityMedian,valBbtwGroupSimilityMedian=[],[],[],[],[],[]
-        valnegNorm,valposNorm=np.zeros(12),np.zeors(12)
+        valnegNorm,valposNorm=np.zeros(12),np.zeros(12)
         switchcount=0
         tokendist=[]
         valavgdiffcount=[]
