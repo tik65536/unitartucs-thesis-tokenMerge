@@ -44,7 +44,7 @@ def rnnOutputSimility(negout,posout,minlen):
     for i in range(seqlen):
         n=torch.triu(torch.mm(negout[:,i,:],negout[:,i,:].T),diagonal=1)
         p=torch.triu(torch.mm(posout[:,i,:],posout[:,i,:].T),diagonal=1)
-        btwgroup = torch.triu(torch.mm(negout[minlen,i,:],posout[minlen,i,:].T),diagonal=1)
+        btwgroup = torch.triu(torch.mm(negout[:minlen,i,:],posout[:minlen,i,:].T),diagonal=1)
         nridx,ncidx=torch.triu_indices(n.shape[0],n.shape[1],offset=1)
         pridx,pcidx=torch.triu_indices(p.shape[0],p.shape[1],offset=1)
         btwgridx,btwgcidx=torch.triu_indices(btwgroup.shape[0],btwgroup.shape[1],offset=1)
@@ -660,7 +660,9 @@ for epoch in range(epochs):
             if(GRU==False):
                 valnegNorm+=np.array(negNorm[1:13])
                 valposNorm+=np.array(posNorm[1:13])
-                posNorm={ f'Pblock{i}':posNorm[i] for i in range(1,13) }
+                negFCellStateSimility=np.array(negFCellStateSimility).reshape(-1,)
+                posFCellStateSimility=np.array(posFCellStateSimility).reshape(-1,)
+                FbtwGroupSimility=np.array(FbtwGroupSimility).reshape(-1,)
                 valFNegSimility.append(np.mean(negFCellStateSimility[25:325]))
                 valFPosSimility.append(np.mean(posFCellStateSimility[25:325]))
                 valFNegSimilityMedian.append(np.median(negFCellStateSimility[25:325]))
