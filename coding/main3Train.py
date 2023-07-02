@@ -34,17 +34,38 @@ def clean_review(text):
     #clean_text = clean_text.lower()
     return clean_text.lower()
 
-def CellStateSimility(nstate,pstate,nidx,pidx,weight):
-    minlen =len(pidx) if (len(nidx)>len(pidx)) else len(nidx)
+def rnnOutputSimility(negout,posout,minlen):
+    #shape : batch x seq x hiddenSize
+    negnorm = torch.mean(torch.norm(negout,dim=1),dim=0).detch().cpu().numpy()
+    posnorm = torch.mean(torch.norm(posout,dim=1),dim=0).detch().cpu().numpy()
+    negout = torch.nn.functional.normalize(negout,dim=-1)
+    posout = torch.nn.functional.normalize(posout,dim=-1)
+    ns,ps,btws=np.zeros(seqlen),np.zeros(seqlen),np.zeros(seqlen)
+    for i in range(seqlen):
+        n=torch.triu(torch.mm(negout[:,i,:],negout[:,i,:].T),diagonal=1)
+        p=torch.triu(torch.mm(posout[:,i,:],posout[:,i,:].T),diagonal=1)
+        btwgroup = torch.triu(torch.mm(negout[minlen,i,:],posout[minlen,i,:].T),diagonal=1)
+        nridx,ncidx=torch.triu_indices(n.shape[0],n.shape[1],offset=1)
+        pridx,pcidx=torch.triu_indices(p.shape[0],p.shape[1],offset=1)
+        btwgridx,btwgcidx=torch.triu_indices(btwgroup.shape[0],btwgroup.shape[1],offset=1)
+        n = n[nridx,ncidx]
+        p = p[pridx,pcidx]
+        btwgroup=btwgroup[btwgridx,btwgcidx]
+        ns[i]=torch.mean(n).detach().cpu().numpy()
+        ps[i]=torch.mean(p).detach().cpu().numpy()
+        btws[i]=torch.mean(btwgroup).detach().cpu().numpy()
+    return ns,ps,btws,negnorm,posnorm
+
+def CellStateSimility(nstate,pstate,minlen):
     #cstate=cellstate.view(hiddenLayer, -1, batchsize, hiddenSize*(2 if(bidirectional==True) else 1))
     #cstate=cellstate.view(hiddenLayer, 2 if(bidirectional==True) else 1, batchsize, hiddenSize)
     #negCellState = torch.nn.functional.normalize(cstate[-1,0,nidx,:].reshape(-1,hiddenSize))
     #posCellState = torch.nn.functional.normalize(cstate[-1,0,pidx,:].reshape(-1,hiddenSize))
-    negCellState = torch.nn.functional.normalize(nstate)
-    posCellState = torch.nn.functional.normalize(pstate)
-    n=torch.triu(torch.mm(negCellState,negCellState.T),diagonal=1)
-    p=torch.triu(torch.mm(posCellState,negCellState.T),diagonal=1)
-    btwgroup = torch.triu(torch.mm(negCellState[:minlen,:],posCellState[:minlen,:].T),diagonal=1)
+    nstate = torch.nn.functional.normalize(nstate,dim=-1)
+    pstate = torch.nn.functional.normalize(pstate,dim=-1)
+    n=torch.triu(torch.mm(nstate,nstate.T),diagonal=1)
+    p=torch.triu(torch.mm(pstate,nstate.T),diagonal=1)
+    btwgroup = torch.triu(torch.mm(nstate[:minlen,:],pstate[:minlen,:].T),diagonal=1)
     nridx,ncidx=torch.triu_indices(n.shape[0],n.shape[1],offset=1)
     pridx,pcidx=torch.triu_indices(p.shape[0],p.shape[1],offset=1)
     btwgridx,btwgcidx=torch.triu_indices(btwgroup.shape[0],btwgroup.shape[1],offset=1)
@@ -54,13 +75,7 @@ def CellStateSimility(nstate,pstate,nidx,pidx,weight):
     negSimiality=torch.mean(n).detach().cpu().numpy()
     posSimiality=torch.mean(p).detach().cpu().numpy()
     btwGroupSimiality=torch.mean(btwgroup).detach().cpu().numpy()
-    n = torch.abs(torch.mm(negCellState,weight.T))
-    p = torch.abs(torch.mm(posCellState,weight.T))
-    _,negCellwordIdx = torch.min(n,dim=1)
-    _,posCellwordIdx = torch.min(p,dim=1)
-    negCellwordIdx= negCellwordIdx.detach().cpu().numpy()
-    posCellwordIdx= posCellwordIdx.detach().cpu().numpy()
-    return negSimiality,posSimiality,btwGroupSimiality,negCellwordIdx,posCellwordIdx
+    return negSimiality,posSimiality,btwGroupSimiality
 
 
 
@@ -375,7 +390,7 @@ for epoch in range(epochs):
             permuteposlist = poslist[:,permuteidx]
             if(not carryforward):
                  state=model.init_state()
-            pred, state ,mergeidx =  model(sequence, state, switch,permuteidx,onlyMerge,poslist,consecutive)
+            pred,_, state ,mergeidx =  model(sequence, state, switch,permuteidx,onlyMerge,poslist,consecutive)
             diffcount+=np.sum(poslist!=permuteposlist,axis=-1)
             endidx = np.where(permuteposlist=='e0s')[0]
             endidx = np.in1d(range(permuteposlist.shape[0]),endidx)
@@ -435,7 +450,7 @@ for epoch in range(epochs):
                     weightHistory[name][g]['birthrate'].append(br/init)
                     weightHistory[name][g]['deathrate'].append(dr/init)
                     writer.add_scalars(f'{name}_{g}_population',{'birth':(br/init),'death':(dr/init),'freeze':(freeze/init)},trainbatchcount)
-                    writer.add_scalar(f'{name}_{g}_prePopNorm',torch.norm(currentweight),trainbatchcount)
+                    writer.add_scalar(f'{name}_{g}_PopNorm',torch.norm(torch.nn.functional.normalize(currentGateWeight,dim=-1)),trainbatchcount)
                     writer.add_histogram(f'{name}_{g}',currentGateWeight,trainbatchcount)
         if(numOfConvBlock>0):
             for name,para in model.conv1d.named_parameters():
@@ -568,9 +583,9 @@ for epoch in range(epochs):
         valAvgAccy2=[]
         valFNegSimility,valFPosSimility,valFbtwGroupSimility,valFNegSimilityMedian,valFPosSimilityMedian,valFbtwGroupSimilityMedian=[],[],[],[],[],[]
         valBNegSimility,valBPosSimility,valBbtwGroupSimility,valBNegSimilityMedian,valBPosSimilityMedian,valBbtwGroupSimilityMedian=[],[],[],[],[],[]
+        valnegNorm,valposNorm=np.zeros(12),np.zeors(12)
         switchcount=0
         tokendist=[]
-        weight = torch.nn.functional.normalize(model.embeddingSpace.weight,dim=-1).detach().cpu()
         valavgdiffcount=[]
         for d in range(0,len(test_text),batchsize):
             diffcount=np.zeros((batchsize,))
@@ -580,10 +595,7 @@ for epoch in range(epochs):
             losses=[]
             negFCellStateSimility,posFCellStateSimility,negBCellStateSimility,posBCellStateSimility,FbtwGroupSimility,BbtwGroupSimility=[],[],[],[],[],[]
             img=torch.zeros((batchsize,1,48,48))
-            sequences=[]
-            targets=[]
-            idxarray=[]
-            tokenpos=[]
+            sequences,targets,idxarray,tokenpos,negNorm,posNorm=[],[],[],[],[],[]
             for i,x in enumerate(nlp.pipe(test_text[d:d+batchsize])):
                 data=[]
                 pos=[]
@@ -630,43 +642,31 @@ for epoch in range(epochs):
                 poslist = tokenpos[:,i:i+seqlen]
                 permuteposlist = poslist[:,permuteidx]
                 diffcount+=np.sum(poslist!=permuteposlist,axis=-1)
-                pred,state,mergeidx =model(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
+                pred,output,state,mergeidx =model(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
                 g=time.time()
-                hs=state[0].detach().cpu()
-                hs=hs.view(hiddenLayer, 2 if(bidirectional==True) else 1, batchsize, hiddenSize)
-                negforward=hs[-1,0,nidx,:].reshape(-1,hiddenSize)
-                posforward=hs[-1,0,pidx,:].reshape(-1,hiddenSize)
-                negbackward=hs[-1,1,nidx,:].reshape(-1,hiddenSize)
-                posbackward=hs[-1,1,pidx,:].reshape(-1,hiddenSize)
                 if(GRU==False):
-                    ns,ps,btwgroups,nwidx,pwidx = CellStateSimility(negforward,posforward,nidx,pidx,weight)
+                    minlen =len(pidx) if (len(nidx)>len(pidx)) else len(nidx)
+                    ns,ps,btwgroups,nnorm,pnorm = rnnOutputSimility(output[nidx],output[pidx],minlen)
                     negFCellStateSimility.append(ns)
                     posFCellStateSimility.append(ps)
                     FbtwGroupSimility.append(btwgroups)
-                    ns,ps,btwgroups,nwidx,pwidx = CellStateSimility(negbackward,posbackward,nidx,pidx,weight)
-                    negBCellStateSimility.append(ns)
-                    posBCellStateSimility.append(ps)
-                    BbtwGroupSimility.append(btwgroups)
-                    #nmind[:,i//seqlen]=nwidx
-                    #pmind[:,i//seqlen]=pwidx
+                    negNorm.append(np.mean(nnorm))
+                    posNorm.append(np.mean(pnorm))
                 loss=criterion(pred,t)
                 losses.append(loss.item())
                 pred=torch.nn.functional.softmax(pred,dim=1)
                 pred=pred.permute(0,2,1).detach().cpu().numpy()
                 predict_history[:,i:i+seqlen,:]=pred
             if(GRU==False):
-                valFNegSimility.append(np.mean(negFCellStateSimility))
-                valFPosSimility.append(np.mean(posFCellStateSimility))
-                valFNegSimilityMedian.append(np.median(negFCellStateSimility))
-                valFPosSimilityMedian.append(np.median(posFCellStateSimility))
-                valFbtwGroupSimility.append(np.mean(FbtwGroupSimility))
-                valFbtwGroupSimilityMedian.append(np.median(FbtwGroupSimility))
-                valBNegSimility.append(np.mean(negBCellStateSimility))
-                valBPosSimility.append(np.mean(posBCellStateSimility))
-                valBNegSimilityMedian.append(np.median(negBCellStateSimility))
-                valBPosSimilityMedian.append(np.median(posBCellStateSimility))
-                valBbtwGroupSimility.append(np.mean(BbtwGroupSimility))
-                valBbtwGroupSimilityMedian.append(np.median(BbtwGroupSimility))
+                valnegNorm+=np.array(negNorm[1:13])
+                valposNorm+=np.array(posNorm[1:13])
+                posNorm={ f'Pblock{i}':posNorm[i] for i in range(1,13) }
+                valFNegSimility.append(np.mean(negFCellStateSimility[25:325]))
+                valFPosSimility.append(np.mean(posFCellStateSimility[25:325]))
+                valFNegSimilityMedian.append(np.median(negFCellStateSimility[25:325]))
+                valFPosSimilityMedian.append(np.median(posFCellStateSimility[25:325]))
+                valFbtwGroupSimility.append(np.mean(FbtwGroupSimility[25:325]))
+                valFbtwGroupSimilityMedian.append(np.median(FbtwGroupSimility[25:325]))
             avgloss=np.mean(losses)
             vallosses.append(avgloss)
             est_prediction=[]
@@ -781,6 +781,8 @@ for epoch in range(epochs):
         writer.add_scalar(f'Validation AvgLoss',avgValloss,epoch)
         writer.add_scalar(f'Validation AvgAccy',np.mean(valAvgAccy),epoch)
         writer.add_scalar(f'Validation AvgAccy2',np.mean(valAvgAccy2),epoch)
+        writer.add_scalars(f'Validation negNorm',[{f'NegblockNorm_{i}':valnegNorm[i] for i in range(12)}][0],epoch)
+        writer.add_scalars(f'Validation posNorm',[{f'posblockNorm_{i}':valposNorm[i] for i in range(12)}][0],epoch)
     if(GRU==False):
         print(f'Epoch: {epoch:2d} Validation Finished, Avg Loss:{avgValloss:0.6f}, AvgAccy:{valAvgAccy:0.3f}, AvgAccy2:{valAvgAccy2:0.3f}, DiffPOS:{valavgdiffcount:2.3f}, Forward:{{({valNS:0.3f},{valNSM:0.3f}),({valPS:0.3f},{valPSM:0.3f}),({valbtwS:0.3f},{valbtwGM:0.3f})}}',flush=True)
         print(f'Epoch: {epoch:2d} Validation Finished, Forward:{{({valNS:0.3f},{valNSM:0.3f}),({valPS:0.3f},{valNS:0.3f}),({valbtwS:0.3f},{valbtwGM:0.3f})}} Backward:{{({valBNS:0.3f},{valBNSM:0.3f}),({valBPS:0.3f},{valBPSM:0.3f}),({valBbtwS:0.3f},{valBbtwGM:0.3f})}}',flush=True)

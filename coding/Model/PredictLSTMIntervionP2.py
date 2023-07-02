@@ -216,10 +216,10 @@ class PredictLSTMIntervionP(nn.Module):
             if(self.seqlen==self.outseqlen):
                 rotate=self.predict_kernelSize-1
                 o = torch.cat([o,o[:,:,0:rotate]],dim=-1)
-        o = self.predict(o) # o.shape = N*L*1
+        out = self.predict(o) # o.shape = N*L*1
         if(self.convpredict==False and self.softmax==True):
-            o=o.permute(0,2,1)
-        return o,state,mergeidx
+            out=out.permute(0,2,1)
+        return out,o,state,mergeidx
 
     def init_state(self,double=False):
         if(self.GRU):
