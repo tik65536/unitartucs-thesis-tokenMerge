@@ -636,6 +636,7 @@ for epoch in range(epochs):
             #nmind=np.zeros((len(nidx),maxlen//seqlen))
             #pmind=np.zeros((len(pidx),maxlen//seqlen))
             c=1 if (seqlen>=maxlen) else (maxlen-seqlen)
+            minlen =len(pidx)-1 if (len(nidx)>len(pidx)) else len(nidx)-1
             for i in range(0,c,sliding):
                 sequence=sequences[:,i:i+seqlen]
                 t=targets[:,i:i+seqlen]
@@ -645,7 +646,6 @@ for epoch in range(epochs):
                 pred,output,state,mergeidx =model(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
                 g=time.time()
                 if(GRU==False):
-                    minlen =len(pidx) if (len(nidx)>len(pidx)) else len(nidx)
                     ns,ps,btwgroups,nnorm,pnorm = rnnOutputSimility(output[nidx],output[pidx],minlen)
                     negFCellStateSimility.append(ns)
                     posFCellStateSimility.append(ps)
