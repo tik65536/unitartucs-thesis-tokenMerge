@@ -663,8 +663,8 @@ for epoch in range(epochs):
             if(GRU==False):
                 valblocknegNorm+=np.array(blocknegNorm[1:13])
                 valblockposNorm+=np.array(blockposNorm[1:13])
-                valnegNorm[valbatchcount]=np.array(negNorm)
-                valposNorm[valbatchcount]=np.array(posNorm)
+                valnegNorm.append(np.array(negNorm))
+                valposNorm.append(np.array(posNorm))
                 negFCellStateSimility=np.array(negFCellStateSimility).reshape(-1,)
                 posFCellStateSimility=np.array(posFCellStateSimility).reshape(-1,)
                 FbtwGroupSimility=np.array(FbtwGroupSimility).reshape(-1,)
