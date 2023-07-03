@@ -788,8 +788,8 @@ for epoch in range(epochs):
         writer.add_scalar(f'Validation AvgLoss',avgValloss,epoch)
         writer.add_scalar(f'Validation AvgAccy',np.mean(valAvgAccy),epoch)
         writer.add_scalar(f'Validation AvgAccy2',np.mean(valAvgAccy2),epoch)
-        writer.add_scalars(f'Validation negNorm',[{f'negblockNorm_{i}':valnegNorm[i] for i in range(12)}][0],epoch)
-        writer.add_scalars(f'Validation posNorm',[{f'posblockNorm_{i}':valposNorm[i] for i in range(12)}][0],epoch)
+        writer.add_scalars(f'Validation negNorm',[{f'negblockNorm_{i}':valblocknegNorm[i] for i in range(12)}][0],epoch)
+        writer.add_scalars(f'Validation posNorm',[{f'posblockNorm_{i}':valblockposNorm[i] for i in range(12)}][0],epoch)
         for block in range(12):
             ndata=[ valnegNorm[i][:,seqlen*block:seqlen*block+seqlen,:] for i in range(valbatchcount) ]
             pdata=[ valposNorm[i][:,seqlen*block:seqlen*block+seqlen,:] for i in range(valbatchcount) ]
