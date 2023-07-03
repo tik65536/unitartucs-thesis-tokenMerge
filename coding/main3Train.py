@@ -36,8 +36,8 @@ def clean_review(text):
 
 def rnnOutputSimility(negout,posout,minlen):
     #shape : batch x seq x hiddenSize
-    negnorm = torch.mean(torch.norm(negout,dim=1),dim=0).detach().cpu().numpy()
-    posnorm = torch.mean(torch.norm(posout,dim=1),dim=0).detach().cpu().numpy()
+    negnorm = torch.norm(negout,dim=1).detach().cpu().numpy()
+    posnorm = torch.norm(posout,dim=1).detach().cpu().numpy()
     negout = torch.nn.functional.normalize(negout,dim=-1)
     posout = torch.nn.functional.normalize(posout,dim=-1)
     ns,ps,btws=np.zeros(seqlen),np.zeros(seqlen),np.zeros(seqlen)
@@ -583,7 +583,8 @@ for epoch in range(epochs):
         valAvgAccy2=[]
         valFNegSimility,valFPosSimility,valFbtwGroupSimility,valFNegSimilityMedian,valFPosSimilityMedian,valFbtwGroupSimilityMedian=[],[],[],[],[],[]
         valBNegSimility,valBPosSimility,valBbtwGroupSimility,valBNegSimilityMedian,valBPosSimilityMedian,valBbtwGroupSimilityMedian=[],[],[],[],[],[]
-        valnegNorm,valposNorm=np.zeros(12),np.zeros(12)
+        valblocknegNorm,valblockposNorm=np.zeros(12),np.zeros(12)
+        valnegNorm,valposNorm=[],[]
         switchcount=0
         tokendist=[]
         valavgdiffcount=[]
@@ -595,7 +596,7 @@ for epoch in range(epochs):
             losses=[]
             negFCellStateSimility,posFCellStateSimility,negBCellStateSimility,posBCellStateSimility,FbtwGroupSimility,BbtwGroupSimility=[],[],[],[],[],[]
             img=torch.zeros((batchsize,1,48,48))
-            sequences,targets,idxarray,tokenpos,negNorm,posNorm=[],[],[],[],[],[]
+            sequences,targets,idxarray,tokenpos,negNorm,posNorm,blocknegNorm,blockposNorm=[],[],[],[],[],[],[],[]
             for i,x in enumerate(nlp.pipe(test_text[d:d+batchsize])):
                 data=[]
                 pos=[]
@@ -650,16 +651,20 @@ for epoch in range(epochs):
                     negFCellStateSimility.append(ns)
                     posFCellStateSimility.append(ps)
                     FbtwGroupSimility.append(btwgroups)
-                    negNorm.append(np.mean(nnorm))
-                    posNorm.append(np.mean(pnorm))
+                    negNorm.append(nnorm)
+                    posNorm.append(pnorm)
+                    blocknegNorm.append(np.mean(np.mean(nnorm,dim=0)))
+                    blockposNorm.append(np.mean(np.mean(pnorm,dim=0)))
                 loss=criterion(pred,t)
                 losses.append(loss.item())
                 pred=torch.nn.functional.softmax(pred,dim=1)
                 pred=pred.permute(0,2,1).detach().cpu().numpy()
                 predict_history[:,i:i+seqlen,:]=pred
             if(GRU==False):
-                valnegNorm+=np.array(negNorm[1:13])
-                valposNorm+=np.array(posNorm[1:13])
+                valblocknegNorm+=np.array(blocknegNorm[1:13])
+                valblockposNorm+=np.array(blockposNorm[1:13])
+                valnegNorm[valbatchcount]=np.array(negNorm)
+                valposNorm[valbatchcount]=np.array(posNorm)
                 negFCellStateSimility=np.array(negFCellStateSimility).reshape(-1,)
                 posFCellStateSimility=np.array(posFCellStateSimility).reshape(-1,)
                 FbtwGroupSimility=np.array(FbtwGroupSimility).reshape(-1,)
@@ -783,8 +788,13 @@ for epoch in range(epochs):
         writer.add_scalar(f'Validation AvgLoss',avgValloss,epoch)
         writer.add_scalar(f'Validation AvgAccy',np.mean(valAvgAccy),epoch)
         writer.add_scalar(f'Validation AvgAccy2',np.mean(valAvgAccy2),epoch)
-        writer.add_scalars(f'Validation negNorm',[{f'NegblockNorm_{i}':valnegNorm[i] for i in range(12)}][0],epoch)
+        writer.add_scalars(f'Validation negNorm',[{f'negblockNorm_{i}':valnegNorm[i] for i in range(12)}][0],epoch)
         writer.add_scalars(f'Validation posNorm',[{f'posblockNorm_{i}':valposNorm[i] for i in range(12)}][0],epoch)
+        for block in range(12):
+            ndata=[ valnegNorm[i][:,seqlen*block:seqlen*block+seqlen,:] for i in range(valbatchcount) ]
+            pdata=[ valposNorm[i][:,seqlen*block:seqlen*block+seqlen,:] for i in range(valbatchcount) ]
+            writer.add_histogram(f'Validation neg norm dist {block}',ndata,epoch)
+            writer.add_histogram(f'Validation pos norm dist {block}',pdata,epoch)
     if(GRU==False):
         print(f'Epoch: {epoch:2d} Validation Finished, Avg Loss:{avgValloss:0.6f}, AvgAccy:{valAvgAccy:0.3f}, AvgAccy2:{valAvgAccy2:0.3f}, DiffPOS:{valavgdiffcount:2.3f}, Forward:{{({valNS:0.3f},{valNSM:0.3f}),({valPS:0.3f},{valPSM:0.3f}),({valbtwS:0.3f},{valbtwGM:0.3f})}}',flush=True)
         print(f'Epoch: {epoch:2d} Validation Finished, Forward:{{({valNS:0.3f},{valNSM:0.3f}),({valPS:0.3f},{valNS:0.3f}),({valbtwS:0.3f},{valbtwGM:0.3f})}} Backward:{{({valBNS:0.3f},{valBNSM:0.3f}),({valBPS:0.3f},{valBPSM:0.3f}),({valBbtwS:0.3f},{valBbtwGM:0.3f})}}',flush=True)
