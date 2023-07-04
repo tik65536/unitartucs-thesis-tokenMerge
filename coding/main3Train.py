@@ -793,7 +793,6 @@ for epoch in range(epochs):
         for block in range(1,13):
             ndata=np.vstack((valnegNorm[0][block,:,:],valnegNorm[1][block,:,:],valnegNorm[2][block,:,:]))
             pdata=np.vstack((valposNorm[0][block,:,:],valposNorm[1][block,:,:],valposNorm[2][block,:,:]))
-            print(ndata.shape)
             writer.add_histogram(f'Validation neg norm dist {block}',ndata,epoch)
             writer.add_histogram(f'Validation pos norm dist {block}',pdata,epoch)
     if(GRU==False):
