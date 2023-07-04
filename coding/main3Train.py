@@ -791,8 +791,8 @@ for epoch in range(epochs):
         writer.add_scalars(f'Validation negNorm',[{f'negblockNorm_{i}':valblocknegNorm[i] for i in range(12)}][0],epoch)
         writer.add_scalars(f'Validation posNorm',[{f'posblockNorm_{i}':valblockposNorm[i] for i in range(12)}][0],epoch)
         for block in range(12):
-            ndata=np.array([ valnegNorm[i][:,seqlen*block:seqlen*block+seqlen] for i in range(3) ]).reshape(3*batchsize,-1)
-            pdata=np.array([ valposNorm[i][:,seqlen*block:seqlen*block+seqlen] for i in range(3) ]).reshape(3*batchsize,-1)
+            ndata=np.array([ valnegNorm[i][:,seqlen*block:seqlen*block+seqlen] for i in range(3) ])
+            pdata=np.array([ valposNorm[i][:,seqlen*block:seqlen*block+seqlen] for i in range(3) ])
             writer.add_histogram(f'Validation neg norm dist {block}',ndata,epoch)
             writer.add_histogram(f'Validation pos norm dist {block}',pdata,epoch)
     if(GRU==False):
