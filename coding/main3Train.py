@@ -790,9 +790,10 @@ for epoch in range(epochs):
         writer.add_scalar(f'Validation AvgAccy2',np.mean(valAvgAccy2),epoch)
         writer.add_scalars(f'Validation negNorm',[{f'negblockNorm_{i}':valblocknegNorm[i] for i in range(12)}][0],epoch)
         writer.add_scalars(f'Validation posNorm',[{f'posblockNorm_{i}':valblockposNorm[i] for i in range(12)}][0],epoch)
-        for block in range(12):
-            ndata=np.array([ valnegNorm[i][block,:,:] for i in range(3) ])
-            pdata=np.array([ valposNorm[i][block,:,:] for i in range(3) ])
+        for block in range(1,13):
+            ndata=np.vstack((valnegNorm[0][block,:,:],valnegNorm[1][block,:,:],valnegNorm[2][block,:,:]))
+            pdata=np.vstack((valposNorm[0][block,:,:],valposNorm[1][block,:,:],valposNorm[2][block,:,:]))
+            print(ndata.shape)
             writer.add_histogram(f'Validation neg norm dist {block}',ndata,epoch)
             writer.add_histogram(f'Validation pos norm dist {block}',pdata,epoch)
     if(GRU==False):
