@@ -450,7 +450,7 @@ for epoch in range(epochs):
                     weightHistory[name][g]['birthrate'].append(br/init)
                     weightHistory[name][g]['deathrate'].append(dr/init)
                     writer.add_scalars(f'{name}_{g}_population',{'birth':(br/init),'death':(dr/init),'freeze':(freeze/init)},trainbatchcount)
-                    writer.add_scalar(f'{name}_{g}_PopNorm',torch.norm(torch.nn.functional.normalize(currentGateWeight,dim=-1)),trainbatchcount)
+                    writer.add_scalar(f'{name}_{g}_PopNorm',torch.norm(currentGateWeight),trainbatchcount)
                     writer.add_histogram(f'{name}_{g}',currentGateWeight,trainbatchcount)
         if(numOfConvBlock>0):
             for name,para in model.conv1d.named_parameters():
