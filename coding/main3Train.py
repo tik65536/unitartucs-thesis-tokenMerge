@@ -38,7 +38,6 @@ def rnnOutputSimility(negout,posout,minlen):
     #shape : batch x seq x hiddenSize
     negnorm = torch.norm(negout,dim=-1).detach().cpu().numpy()
     posnorm = torch.norm(posout,dim=-1).detach().cpu().numpy()
-    print(posnorm.shape)
     negout = torch.nn.functional.normalize(negout,dim=-1)
     posout = torch.nn.functional.normalize(posout,dim=-1)
     ns,ps,btws=np.zeros(seqlen),np.zeros(seqlen),np.zeros(seqlen)
