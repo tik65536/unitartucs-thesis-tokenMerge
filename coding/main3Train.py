@@ -165,6 +165,9 @@ parser.add_argument('-permuteidx', nargs="*", default=None,
 parser.add_argument('-onlyMerge', nargs="*", default=[],
                     help='Skip POS tag for Merge')
 
+parser.add_argument('-skipPOS', nargs="*", default=[],
+                    help='Skip POS')
+
 parser.add_argument('-consecutive', type=int, default=0,
                     help='Consecutive merge')
 
@@ -200,6 +203,7 @@ numOfConvBlock=args.numconv1d
 permuteidx = list(range(seqlen)) if(args.permuteidx is None) else [ int(x) for x in args.permuteidx ]
 mergeRate =args.mergeRate
 onlyMerge=args.onlyMerge
+skipPOS=args.skipPOS
 consecutive = True if(args.consecutive==1) else False
 
 print(f'Run Para : {args}',flush=True)
@@ -352,8 +356,9 @@ for epoch in range(epochs):
                     data+= [tok2id[t.text]]
                     pos+= [t.pos_]
                 elif(t.is_stop==False and t.is_punct==False):
-                    data+= [tok2id[t.text]]
-                    pos+= [t.pos_]
+                    if(t.pos_ not in skipPOS):
+                        data+= [tok2id[t.text]]
+                        pos+= [t.pos_]
             tmp=np.zeros(maxlen)
             c=5 if(seqlen>=maxlen) else seqlen
             tmp[:c]=2
@@ -605,8 +610,9 @@ for epoch in range(epochs):
                         data+= [tok2id[t.text]]
                         pos+= [t.pos_]
                     elif(t.is_stop==False and t.is_punct==False):
-                        data+= [tok2id[t.text]]
-                        pos+= [t.pos_]
+                        if(t.pos_ not in skipPOS):
+                            data+= [tok2id[t.text]]
+                            pos+= [t.pos_]
                 tmp=np.zeros(maxlen)
                 c=5 if(seqlen>=maxlen) else seqlen
                 tmp[:c]=2
