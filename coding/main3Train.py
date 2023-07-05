@@ -588,6 +588,7 @@ for epoch in range(epochs):
         valAvgAccy2=[]
         valFNegSimility,valFPosSimility,valFbtwGroupSimility,valFNegSimilityMedian,valFPosSimilityMedian,valFbtwGroupSimilityMedian=[],[],[],[],[],[]
         valBNegSimility,valBPosSimility,valBbtwGroupSimility,valBNegSimilityMedian,valBPosSimilityMedian,valBbtwGroupSimilityMedian=[],[],[],[],[],[]
+        valBlockNegSimility,valBlockPosSimility,valBlockbtwGroupSimility=[],[],[]
         valblocknegNorm,valblockposNorm=np.zeros(12),np.zeros(12)
         valnegNorm,valposNorm=[],[]
         switchcount=0
@@ -680,6 +681,9 @@ for epoch in range(epochs):
                 valFPosSimilityMedian.append(np.median(posFCellStateSimility[25:325]))
                 valFbtwGroupSimility.append(np.mean(FbtwGroupSimility[25:325]))
                 valFbtwGroupSimilityMedian.append(np.median(FbtwGroupSimility[25:325]))
+                valBlockNegSimility.append([ np.mean(negFCellStateSimility[i:i+seqlen+1]) for i in range(seqlen,325,seqlen)])
+                valBlockPosSimility.append([ np.mean(posFCellStateSimility[i:i+seqlen+1]) for i in range(seqlen,325,seqlen)])
+                valBlockbtwGroupSimility.append([ np.mean(FbtwGroupSimility[i:i+seqlen+1]) for i in range(seqlen,325,seqlen)])
             avgloss=np.mean(losses)
             vallosses.append(avgloss)
             est_prediction=[]
@@ -788,6 +792,9 @@ for epoch in range(epochs):
         valBNSM = np.mean(valBNegSimilityMedian)
         valBPSM = np.mean(valBPosSimilityMedian)
         valBbtwGM = np.mean(valBbtwGroupSimilityMedian)
+        valBlockNegSimility=np.mean(np.array(valBlockNegSimility),axis=0)
+        valBlockPosSimility=np.mean(np.array(valBlockPosSimility),axis=0)
+        valBlockbtwGroupSimility=np.mean(np.array(valBlockbtwGroupSimility),axis=0)
         if(valAvgAccy>currentbestaccy):
             currentbestaccy=valAvgAccy
             torch.save(model,f'{weightPath}/Val_Epoch_{epoch}_accy_{currentbestaccy}_loss_{avgValloss}.pt')
@@ -796,6 +803,9 @@ for epoch in range(epochs):
         writer.add_scalar(f'Validation AvgAccy2',np.mean(valAvgAccy2),epoch)
         writer.add_scalars(f'Validation negNorm',[{f'negblockNorm_{i}':valblocknegNorm[i]/3 for i in range(12)}][0],epoch)
         writer.add_scalars(f'Validation posNorm',[{f'posblockNorm_{i}':valblockposNorm[i]/3 for i in range(12)}][0],epoch)
+        writer.add_scalars(f'Validation negSimiality',[{f'block_{i}':valBlockNegSimility[i] for i in range(12)}][0],epoch)
+        writer.add_scalars(f'Validation posSimiality',[{f'block_{i}':valBlockPosSimility[i] for i in range(12)}][0],epoch)
+        writer.add_scalars(f'Validation BTWSimiality',[{f'block_{i}':valBlockbtwGroupSimility[i] for i in range(12)}][0],epoch)
         for block in range(1,13):
             ndata=np.vstack((valnegNorm[0][block,:,:],valnegNorm[1][block,:,:],valnegNorm[2][block,:,:]))
             pdata=np.vstack((valposNorm[0][block,:,:],valposNorm[1][block,:,:],valposNorm[2][block,:,:]))
