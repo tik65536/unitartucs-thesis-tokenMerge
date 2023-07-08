@@ -40,7 +40,8 @@ def rnnOutputSimility(negout,posout,minlen):
     posnorm = torch.norm(posout,dim=-1).detach().cpu().numpy()
     negout = torch.nn.functional.normalize(negout,dim=-1)
     posout = torch.nn.functional.normalize(posout,dim=-1)
-    ns,ps,btws=np.zeros(seqlen),np.zeros(seqlen),np.zeros(seqlen)
+    #ns,ps,btws=np.zeros(seqlen),np.zeros(seqlen),np.zeros(seqlen)
+    ns,ps,btws=[],[],[]
     for i in range(seqlen):
         n=torch.triu(torch.mm(negout[:,i,:],negout[:,i,:].T),diagonal=1)
         p=torch.triu(torch.mm(posout[:,i,:],posout[:,i,:].T),diagonal=1)
@@ -51,9 +52,12 @@ def rnnOutputSimility(negout,posout,minlen):
         n = n[nridx,ncidx]
         p = p[pridx,pcidx]
         btwgroup=btwgroup[btwgridx,btwgcidx]
-        ns[i]=torch.mean(n).detach().cpu().numpy()
-        ps[i]=torch.mean(p).detach().cpu().numpy()
-        btws[i]=torch.mean(btwgroup).detach().cpu().numpy()
+        #ns[i]=torch.mean(n).detach().cpu().numpy()
+        #ps[i]=torch.mean(p).detach().cpu().numpy()
+        #btws[i]=torch.mean(btwgroup).detach().cpu().numpy()
+        ns.append(n.detach().cpu().numpy())
+        ps.append(p.detach().cpu().numpy())
+        btws.append(btwgroup.detach().cpu().numpy())
     return ns,ps,btws,negnorm,posnorm
 
 def CellStateSimility(nstate,pstate,minlen):
@@ -102,6 +106,9 @@ parser.add_argument('-dynamicOpt', type=int, default=1,
                     help='#Switching Opt Step')
 
 parser.add_argument('-RMS', type=int, default=0,
+                    help='RMSprop')
+
+parser.add_argument('-codewordNorm', type=int, default=0,
                     help='RMSprop')
 
 parser.add_argument('-preprocesstext', type=float, default=1,
@@ -205,6 +212,7 @@ mergeRate =args.mergeRate
 onlyMerge=args.onlyMerge
 skipPOS=args.skipPOS
 consecutive = True if(args.consecutive==1) else False
+mincodeword = True if(args.codewordNorm==1) else False
 
 print(f'Run Para : {args}',flush=True)
 
@@ -304,6 +312,7 @@ for name,para in model.predict.named_parameters():
         weightHistory[name]['deathrate']=[]
         weightHistory[name]['previous_pop']=torch.count_nonzero(data)
 criterion = torch.nn.CrossEntropyLoss()
+criterion2 = torch.nn.MSELoss()
 optimizer = torch.optim.RMSprop(model.parameters()) if (RMS==True) else torch.optim.Adam(model.parameters())
 currentbestaccy=0
 test_text=test_pd['text']
@@ -395,7 +404,7 @@ for epoch in range(epochs):
             permuteposlist = poslist[:,permuteidx]
             if(not carryforward):
                  state=model.init_state()
-            pred,_, state ,mergeidx =  model(sequence, state, switch,permuteidx,onlyMerge,poslist,consecutive)
+            pred,codeword, state ,mergeidx =  model(sequence, state, switch,permuteidx,onlyMerge,poslist,consecutive)
             diffcount+=np.sum(poslist!=permuteposlist,axis=-1)
             endidx = np.where(permuteposlist=='e0s')[0]
             endidx = np.in1d(range(permuteposlist.shape[0]),endidx)
@@ -414,7 +423,11 @@ for epoch in range(epochs):
                     pos = permuteposlist[:,midx]
                     pos=[ "_".join(pos[pidx]) for pidx in range(len(pos))  ]
                     mergeStatistic.update(pos)
+
             loss=criterion(pred,target)
+            if(criterion2==True):
+                codeword_norm=torch.mean(torch.mean(torch.norm(codeword,dim=-1),dim=1))
+                loss+=criterion2(codeword_norm,torch.zeros_like(codeword_norm))
             losses.append(loss.item())
             trainloss.append(loss.item())
             pred=torch.nn.functional.softmax(pred,dim=1)
@@ -591,6 +604,8 @@ for epoch in range(epochs):
         valBlockNegSimility,valBlockPosSimility,valBlockbtwGroupSimility=[],[],[]
         valblocknegNorm,valblockposNorm=np.zeros(12),np.zeros(12)
         valnegNorm,valposNorm=[],[]
+        valbtwGroupSimilityRaw,valNegSimilityRaw,valPosSimilityRaw=[],[],[]
+        valbtwNegBlock,valbtwPosBlock=[],[]
         switchcount=0
         tokendist=[]
         valavgdiffcount=[]
@@ -601,6 +616,8 @@ for epoch in range(epochs):
             state=model.init_state()
             losses=[]
             negFCellStateSimility,posFCellStateSimility,negBCellStateSimility,posBCellStateSimility,FbtwGroupSimility,BbtwGroupSimility=[],[],[],[],[],[]
+            negbtwBlock,posbtwBlock=[],[]
+            negSimialityRaw,posSimialityRaw,btwSimilityRaw=[],[],[]
             img=torch.zeros((batchsize,1,48,48))
             sequences,targets,idxarray,tokenpos,negNorm,posNorm,blocknegNorm,blockposNorm=[],[],[],[],[],[],[],[]
             for i,x in enumerate(nlp.pipe(test_text[d:d+batchsize])):
@@ -645,6 +662,7 @@ for epoch in range(epochs):
             #pmind=np.zeros((len(pidx),maxlen//seqlen))
             c=1 if (seqlen>=maxlen) else (maxlen-seqlen)
             minlen =len(pidx)-1 if (len(nidx)>len(pidx)) else len(nidx)-1
+            previousOutput=None
             for i in range(0,c,sliding):
                 sequence=sequences[:,i:i+seqlen]
                 t=targets[:,i:i+seqlen]
@@ -655,13 +673,22 @@ for epoch in range(epochs):
                 g=time.time()
                 if(GRU==False):
                     ns,ps,btwgroups,nnorm,pnorm = rnnOutputSimility(output[nidx],output[pidx],minlen)
-                    negFCellStateSimility.append(ns)
-                    posFCellStateSimility.append(ps)
-                    FbtwGroupSimility.append(btwgroups)
+                    negFCellStateSimility.append(np.mean(ns))
+                    posFCellStateSimility.append(np.mean(ps))
+                    FbtwGroupSimility.append(np.mean(btwgroups))
                     negNorm.append(nnorm)
                     posNorm.append(pnorm)
                     blocknegNorm.append(np.mean(np.mean(nnorm,axis=0)))
                     blockposNorm.append(np.mean(np.mean(pnorm,axis=0)))
+                    negSimialityRaw.append(np.array(ns))
+                    posSimialityRaw.append(np.array(ps))
+                    btwSimilityRaw.append(np.array(btwgroups))
+                    if(i>0):
+                        _,_,negbtw,_,_ = rnnOutputSimility(output[nidx],previousOutput[nidx],len(nidx))
+                        _,_,posbtw,_,_ = rnnOutputSimility(output[pidx],previousOutput[pidx],len(pidx))
+                        negbtwBlock.append(np.array(negbtw))
+                        posbtwBlock.append(np.array(posbtw))
+                previousOutput=output
                 loss=criterion(pred,t)
                 losses.append(loss.item())
                 pred=torch.nn.functional.softmax(pred,dim=1)
@@ -670,6 +697,10 @@ for epoch in range(epochs):
             if(GRU==False):
                 valblocknegNorm+=np.array(blocknegNorm[1:13])
                 valblockposNorm+=np.array(blockposNorm[1:13])
+                negbtwBlock=np.array(negbtwBlock)
+                posbtwBlock=np.array(posbtwBlock)
+                negSimialityRaw=np.array(negSimialityRaw)
+                posSimialityRaw=np.array(posSimialityRaw)
                 valnegNorm.append(np.array(negNorm))
                 valposNorm.append(np.array(posNorm))
                 negFCellStateSimility=np.array(negFCellStateSimility).reshape(-1,)
@@ -677,9 +708,17 @@ for epoch in range(epochs):
                 FbtwGroupSimility=np.array(FbtwGroupSimility).reshape(-1,)
                 valFNegSimility.append(np.mean(negFCellStateSimility[25:325]))
                 valFPosSimility.append(np.mean(posFCellStateSimility[25:325]))
+                valNegSimilityRaw.append(negFCellStateSimility[25:325])
+                valPosSimilityRaw.append(posFCellStateSimility[25:325])
                 valFNegSimilityMedian.append(np.median(negFCellStateSimility[25:325]))
                 valFPosSimilityMedian.append(np.median(posFCellStateSimility[25:325]))
                 valFbtwGroupSimility.append(np.mean(FbtwGroupSimility[25:325]))
+                valbtwGroupSimilityRaw.append(FbtwGroupSimility[25:325])
+                valbtwNegBlock.append(negbtwBlock[:13,:])
+                valbtwPosBlock.append(posbtwBlock[:13,:])
+                valNegSimilityRaw.append(negSimialityRaw[:13,:])
+                valPosSimilityRaw.append(posSimialityRaw[:13,:])
+                valbtwGroupSimilityRaw.append(btwSimilityRaw[:13,:])
                 valFbtwGroupSimilityMedian.append(np.median(FbtwGroupSimility[25:325]))
                 valBlockNegSimility.append([ np.mean(negFCellStateSimility[i:i+seqlen+1]) for i in range(seqlen,325,seqlen)])
                 valBlockPosSimility.append([ np.mean(posFCellStateSimility[i:i+seqlen+1]) for i in range(seqlen,325,seqlen)])
@@ -806,11 +845,23 @@ for epoch in range(epochs):
         writer.add_scalars(f'Validation negSimiality',[{f'block_{i}':valBlockNegSimility[i] for i in range(12)}][0],epoch)
         writer.add_scalars(f'Validation posSimiality',[{f'block_{i}':valBlockPosSimility[i] for i in range(12)}][0],epoch)
         writer.add_scalars(f'Validation BTWSimiality',[{f'block_{i}':valBlockbtwGroupSimility[i] for i in range(12)}][0],epoch)
+        writer.add_scalars(f'Validation NegBlockSimiality',[{f'block_{i}':valbtwNegBlock[i] for i in range(13)}][0],epoch)
+        writer.add_scalars(f'Validation POSBlockSimiality',[{f'block_{i}':valbtwPosBlock[i] for i in range(13)}][0],epoch)
         for block in range(1,13):
             ndata=np.vstack((valnegNorm[0][block,:,:],valnegNorm[1][block,:,:],valnegNorm[2][block,:,:]))
             pdata=np.vstack((valposNorm[0][block,:,:],valposNorm[1][block,:,:],valposNorm[2][block,:,:]))
+            nsdata=np.vstack((valNegSimilityRaw[0][block,:],valNegSimilityRaw[1][block,:],valNegSimilityRaw[2][block,:]))
+            psdata=np.vstack((valPosSimilityRaw[0][block,:],valPosSimilityRaw[1][block,:],valPosSimilityRaw[2][block,:]))
+            btwdata=np.vstack(valbtwGroupSimilityRaw[0][block,:],valbtwGroupSimilityRaw[1][block,:],valbtwGroupSimilityRaw[2][block,:])
+            btwNegBlockdata = np.vstack((valBlockNegSimility[0][block,:],valBlockNegSimility[1][block,:],valBlockNegSimility[2][block,:]))
+            btwPosBlockdata = np.vstack((valBlockPosSimility[0][block,:],valBlockPosSimility[1][block,:],valBlockPosSimility[2][block,:]))
             writer.add_histogram(f'Validation neg norm dist {block}',ndata,epoch)
             writer.add_histogram(f'Validation pos norm dist {block}',pdata,epoch)
+            writer.add_histogram(f'Validation neg sim Dist {block}',nsdata,epoch)
+            writer.add_histogram(f'Validation pos sim Dist {block}',psdata,epoch)
+            writer.add_histogram(f'Validation btw sim Dist {block}',btwdata,epoch)
+            writer.add_histogram(f'Validation neg block sim Dist {block}',btwNegBlockdata,epoch)
+            writer.add_histogram(f'Validation pos block sim Dist {block}',btwPosBlockdata,epoch)
     if(GRU==False):
         print(f'Epoch: {epoch:2d} Validation Finished, Avg Loss:{avgValloss:0.6f}, AvgAccy:{valAvgAccy:0.3f}, AvgAccy2:{valAvgAccy2:0.3f}, DiffPOS:{valavgdiffcount:2.3f}, Forward:{{({valNS:0.3f},{valNSM:0.3f}),({valPS:0.3f},{valPSM:0.3f}),({valbtwS:0.3f},{valbtwGM:0.3f})}}',flush=True)
         print(f'Epoch: {epoch:2d} Validation Finished, Forward:{{({valNS:0.3f},{valNSM:0.3f}),({valPS:0.3f},{valNS:0.3f}),({valbtwS:0.3f},{valbtwGM:0.3f})}} Backward:{{({valBNS:0.3f},{valBNSM:0.3f}),({valBPS:0.3f},{valBPSM:0.3f}),({valBbtwS:0.3f},{valBbtwGM:0.3f})}}',flush=True)
