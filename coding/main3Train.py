@@ -602,7 +602,7 @@ for epoch in range(epochs):
         valFNegSimility,valFPosSimility,valFbtwGroupSimility,valFNegSimilityMedian,valFPosSimilityMedian,valFbtwGroupSimilityMedian=[],[],[],[],[],[]
         valBNegSimility,valBPosSimility,valBbtwGroupSimility,valBNegSimilityMedian,valBPosSimilityMedian,valBbtwGroupSimilityMedian=[],[],[],[],[],[]
         valBlockNegSimility,valBlockPosSimility,valBlockbtwGroupSimility=[],[],[]
-        valblocknegNorm,valblockposNorm=np.zeros(12),np.zeros(12)
+        valblocknegNorm,valblockposNorm=np.zeros(5),np.zeros(5)
         valnegNorm,valposNorm=[],[]
         valbtwGroupSimilityRaw,valNegSimilityRaw,valPosSimilityRaw=[],[],[]
         valbtwNegBlock,valbtwPosBlock=[],[]
