@@ -700,7 +700,7 @@ for epoch in range(epochs):
             if(GRU==False):
                 valblocknegNorm+=np.array(blocknegNorm[1:6])
                 valblockposNorm+=np.array(blockposNorm[1:6])
-                negbtwBlock=np.array(np.array9negbtwBlock[:6])
+                negbtwBlock=np.array(negbtwBlock[:6])
                 posbtwBlock=np.array(posbtwBlock[:6])
                 negSimialityRaw=np.array(negSimialityRaw[:6])
                 posSimialityRaw=np.array(posSimialityRaw[:6])
