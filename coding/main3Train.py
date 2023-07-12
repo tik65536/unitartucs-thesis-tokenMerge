@@ -149,7 +149,7 @@ parser.add_argument('-numconv1d', type=int, default=1,
                     help='Number of Conv1D')
 
 parser.add_argument('-groupRelu', type=int, default=1,
-                    help='ReLU for Conv1d , 0,1,2')
+                    help='1=ReLU, 2=Tanh')
 
 parser.add_argument('-convpredict', type=int, default=0,
                     help='Use Conv1D predict')

@@ -85,38 +85,40 @@ class PredictLSTMIntervionP(nn.Module):
         layer_list=list()
         for j in range(self.mergeNumOfConvBlock):
             layer_list.append((f'Embed_Conv1D_{j}',nn.Conv1d(self.embedding_dim,self.embedding_dim,kernel_size=self.kernelSize)))
-        layer_list.append((f'Embed_Conv1D_{j}_ReLU',nn.ReLU()))
+        if(groupRelu==1):
+            layer_list.append((f'Embed_Conv1D_{j}_ReLU',nn.ReLU()))
+        elif(groupRelu==2):
+            layer_list.append((f'Embed_Conv1D_{j}_Tanh',nn.Tanh()))
         layerDict = OrderedDict(layer_list)
         self.mergeConv1D = torch.nn.Sequential(layerDict).to(self.device)
 
         # Create Conv1D prediction Block
-        if(self.numOfConv1DBlock>0):
-            layer_list=list()
-            layer_list.append((f'Conv1d_0',nn.Conv1d(self.bidirection*self.lstm_size,
-                                                               self.bidirection*self.lstm_size,
-                                                               kernel_size=self.predict_kernelSize,
-                                                               padding=0)))
-            if(self.groupRelu==2):
-                layer_list.append((f'Conv1D_ReLU',nn.ReLU()))
-            for i in range(1,self.numOfConv1DBlock):
-                layer_list.append((f'Conv1d_{i}',nn.Conv1d(self.bidirection*self.lstm_size,
-                                                                   self.bidirection*self.lstm_size,
-                                                                   kernel_size=self.predict_kernelSize,
-                                                                   padding='same')))
-                if(self.groupRelu==2):
-                    layer_list.append((f'Conv1D_ReLU',nn.ReLU()))
-            if(self.groupRelu==1):
-                layer_list.append((f'Conv1D_ReLU',nn.ReLU()))
-            layerDict = OrderedDict(layer_list)
-            self.conv1d = torch.nn.Sequential(layerDict).to(self.device)
-        if(self.convpredict):
-            self.predict=nn.Conv1d(self.bidirection*self.lstm_size,
-                                                           3,
-                                                           kernel_size=self.predict_kernelSize,
-                                                           padding=0).to(self.device)
-
-        else:
-            self.predict = torch.nn.Linear(self.bidirection*self.lstm_size,3).to(self.device) if (self.softmax==True) else torch.nn.Linear(self.bidirection*self.lstm_size,1).to(self.device)
+        #if(self.numOfConv1DBlock>0):
+        #    layer_list=list()
+        #    layer_list.append((f'Conv1d_0',nn.Conv1d(self.bidirection*self.lstm_size,
+        #                                                       self.bidirection*self.lstm_size,
+        #                                                       kernel_size=self.predict_kernelSize,
+        #                                                        padding=0)))
+        #    if(self.groupRelu==2):
+        #        layer_list.append((f'Conv1D_ReLU',nn.ReLU()))
+        #    for i in range(1,self.numOfConv1DBlock):
+        #        layer_list.append((f'Conv1d_{i}',nn.Conv1d(self.bidirection*self.lstm_size,
+        #                                                           self.bidirection*self.lstm_size,
+        #                                                           kernel_size=self.predict_kernelSize,
+        #                                                           padding='same')))
+        #        if(self.groupRelu==2):
+        #            layer_list.append((f'Conv1D_ReLU',nn.ReLU()))
+        #    if(self.groupRelu==1):
+        #        layer_list.append((f'Conv1D_ReLU',nn.ReLU()))
+        #    layerDict = OrderedDict(layer_list)
+        #    self.conv1d = torch.nn.Sequential(layerDict).to(self.device)
+        #if(self.convpredict):
+        #    self.predict=nn.Conv1d(self.bidirection*self.lstm_size,
+        #                                                   3,
+        #                                                   kernel_size=self.predict_kernelSize,
+        #                                                   padding=0).to(self.device)
+        #else:
+        self.predict = torch.nn.Linear(self.bidirection*self.lstm_size,3).to(self.device) if (self.softmax==True) else torch.nn.Linear(self.bidirection*self.lstm_size,1).to(self.device)
         if(self.GRU==False):
             self.RNN = nn.LSTM(
                     input_size=self.embedding_dim,
