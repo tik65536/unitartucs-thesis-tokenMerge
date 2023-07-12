@@ -57,7 +57,7 @@ def rnnOutputSimility(negout,posout,minlen,flag=0):
         posout = torch.einsum('ijk->jki',posout)
         btwgroup = torch.einsum('ijk,ikl->ijk',negout,posout)
         ridx,cidx=torch.triu_indices(btwgroup.shape[1],btwgroup.shape[2],offset=1)
-        btws = btwgroup[:,idx,cidx].detach().cpu().numpy()
+        btws = btwgroup[:,ridx,cidx].detach().cpu().numpy()
         return ns,ps,btws,negnorm,posnorm
     else:
         negout = torch.nn.functional.normalize(negout,dim=-1)
