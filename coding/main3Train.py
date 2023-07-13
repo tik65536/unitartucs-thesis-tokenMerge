@@ -42,7 +42,6 @@ def rnnOutputSimility(negout,posout,minlen,flag=0):
         negout = torch.nn.functional.normalize(negout,dim=-1)
         posout = torch.nn.functional.normalize(posout,dim=-1)
         #ns,ps,btws=np.zeros(seqlen),np.zeros(seqlen),np.zeros(seqlen)
-        ns,ps,btws=[],[],[]
         negoutT = torch.einsum('ijk->ikj',negout)
         posoutT = torch.einsum('ijk->ikj',posout)
         ns = torch.einsum('ijk,ikl->ijl',negout,negoutT)
@@ -53,9 +52,9 @@ def rnnOutputSimility(negout,posout,minlen,flag=0):
         ps = ps[:,ridx,cidx].detach().cpu().numpy()
         negout=negout[:minlen]
         posout=posout[:minlen]
-        negout = torch.einsum('ijk->jik',negout)
-        posout = torch.einsum('ijk->jki',posout)
-        btwgroup = torch.einsum('ijk,ikl->ijk',negout,posout)
+        negout = torch.einsum('ijk->jik',negout) # sample*seqlen*dim -> seqlen*sample*dim
+        posout = torch.einsum('ijk->jki',posout) # -> seqlen*dim*sample
+        btwgroup = torch.einsum('ijk,ikl->ijl',negout,posout) # seqlen*sample*sample
         ridx,cidx=torch.triu_indices(btwgroup.shape[1],btwgroup.shape[2],offset=1)
         btws = btwgroup[:,ridx,cidx].detach().cpu().numpy()
         return ns,ps,btws,negnorm,posnorm
@@ -698,8 +697,8 @@ for epoch in range(epochs):
                 pred=pred.permute(0,2,1).detach().cpu().numpy()
                 predict_history[:,i:i+seqlen,:]=pred
             if(GRU==False):
-                valblocknegNorm+=np.array(blocknegNorm[1:6])
-                valblockposNorm+=np.array(blockposNorm[1:6])
+                valblocknegNorm+=np.array(blocknegNorm[:6])
+                valblockposNorm+=np.array(blockposNorm[:6])
                 negbtwBlock=np.array(negbtwBlock[:6])
                 posbtwBlock=np.array(posbtwBlock[:6])
                 negSimialityRaw=np.array(negSimialityRaw[:6])
