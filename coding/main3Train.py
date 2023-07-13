@@ -62,7 +62,7 @@ def rnnOutputSimility(negout,posout,minlen,flag=0):
         negout = torch.nn.functional.normalize(negout,dim=-1)
         posout = torch.nn.functional.normalize(posout,dim=-1)
         posout = torch.einsum('ijk->ikj',posout)
-        ns = torch.einsum('ijk,ikl->ijl',negout,posout)
+        ns = torch.einsum('ijk,ikl->ijl',negout,posout).detach().cpu().numpy()
         return torch.diagonal(ns,offset=0,dim1=-2,dim2=-1).detach().cpu().numpy(),ns
 
 
