@@ -608,7 +608,7 @@ for epoch in range(epochs):
         #valFNegSimility,valFPosSimility,valFbtwGroupSimility,valFNegSimilityMedian,valFPosSimilityMedian,valFbtwGroupSimilityMedian=[],[],[],[],[],[]
         #valBNegSimility,valBPosSimility,valBbtwGroupSimility,valBNegSimilityMedian,valBPosSimilityMedian,valBbtwGroupSimilityMedian=[],[],[],[],[],[]
         valBlockNegSimility,valBlockPosSimility,valBlockbtwGroupSimility=[],[],[]
-        valblocknegNorm,valblockposNorm=np.zeros(5),np.zeros(5)
+        valblocknegNorm,valblockposNorm=np.zeros(6),np.zeros(6)
         valnegNorm,valposNorm=[],[]
         valbtwGroupSimilityRaw,valNegSimilityRaw,valPosSimilityRaw=[],[],[]
         valbtwNegBlock,valbtwPosBlock=[],[]
@@ -679,7 +679,7 @@ for epoch in range(epochs):
                 permuteposlist = poslist[:,permuteidx]
                 diffcount+=np.sum(poslist!=permuteposlist,axis=-1)
                 pred,output,state,mergeidx =model(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
-                if(GRU==False and i<(sliding*6)):
+                if(GRU==False and i<(sliding*7)):
                     ns,ps,btwgroups,nnorm,pnorm,nsraw,psraw = rnnOutputSimility(output[nidx],output[pidx],minlen)
                     avgblocknsraw.append(np.mean(nsraw,axis=0))
                     avgblockpsraw.append(np.mean(psraw,axis=0))
@@ -708,6 +708,8 @@ for epoch in range(epochs):
                 valblockposNorm+=np.array(blockposNorm[:6])
                 valnegNorm.append(np.array(negNorm[:6]))
                 valposNorm.append(np.array(posNorm[:6]))
+                valNegSimilityRaw.append(np.array(negSimialityRaw[:6]))
+                valPosSimilityRaw.append(np.array(posSimialityRaw[:6]))
                 valbtwNegBlock.append(np.array(negbtwBlock[:6]))
                 valbtwPosBlock.append(np.array(posbtwBlock[:6]))
                 valavgBlockNSRaw.append(np.array(avgblocknsraw[:6]))
@@ -823,14 +825,14 @@ for epoch in range(epochs):
         valavgBlockPSRaw=torch.tensor(valavgBlockPSRaw[0][1:6]).reshape(5,1,25,25)
         valavgbtwNegBlockRaw = torch.tensor(valavgbtwNegBlockRaw[0][1:6]).reshape(5,1,25,25)
         valavgbtwPosBlockRaw = torch.tensor(valavgbtwPosBlockRaw[0][1:6]).reshape(5,1,25,25)
-        valavgBlockNSImg = make_grid(valavgBlockNSRaw, nrow=1)
-        valavgBlockPSImg = make_grid(valavgBlockPSRaw, nrow=1)
-        valavgbtwNegBlockImg = make_grid(valavgbtwNegBlockRaw,nrow=1)
-        valavgbtwPosBlockImg = make_grid(valavgbtwPosBlockRaw,nrow=1)
-        writer.add_images("Validation Neg seq*seq",valavgBlockNSImg,epoch)
-        writer.add_images("Validation Pos seq*seq",valavgBlockPSImg,epoch)
-        writer.add_images("Validation Neg Btw Block seq*seq",valavgbtwNegBlockImg,epoch)
-        writer.add_images("Validation Pos Btw Block seq*seq",valavgbtwPosBlockImg,epoch)
+        valavgBlockNSImg = make_grid(valavgBlockNSRaw, nrow=5)
+        valavgBlockPSImg = make_grid(valavgBlockPSRaw, nrow=5)
+        valavgbtwNegBlockImg = make_grid(valavgbtwNegBlockRaw,nrow=5)
+        valavgbtwPosBlockImg = make_grid(valavgbtwPosBlockRaw,nrow=5)
+        writer.add_image("Validation Neg seq*seq",valavgBlockNSImg,epoch)
+        writer.add_image("Validation Pos seq*seq",valavgBlockPSImg,epoch)
+        writer.add_image("Validation Neg Btw Block seq*seq",valavgbtwNegBlockImg,epoch)
+        writer.add_image("Validation Pos Btw Block seq*seq",valavgbtwPosBlockImg,epoch)
         for block in range(1,6):
             ndata=np.vstack((valnegNorm[0][block,:,:],valnegNorm[1][block,:,:],valnegNorm[2][block,:,:]))
             pdata=np.vstack((valposNorm[0][block,:,:],valposNorm[1][block,:,:],valposNorm[2][block,:,:]))
