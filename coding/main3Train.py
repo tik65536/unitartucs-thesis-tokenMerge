@@ -679,7 +679,7 @@ for epoch in range(epochs):
                 permuteposlist = poslist[:,permuteidx]
                 diffcount+=np.sum(poslist!=permuteposlist,axis=-1)
                 pred,output,state,mergeidx =model(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
-                if(GRU==False and i<6):
+                if(GRU==False and i<(sliding*6)):
                     ns,ps,btwgroups,nnorm,pnorm,nsraw,psraw = rnnOutputSimility(output[nidx],output[pidx],minlen)
                     avgblocknsraw.append(np.mean(nsraw,axis=0))
                     avgblockpsraw.append(np.mean(psraw,axis=0))
