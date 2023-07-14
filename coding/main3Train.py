@@ -828,6 +828,9 @@ for epoch in range(epochs):
         valavgbtwPosBlockRaw = torch.tensor(valavgbtwPosBlockRaw[0][1:6]).reshape(5,25,25)
         for i in range(5):
             im=axes2[0][i].imshow(valavgBlockNSRaw[i])
+            im=axes2[1][i].imshow(valavgbtwNegBlockRaw[i])
+            im=axes2[2][i].imshow(valavgBlockPSRaw[i])
+            im=axes2[3][i].imshow(valavgbtwPosBlockRaw[i])
         fig2.colorbar(im, ax=axes2.ravel().tolist())
         fig2.tight_layout()
         writer.add_figure('Cos Similarity', fig2,epoch)
