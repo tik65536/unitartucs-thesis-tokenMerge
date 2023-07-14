@@ -84,11 +84,11 @@ class PredictLSTMIntervionP(nn.Module):
         #self.embeddingSpace2=torch.nn.Embedding(num_embeddings=self.n_vocab,embedding_dim=self.embedding_dim).to(self.device)
         layer_list=list()
         for j in range(self.mergeNumOfConvBlock):
-            layer_list.append((f'Embed_Conv1D_{j}',nn.Conv1d(self.embedding_dim,self.embedding_dim,kernel_size=self.kernelSize)))
+            layer_list.append((f'Merge_Conv1D_{j}',nn.Conv1d(self.embedding_dim,self.embedding_dim,kernel_size=self.kernelSize)))
         if(groupRelu==1):
-            layer_list.append((f'Embed_Conv1D_{j}_ReLU',nn.ReLU()))
+            layer_list.append((f'Merge_Conv1D_{j}_ReLU',nn.ReLU()))
         elif(groupRelu==2):
-            layer_list.append((f'Embed_Conv1D_{j}_Tanh',nn.Tanh()))
+            layer_list.append((f'Merge_Conv1D_{j}_Tanh',nn.Tanh()))
         layerDict = OrderedDict(layer_list)
         self.mergeConv1D = torch.nn.Sequential(layerDict).to(self.device)
 

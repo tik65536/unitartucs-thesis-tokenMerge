@@ -326,6 +326,7 @@ test_label=test_pd['label']
 trainbatchcount=0
 valbatchcount=0
 fig,axes=plt.subplots(4,1,figsize=(20,20), gridspec_kw={'height_ratios': [1,2,1,2]})
+fig2,axes2=plt.subplots(4,5,figsize=(20,20), gridspec_kw={'height_ratios': [1,1,1,1]})
 optstep = np.full(epochs,optstep)
 if(dynamicOpt):
     optstep[100:150]=optstep[0]//2
@@ -821,14 +822,20 @@ for epoch in range(epochs):
         writer.add_scalar(f'Validation AvgAccy2',np.mean(valAvgAccy2),epoch)
         writer.add_scalars(f'Validation negNorm',[{f'negblockNorm_{i}':valblocknegNorm[i]/3 for i in range(5)}][0],epoch)
         writer.add_scalars(f'Validation posNorm',[{f'posblockNorm_{i}':valblockposNorm[i]/3 for i in range(5)}][0],epoch)
-        valavgBlockNSRaw=torch.tensor(valavgBlockNSRaw[0][1:6]).reshape(5,1,25,25)
-        valavgBlockPSRaw=torch.tensor(valavgBlockPSRaw[0][1:6]).reshape(5,1,25,25)
-        valavgbtwNegBlockRaw = torch.tensor(valavgbtwNegBlockRaw[0][1:6]).reshape(5,1,25,25)
-        valavgbtwPosBlockRaw = torch.tensor(valavgbtwPosBlockRaw[0][1:6]).reshape(5,1,25,25)
-        valavgBlockNSImg = make_grid(valavgBlockNSRaw, nrow=5)
-        valavgBlockPSImg = make_grid(valavgBlockPSRaw, nrow=5)
-        valavgbtwNegBlockImg = make_grid(valavgbtwNegBlockRaw,nrow=5)
-        valavgbtwPosBlockImg = make_grid(valavgbtwPosBlockRaw,nrow=5)
+        valavgBlockNSRaw=torch.tensor(valavgBlockNSRaw[0][1:6]).reshape(5,25,25)
+        valavgBlockPSRaw=torch.tensor(valavgBlockPSRaw[0][1:6]).reshape(5,25,25)
+        valavgbtwNegBlockRaw = torch.tensor(valavgbtwNegBlockRaw[0][1:6]).reshape(5,25,25)
+        valavgbtwPosBlockRaw = torch.tensor(valavgbtwPosBlockRaw[0][1:6]).reshape(5,25,25)
+        for i in range(5):
+            im=axes2[0][i].imshow(valavgBlockNSRaw[i])
+        fig2.colorbar(im, ax=axes2.ravel().tolist())
+        fig2.tight_layout()
+        writer.add_figure('Cos Similarity', fig2,epoch)
+        plt.cla()
+        valavgBlockNSImg = make_grid(valavgBlockNSRaw.reshape(5,1,25,25), nrow=5)
+        valavgBlockPSImg = make_grid(valavgBlockPSRaw.reshape(5,1,25,25), nrow=5)
+        valavgbtwNegBlockImg = make_grid(valavgbtwNegBlockRaw.reshape(5,1,25,25),nrow=5)
+        valavgbtwPosBlockImg = make_grid(valavgbtwPosBlockRaw.reshape(5,1,25,25),nrow=5)
         writer.add_image("Validation Neg seq*seq",valavgBlockNSImg,epoch)
         writer.add_image("Validation Pos seq*seq",valavgBlockPSImg,epoch)
         writer.add_image("Validation Neg Btw Block seq*seq",valavgbtwNegBlockImg,epoch)
