@@ -610,6 +610,7 @@ for epoch in range(epochs):
         #valBNegSimility,valBPosSimility,valBbtwGroupSimility,valBNegSimilityMedian,valBPosSimilityMedian,valBbtwGroupSimilityMedian=[],[],[],[],[],[]
         valBlockNegSimility,valBlockPosSimility,valBlockbtwGroupSimility=[],[],[]
         valblocknegNorm,valblockposNorm=np.zeros(6),np.zeros(6)
+        valblocknegSeqNorm,valblockposSeqNorm=[],[]
         valnegNorm,valposNorm=[],[]
         valbtwGroupSimilityRaw,valNegSimilityRaw,valPosSimilityRaw=[],[],[]
         valbtwNegBlock,valbtwPosBlock=[],[]
@@ -630,6 +631,7 @@ for epoch in range(epochs):
             avgblocknsraw,avgblockpsraw,avgblockbtwnegraw,avgblockbtwposraw=[],[],[],[]
             img=torch.zeros((batchsize,1,48,48))
             sequences,targets,idxarray,tokenpos,negNorm,posNorm,blocknegNorm,blockposNorm=[],[],[],[],[],[],[],[]
+            blocknegSeqNorm,blockposSeqNorm=[],[]
             for i,x in enumerate(nlp.pipe(test_text[d:d+batchsize])):
                 data=[]
                 pos=[]
@@ -688,6 +690,8 @@ for epoch in range(epochs):
                     posNorm.append(pnorm)
                     blocknegNorm.append(np.mean(np.mean(nnorm,axis=0)))
                     blockposNorm.append(np.mean(np.mean(pnorm,axis=0)))
+                    blocknegSeqNorm.append(np.mean(nnorm,axis=0))
+                    blockposSeqNorm.append(np.mean(pnorm,axis=0))
                     negSimialityRaw.append(ns)
                     posSimialityRaw.append(ps)
                     btwSimilityRaw.append(btwgroups)
@@ -707,6 +711,8 @@ for epoch in range(epochs):
             if(GRU==False):
                 valblocknegNorm+=np.array(blocknegNorm[:6])
                 valblockposNorm+=np.array(blockposNorm[:6])
+                valblocknegSeqNorm.append(blocknegSeqNorm[:6])
+                valblockposSeqNorm.append(blockposSeqNorm[:6])
                 valnegNorm.append(np.array(negNorm[:6]))
                 valposNorm.append(np.array(posNorm[:6]))
                 valNegSimilityRaw.append(np.array(negSimialityRaw[:6]))
@@ -862,6 +868,11 @@ for epoch in range(epochs):
             writer.add_histogram(f'Validation btw sim Dist {block}',btwdata,epoch)
             writer.add_histogram(f'Validation neg block sim Dist {block}',btwNegBlockdata,epoch)
             writer.add_histogram(f'Validation pos block sim Dist {block}',btwPosBlockdata,epoch)
+        for s in range(seqlen):
+            seqNorm=np.concatenate(valblocknegSeqNorm[0][:,s].reshape(-1,),valblocknegSeqNorm[1][:,s].reshape(-1,),valblocknegSeqNorm[2][:,s].reshape(-1,))
+            writer.add_histogram(f'Validation neg seq Norm {s}',seqNorm,epoch)
+            seqNorm=np.concatenate(valblockposSeqNorm[0][:,s].reshape(-1,),valblockposSeqNorm[1][:,s].reshape(-1,),valblockposSeqNorm[2][:,s].reshape(-1,))
+            writer.add_histogram(f'Validation pos seq Norm {s}',seqNorm,epoch)
     print(f'Epoch: {epoch:2d} Validation Finished, Avg Loss:{avgValloss:0.6f}, AvgAccy:{valAvgAccy:0.3f}, AvgAccy2:{valAvgAccy2:0.3f}, DiffPOS:{valavgdiffcount:2.3f}',flush=True)
     #print(f'Epoch: {epoch:2d} Validation Finished, Merge: {valmergeStatistic.most_common(n=10)}',flush=True)
     with open(f'{tensorboardpath}/trainOverAllTop10_MergeStatistic_{epoch}.pkl','wb') as f:
