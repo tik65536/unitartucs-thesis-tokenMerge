@@ -711,8 +711,8 @@ for epoch in range(epochs):
             if(GRU==False):
                 valblocknegNorm+=np.array(blocknegNorm[:6])
                 valblockposNorm+=np.array(blockposNorm[:6])
-                valblocknegSeqNorm.append(blocknegSeqNorm[:6])
-                valblockposSeqNorm.append(blockposSeqNorm[:6])
+                valblocknegSeqNorm.append(np.array(blocknegSeqNorm[:6]))
+                valblockposSeqNorm.append(np.array(blockposSeqNorm[:6]))
                 valnegNorm.append(np.array(negNorm[:6]))
                 valposNorm.append(np.array(posNorm[:6]))
                 valNegSimilityRaw.append(np.array(negSimialityRaw[:6]))
