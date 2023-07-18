@@ -833,6 +833,7 @@ for epoch in range(epochs):
         valavgbtwNegBlockRaw = torch.tensor(valavgbtwNegBlockRaw[0][1:6]).reshape(5,25,25)
         valavgbtwPosBlockRaw = torch.tensor(valavgbtwPosBlockRaw[0][1:6]).reshape(5,25,25)
         fig2,axes2=plt.subplots(4,5,figsize=(20,20))
+        fig3,ax3=plt.subplot(figsize=(20,20))
         for r in range(5):
             im=axes2[0][r].imshow(valavgBlockNSRaw[r],vmax=1,vmin=-1)
             axes2[0][r].set_title(f'NS B{r}')
@@ -842,8 +843,12 @@ for epoch in range(epochs):
             axes2[2][r].set_title(f'PS B{r}')
             im=axes2[3][r].imshow(valavgbtwPosBlockRaw[r],vmax=1,vmin=-1)
             axes2[3][r].set_title(f'Pos bwteen B{r+1},B{r+2}')
+            y=np.concatenate(valblocknegSeqNorm[0][r,:].reshape(-1,),valblocknegSeqNorm[1][r,:].reshape(-1,),valblocknegSeqNorm[2][r,:].reshape(-1,))
+            x=np.tile(np.arange(25),3)
+            ax3.scatter(x,y)
         plt.colorbar(im,ax=axes2.ravel().tolist())
         writer.add_figure('Cos Similarity', fig2,epoch)
+        writer.add_figure('Test', fig3,epoch)
         plt.close('all')
         #valavgBlockNSImg = make_grid(valavgBlockNSRaw.reshape(5,1,25,25), nrow=5)
         #valavgBlockPSImg = make_grid(valavgBlockPSRaw.reshape(5,1,25,25), nrow=5)
@@ -868,11 +873,6 @@ for epoch in range(epochs):
             writer.add_histogram(f'Validation btw sim Dist {block}',btwdata,epoch)
             writer.add_histogram(f'Validation neg block sim Dist {block}',btwNegBlockdata,epoch)
             writer.add_histogram(f'Validation pos block sim Dist {block}',btwPosBlockdata,epoch)
-        for s in range(seqlen):
-            seqNorm=np.concatenate(valblocknegSeqNorm[0][:,s].reshape(-1,),valblocknegSeqNorm[1][:,s].reshape(-1,),valblocknegSeqNorm[2][:,s].reshape(-1,))
-            writer.add_histogram(f'Validation neg seq Norm {s}',seqNorm,epoch)
-            seqNorm=np.concatenate(valblockposSeqNorm[0][:,s].reshape(-1,),valblockposSeqNorm[1][:,s].reshape(-1,),valblockposSeqNorm[2][:,s].reshape(-1,))
-            writer.add_histogram(f'Validation pos seq Norm {s}',seqNorm,epoch)
     print(f'Epoch: {epoch:2d} Validation Finished, Avg Loss:{avgValloss:0.6f}, AvgAccy:{valAvgAccy:0.3f}, AvgAccy2:{valAvgAccy2:0.3f}, DiffPOS:{valavgdiffcount:2.3f}',flush=True)
     #print(f'Epoch: {epoch:2d} Validation Finished, Merge: {valmergeStatistic.most_common(n=10)}',flush=True)
     with open(f'{tensorboardpath}/trainOverAllTop10_MergeStatistic_{epoch}.pkl','wb') as f:
