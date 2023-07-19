@@ -693,7 +693,7 @@ for epoch in range(epochs):
         c=1 if (seqlen>=maxlen) else (maxlen-seqlen)
         minlen =len(pidx)-1 if (len(nidx)>len(pidx)) else len(nidx)-1
         previousOutput=None
-        curlfig = plt.figure()
+        curlfig = plt.figure(constrained_layout=True)
         curlax = curlfig.gca(projection='3d')
         for i in range(0,c,sliding):
             sequence=sequences[:,i:i+seqlen]
