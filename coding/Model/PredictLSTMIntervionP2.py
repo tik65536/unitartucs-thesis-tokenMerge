@@ -221,7 +221,7 @@ class PredictLSTMIntervionP(nn.Module):
         out = self.predict(o) # o.shape = N*L*1
         if(self.convpredict==False and self.softmax==True):
             out=out.permute(0,2,1)
-        return out,o,state,mergeidx
+        return out,o,lstminput,state,mergeidx
 
     def init_state(self,double=False):
         if(self.GRU):
