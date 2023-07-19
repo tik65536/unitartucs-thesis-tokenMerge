@@ -702,10 +702,11 @@ for epoch in range(epochs):
             permuteposlist = poslist[:,permuteidx]
             diffcount+=np.sum(poslist!=permuteposlist,axis=-1)
             pred,output,input_,state,mergeidx =model(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
-            u,v,w=curl(input_,output)
-            input_=input_.detach().cpu().numpy()
-            curlax.quiver(input_[:,:,0], input_[:,:,1], input_[:,:,2], u, v, w, length=0.1)
-            optimizer.zero_grad()
+            if(d<batchsize):
+                u,v,w=curl(input_,output)
+                input_=input_.detach().cpu().numpy()
+                curlax.quiver(input_[:,:,0], input_[:,:,1], input_[:,:,2], u, v, w, length=0.5,pivot='mid')
+                optimizer.zero_grad()
             if(GRU==False and i<(sliding*7)):
                 ns,ps,btwgroups,nnorm,pnorm,nsraw,psraw = rnnOutputSimility(output[nidx],output[pidx],minlen)
                 avgblocknsraw.append(np.mean(nsraw,axis=0))
@@ -748,8 +749,9 @@ for epoch in range(epochs):
             valavgbtwNegBlockRaw.append(np.array(avgblockbtwnegraw[:6]))
             valavgbtwPosBlockRaw.append(np.array(avgblockbtwposraw[:6]))
             valbtwGroupSimilityRaw.append(np.array(btwSimilityRaw[:6]))
-        writer.add_figure('Curl',curlfig,epoch)
-        plt.close('all')
+        if(d<batchsize):
+            writer.add_figure('Curl',curlfig,epoch)
+            plt.close('all')
         avgloss=np.mean(losses)
         vallosses.append(avgloss)
         est_prediction=[]
