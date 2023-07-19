@@ -705,7 +705,7 @@ for epoch in range(epochs):
             if(d<batchsize):
                 u,v,w=curl(input_,output)
                 input_=input_.detach().cpu().numpy()
-                curlax.quiver(input_[:,:,0], input_[:,:,1], input_[:,:,2], u, v, w, length=0.5,pivot='mid')
+                curlax.quiver(input_[:,:,0], input_[:,:,1], input_[:,:,2], u, v, w, length=0.5,pivot='middle')
                 optimizer.zero_grad()
             if(GRU==False and i<(sliding*7)):
                 ns,ps,btwgroups,nnorm,pnorm,nsraw,psraw = rnnOutputSimility(output[nidx],output[pidx],minlen)
