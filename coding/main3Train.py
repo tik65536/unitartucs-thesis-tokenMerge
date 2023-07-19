@@ -90,12 +90,20 @@ def CellStateSimility(nstate,pstate,minlen):
 
 def curl(input_,output):
     for i in range(output.shape[1]):
-        x=torch.autograd.grad(output[:,i,0],input_,torch.ones_like(output[:,i,0]),retain_graph=True)[0]
-        print(x.shape)
-        x=torch.autograd.grad(output[:,i,1],input_,torch.ones_like(output[:,i,1]),retain_graph=True)[0]
-        print(x.shape)
+        # assume Embedding = x,y,z
+        # Output dim 0 = P , we need P_y,P_z
+        x=torch.autograd.grad(output[:,i,0],input_,torch.ones_like(output[:,i,0],retain_graph=True))[0]
+        P_y = x[:,:,1].detach().cpu().numpy()
+        P_z = x[:,:,2].detach().cpu().numpy()
+        # Output dim 1 = Q , we need Q_x,Q_z
+        x=torch.autograd.grad(output[:,i,1],input_,torch.ones_like(output[:,i,1],retain_graph=True))[0]
+        Q_x = x[:,:,0].detach().cpu().numpy()
+        Q_z = x[:,:,2].detach().cpu().numpy()
+        # Output dim 2 = R , we need R_x,R_y
         x=torch.autograd.grad(output[:,i,2],input_,torch.ones_like(output[:,i,2]),retain_graph=True)[0]
-        print(x.shape)
+        R_x = x[:,:,0].detach().cpu().numpy()
+        R_y = x[:,:,1].detach().cpu().numpy()
+        return R_y-Q_z,P_z-R_x,Q_x-P_y
 
 
 
@@ -421,8 +429,7 @@ for epoch in range(epochs):
             permuteposlist = poslist[:,permuteidx]
             if(not carryforward):
                  state=model.init_state()
-            pred,codeword,input_, state ,mergeidx =  model(sequence, state, switch,permuteidx,onlyMerge,poslist,consecutive)
-            curl(input_,codeword)
+            pred,codeword,_, state ,mergeidx =  model(sequence, state, switch,permuteidx,onlyMerge,poslist,consecutive)
             diffcount+=np.sum(poslist!=permuteposlist,axis=-1)
             endidx = np.where(permuteposlist=='e0s')[0]
             endidx = np.in1d(range(permuteposlist.shape[0]),endidx)
@@ -613,279 +620,286 @@ for epoch in range(epochs):
     writer.add_scalar(f'Epoch Training AvgAccy2(abs value)',avgtrainingAccy2,epoch)
     print(f'Epoch: {epoch:2d} Training Finished, AvgTrainingLoss:{avgtrainingloss:0.6f}, AvgAccy:{avgtrainingAccy:0.3f}, DiffPOS:{avgdiffcount:2.3f}, Time:{(e-s):2.4f}, Time2:{(e1-s1):2.4f}',flush=True)
     print(f'Epoch: {epoch:2d} Training Finished, Merge:{overallTop10Merge.most_common(n=10)}',flush=True)
-    with torch.no_grad():
-        vallosses=[]
-        valAvgAccy=[]
-        valAvgAccy2=[]
-        #valFNegSimility,valFPosSimility,valFbtwGroupSimility,valFNegSimilityMedian,valFPosSimilityMedian,valFbtwGroupSimilityMedian=[],[],[],[],[],[]
-        #valBNegSimility,valBPosSimility,valBbtwGroupSimility,valBNegSimilityMedian,valBPosSimilityMedian,valBbtwGroupSimilityMedian=[],[],[],[],[],[]
-        valBlockNegSimility,valBlockPosSimility,valBlockbtwGroupSimility=[],[],[]
-        valblocknegNorm,valblockposNorm=np.zeros(6),np.zeros(6)
-        valblocknegSeqNorm,valblockposSeqNorm=[],[]
-        valnegNorm,valposNorm=[],[]
-        valbtwGroupSimilityRaw,valNegSimilityRaw,valPosSimilityRaw=[],[],[]
-        valbtwNegBlock,valbtwPosBlock=[],[]
-        valavgBlockNSRaw,valavgBlockPSRaw=[],[]
-        valavgbtwNegBlockRaw,valavgbtwPosBlockRaw=[],[]
-        switchcount=0
-        tokendist=[]
-        valavgdiffcount=[]
-        for d in range(0,len(test_text),batchsize):
-            diffcount=np.zeros((batchsize,))
-            switch=bernoulli.sample()
-            preprocessswitch=preprocessP.sample()
-            state=model.init_state()
-            losses=[]
-            #negFCellStateSimility,posFCellStateSimility,negBCellStateSimility,posBCellStateSimility,FbtwGroupSimility,BbtwGroupSimility=[],[],[],[],[],[]
-            negbtwBlock,posbtwBlock=[],[]
-            negSimialityRaw,posSimialityRaw,btwSimilityRaw=[],[],[]
-            avgblocknsraw,avgblockpsraw,avgblockbtwnegraw,avgblockbtwposraw=[],[],[],[]
-            img=torch.zeros((batchsize,1,48,48))
-            sequences,targets,idxarray,tokenpos,negNorm,posNorm,blocknegNorm,blockposNorm=[],[],[],[],[],[],[],[]
-            blocknegSeqNorm,blockposSeqNorm=[],[]
-            for i,x in enumerate(nlp.pipe(test_text[d:d+batchsize])):
-                data=[]
-                pos=[]
-                for t in x:
-                    if(preprocessswitch==0):
+    #with torch.no_grad():
+    vallosses=[]
+    valAvgAccy=[]
+    valAvgAccy2=[]
+    #valFNegSimility,valFPosSimility,valFbtwGroupSimility,valFNegSimilityMedian,valFPosSimilityMedian,valFbtwGroupSimilityMedian=[],[],[],[],[],[]
+    #valBNegSimility,valBPosSimility,valBbtwGroupSimility,valBNegSimilityMedian,valBPosSimilityMedian,valBbtwGroupSimilityMedian=[],[],[],[],[],[]
+    valBlockNegSimility,valBlockPosSimility,valBlockbtwGroupSimility=[],[],[]
+    valblocknegNorm,valblockposNorm=np.zeros(6),np.zeros(6)
+    valblocknegSeqNorm,valblockposSeqNorm=[],[]
+    valnegNorm,valposNorm=[],[]
+    valbtwGroupSimilityRaw,valNegSimilityRaw,valPosSimilityRaw=[],[],[]
+    valbtwNegBlock,valbtwPosBlock=[],[]
+    valavgBlockNSRaw,valavgBlockPSRaw=[],[]
+    valavgbtwNegBlockRaw,valavgbtwPosBlockRaw=[],[]
+    switchcount=0
+    tokendist=[]
+    valavgdiffcount=[]
+    for d in range(0,len(test_text),batchsize):
+        diffcount=np.zeros((batchsize,))
+        switch=bernoulli.sample()
+        preprocessswitch=preprocessP.sample()
+        state=model.init_state()
+        losses=[]
+        #negFCellStateSimility,posFCellStateSimility,negBCellStateSimility,posBCellStateSimility,FbtwGroupSimility,BbtwGroupSimility=[],[],[],[],[],[]
+        negbtwBlock,posbtwBlock=[],[]
+        negSimialityRaw,posSimialityRaw,btwSimilityRaw=[],[],[]
+        avgblocknsraw,avgblockpsraw,avgblockbtwnegraw,avgblockbtwposraw=[],[],[],[]
+        img=torch.zeros((batchsize,1,48,48))
+        sequences,targets,idxarray,tokenpos,negNorm,posNorm,blocknegNorm,blockposNorm=[],[],[],[],[],[],[],[]
+        blocknegSeqNorm,blockposSeqNorm=[],[]
+        for i,x in enumerate(nlp.pipe(test_text[d:d+batchsize])):
+            data=[]
+            pos=[]
+            for t in x:
+                if(preprocessswitch==0):
+                    data+= [tok2id[t.text]]
+                    pos+= [t.pos_]
+                elif(t.is_stop==False and t.is_punct==False):
+                    if(t.pos_ not in skipPOS):
                         data+= [tok2id[t.text]]
                         pos+= [t.pos_]
-                    elif(t.is_stop==False and t.is_punct==False):
-                        if(t.pos_ not in skipPOS):
-                            data+= [tok2id[t.text]]
-                            pos+= [t.pos_]
-                tmp=np.zeros(maxlen)
-                c=5 if(seqlen>=maxlen) else seqlen
-                tmp[:c]=2
-                tmp[c:]=test_label[d+i]
-                idx=maxlen-1
-                if(len(data)>maxlen):
-                    data=data[:maxlen-1]+[endid]
-                    pos=pos[:maxlen]
-                    tmp[-1]=2
-                else:
-                    orglen=len(data)
-                    idx=orglen-1
-                    data=(data+([endid]*(maxlen-orglen)))
-                    pos=(pos+['e0s']*(maxlen-orglen))
-                    tmp[orglen:]=2
-                idxarray.append(idx)
-                targets.append(tmp)
-                sequences.append(data)
-                tokenpos.append(pos)
-            idxarray=np.array(idxarray)
-            targets=torch.tensor(np.array(targets),dtype=torch.long).to(device)
-            sequences=np.array(sequences)
-            tokenpos=np.array(tokenpos)
-            predict_history=np.zeros((batchsize,maxlen,3))
-            target=test_label[d:d+batchsize].to_numpy()
-            nidx=np.where(target==0)[0]
-            pidx=np.where(target==1)[0]
-            #nmind=np.zeros((len(nidx),maxlen//seqlen))
-            #pmind=np.zeros((len(pidx),maxlen//seqlen))
-            c=1 if (seqlen>=maxlen) else (maxlen-seqlen)
-            minlen =len(pidx)-1 if (len(nidx)>len(pidx)) else len(nidx)-1
-            previousOutput=None
-            for i in range(0,c,sliding):
-                sequence=sequences[:,i:i+seqlen]
-                t=targets[:,i:i+seqlen]
-                poslist = tokenpos[:,i:i+seqlen]
-                permuteposlist = poslist[:,permuteidx]
-                diffcount+=np.sum(poslist!=permuteposlist,axis=-1)
-                pred,output,_,state,mergeidx =model(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
-                if(GRU==False and i<(sliding*7)):
-                    ns,ps,btwgroups,nnorm,pnorm,nsraw,psraw = rnnOutputSimility(output[nidx],output[pidx],minlen)
-                    avgblocknsraw.append(np.mean(nsraw,axis=0))
-                    avgblockpsraw.append(np.mean(psraw,axis=0))
-                    negNorm.append(nnorm)
-                    posNorm.append(pnorm)
-                    blocknegNorm.append(np.mean(np.mean(nnorm,axis=0)))
-                    blockposNorm.append(np.mean(np.mean(pnorm,axis=0)))
-                    blocknegSeqNorm.append(np.mean(nnorm,axis=0))
-                    blockposSeqNorm.append(np.mean(pnorm,axis=0))
-                    negSimialityRaw.append(ns)
-                    posSimialityRaw.append(ps)
-                    btwSimilityRaw.append(btwgroups)
-                    if(i>0):
-                        negbtw,negbtwraw = rnnOutputSimility(previousOutput[nidx],output[nidx],len(nidx),1)
-                        posbtw,posbtwraw = rnnOutputSimility(previousOutput[pidx],output[pidx],len(pidx),1)
-                        avgblockbtwnegraw.append(np.mean(negbtwraw,axis=0))
-                        avgblockbtwposraw.append(np.mean(posbtwraw,axis=0))
-                        negbtwBlock.append(negbtw) # negbtw(sample,25)
-                        posbtwBlock.append(posbtw)
-                    previousOutput=output.detach().clone()
-                loss=criterion(pred,t)
-                losses.append(loss.item())
-                pred=torch.nn.functional.softmax(pred,dim=1)
-                pred=pred.permute(0,2,1).detach().cpu().numpy()
-                predict_history[:,i:i+seqlen,:]=pred
-            if(GRU==False):
-                valblocknegNorm+=np.array(blocknegNorm[:6])
-                valblockposNorm+=np.array(blockposNorm[:6])
-                valblocknegSeqNorm.append(np.array(blocknegSeqNorm[:6]))
-                valblockposSeqNorm.append(np.array(blockposSeqNorm[:6]))
-                valnegNorm.append(np.array(negNorm[:6]))
-                valposNorm.append(np.array(posNorm[:6]))
-                valNegSimilityRaw.append(np.array(negSimialityRaw[:6]))
-                valPosSimilityRaw.append(np.array(posSimialityRaw[:6]))
-                valbtwNegBlock.append(np.array(negbtwBlock[:6]))
-                valbtwPosBlock.append(np.array(posbtwBlock[:6]))
-                valavgBlockNSRaw.append(np.array(avgblocknsraw[:6]))
-                valavgBlockPSRaw.append(np.array(avgblockpsraw[:6]))
-                valavgbtwNegBlockRaw.append(np.array(avgblockbtwnegraw[:6]))
-                valavgbtwPosBlockRaw.append(np.array(avgblockbtwposraw[:6]))
-                valbtwGroupSimilityRaw.append(np.array(btwSimilityRaw[:6]))
-            avgloss=np.mean(losses)
-            vallosses.append(avgloss)
-            est_prediction=[]
-            est_prediction2=[]
-            est_magnitude=[]
-            drawcount=0
-            #[ predict_median.append(np.median(predict_history[i, :idxarray[i]-1])) for i in range(batchsize) ]
-            #[ predict_mean.append(np.mean(predict_history[i, :idxarray[i]-1])) for i in range(batchsize) ]
-            maxidx= [ np.argmax(predict_history[i, idxarray[i]-21:idxarray[i]-1, :],axis=-1) for i in range(batchsize)]
-
-            for i,each in enumerate(maxidx):
-                if(each.shape[0]==0):
-                    if(idxarray[i]<20):
-                        maxidx[i]=np.argmax(predict_history[i, idxarray[i]-6:idxarray[i]-1, :],axis=-1)
-                        drawcount+=1
-            [ est_prediction.append(np.mean(maxidx[i],axis=-1)) for i in range(batchsize) ]
-            [ est_magnitude.append(np.mean(np.diag(predict_history[i, idxarray[i]-maxidx[i].shape[0]:idxarray[i]-1,:].T[maxidx[i]]),axis=-1)) for i in range(batchsize) ]
-            est_prediction = np.where(np.isnan(est_prediction)==True,2,est_prediction)
-            batchaccy=np.sum(np.abs(est_prediction-target)<0.05)/batchsize
-            batchmagnitude=np.median(est_magnitude)
-            cr=classification_report(target,np.round(est_prediction),output_dict=True)
+            tmp=np.zeros(maxlen)
             c=5 if(seqlen>=maxlen) else seqlen
-            maxidx= [ np.argmax(predict_history[i, c:idxarray[i]-1, :],axis=-1) for i in range(batchsize)]
-            [ est_prediction2.append(np.mean(maxidx[i],axis=-1)) for i in range(batchsize) ]
-            batchaccy2=np.sum(np.abs(est_prediction2-target)<0.05)/batchsize
-            key=list(cr.keys())
-            del cr[key[0]]['support']
-            del cr[key[1]]['support']
-            del cr['macro avg']['support']
-            valAvgAccy.append(batchaccy)
-            valAvgAccy2.append(batchaccy2)
-            negsample=sequences[nidx]
-            possample=sequences[pidx]
-            negsampleidx = np.argmax(np.sum(np.isin(negsample, trainposlabel), axis=-1))
-            possampleidx = np.argmax(np.sum(np.isin(possample, trainneglabel), axis=-1))
-            c = 5 if(seqlen>=maxlen) else seqlen
-            nprob=list(itertools.chain(*[  predict_history[n,c:idxarray[n],0] for n in nidx ]))
-            pprob=list(itertools.chain(*[  predict_history[p,c:idxarray[p],1] for p in pidx ]))
-            negSampleDiff=predict_history[nidx[negsampleidx],:,0]-predict_history[nidx[negsampleidx],:,1]
-            posSampleDiff=predict_history[pidx[possampleidx],:,1]-predict_history[pidx[possampleidx],:,0]
-            negsampletext = [ id2tok[tid].replace("$","\$") for tid in negsample[negsampleidx] ]
-            possampletext = [ id2tok[tid].replace("$","\$") for tid in possample[possampleidx] ]
-            negidx = [ negsampletext.index(id2tok[x]) for x in trainposlabel if(id2tok[x] in negsampletext)  ]
-            negidx2 = [ negsampletext.index(id2tok[x]) for x in trainneglabel if(id2tok[x] in negsampletext)  ]
-            posidx = [ possampletext.index(id2tok[x]) for x in trainneglabel if(id2tok[x] in possampletext) ]
-            posidx2 = [ possampletext.index(id2tok[x]) for x in trainposlabel if(id2tok[x] in possampletext) ]
-            #nimg = make_grid(torch.logit(img[nidx[:10]]),nrow=2,padding=5,normalize=False,pad_value=0.8)
-            #pimg = make_grid(torch.logit(img[pidx[:10]]),nrow=2,padding=5,normalize=False,pad_value=0.8)
-            #nimg = nimg.unsqueeze(dim=1)
-            #pimg = pimg.unsqueeze(dim=1)
-            writer.add_scalars(f'Validation Batch NegProb',{'mean':np.mean(nprob),'q25':np.quantile(nprob,0.25),'median':np.median(nprob),'q75':np.quantile(nprob,0.75)},valbatchcount)
-            writer.add_scalars(f'Validation Batch PosProb',{'mean':np.mean(pprob),'q25':np.quantile(pprob,0.25),'median':np.median(pprob),'q75':np.quantile(pprob,0.75)},valbatchcount)
-            writer.add_scalars('Validation ClassificationReport Neg Class',cr[key[0]],valbatchcount)
-            writer.add_scalars('Validation ClassificationReport Pos Class',cr[key[1]],valbatchcount)
-            writer.add_scalars('Validation ClassificationReport MacroAvg',cr['macro avg'],valbatchcount)
-            #writer.add_image(f'Validation NegImg', nimg, valbatchcount,dataformats='NCHW')
-            #writer.add_image(f'Validation PosImg', pimg, valbatchcount,dataformats='NCHW')
-            #if(GRU==False):
-            #    writer.add_histogram('Neg Validation Mind',nmind,valbatchcount)
-            #    writer.add_histogram('Pos Validation Mind',pmind,valbatchcount)
-            negendidx=idxarray[nidx[negsampleidx]]
-            posendidx=idxarray[pidx[possampleidx]]
-            axes[1].set_title(f'GT:{target[nidx[negsampleidx]]} Pred:{est_prediction[nidx[negsampleidx]]},{est_prediction2[nidx[negsampleidx]]}')
-            axes[1].plot(predict_history[nidx[negsampleidx],:negendidx,0].T,label='NegProb',marker='x')
-            axes[1].plot(predict_history[nidx[negsampleidx],:negendidx,1].T,label='PosProb',marker='o')
-            axes[1].set_xticks(list(range(negendidx)))
-            axes[1].set_xticklabels(negsampletext[:negendidx], rotation=90, ha='right',fontdict={'fontsize':4})
-            axes[3].set_title(f'GT:{target[pidx[possampleidx]]} Pred:{est_prediction[pidx[possampleidx]]},{est_prediction2[pidx[possampleidx]]}')
-            axes[3].plot(predict_history[pidx[possampleidx],:posendidx,0].T,label='NegProb',marker='x')
-            axes[3].plot(predict_history[pidx[possampleidx],:posendidx,1].T,label='PosProb',marker='o')
-            axes[3].set_xticks(list(range(posendidx)))
-            axes[3].set_xticklabels(possampletext[:posendidx], rotation=90, ha='right',fontdict={'fontsize':4})
-            axes[2].plot(posSampleDiff[:posendidx].T,label='Diff',color='g',marker='o',markersize=0.7,alpha=0.5)
-            axes[2].axhline(y=0,color='r')
-            axes[0].plot(negSampleDiff[:negendidx].T,label='Diff',color='g',marker='o',markersize=0.7,alpha=0.5)
-            axes[0].axhline(y=0,color='r')
-            if(len(posidx)>0): [ axes[2].axvline(i,linewidth=2,c='#F39C12') for i in posidx ]
-            if(len(posidx2)>0): [ axes[2].axvline(i,linewidth=2,c='#0000EE') for i in posidx2 ]
-            if(len(negidx)>0): [ axes[0].axvline(i,linewidth=2,c='#F39C12') for i in negidx]
-            if(len(negidx2)>0): [ axes[0].axvline(i,linewidth=2,c='#0000EE') for i in negidx2 ]
-            axes[2].set_title(",".join([ id2tok[x] for x in trainneglabel if(id2tok[x] in possampletext)]))
-            axes[0].set_title(",".join([ id2tok[x] for x in trainposlabel if(id2tok[x] in negsampletext)]))
-            [ axes[i].legend() for i in range(4) ]
-            fig.suptitle(f'Batch Accy : {batchaccy} {batchaccy2}')
-            plt.tight_layout()
-            fig.savefig(f'{tensorboardpath}/Validation_Epoch_{epoch}_batch_{valbatchcount}_switch{int(switch)}_preprocess{int(preprocessswitch)}_{avgloss:0.6f}_plot.png',dpi=400)
-            [ axes[i].clear() for i in range(4) ]
-            plt.cla()#
-            diffcount=np.mean(diffcount/idxarray)
-            valavgdiffcount.append(diffcount)
-            print(f'Epoch: {epoch:2d} Batch ValDoc#{(d+batchsize):5d}, Switch:{int(switch):1d}, Preprocess:{int(preprocessswitch):1d}, AvgLoss:{avgloss:0.3f}, AvgAccy:{batchaccy:0.3f}, AvgAccy2:{batchaccy2:0.3f}, DiffPOS:{diffcount:2.3f}',flush=True)
-            valbatchcount+=1
-        avgValloss=np.mean(vallosses)
-        valAvgAccy = np.mean(valAvgAccy)
-        valAvgAccy2 = np.mean(valAvgAccy2)
-        valavgdiffcount=np.mean(valavgdiffcount)
-        if(valAvgAccy>currentbestaccy):
-            currentbestaccy=valAvgAccy
-            torch.save(model,f'{weightPath}/Val_Epoch_{epoch}_accy_{currentbestaccy}_loss_{avgValloss}.pt')
-        writer.add_scalar(f'Validation AvgLoss',avgValloss,epoch)
-        writer.add_scalar(f'Validation AvgAccy',np.mean(valAvgAccy),epoch)
-        writer.add_scalar(f'Validation AvgAccy2',np.mean(valAvgAccy2),epoch)
-        writer.add_scalars(f'Validation negNorm',[{f'negblockNorm_{i}':valblocknegNorm[i]/3 for i in range(5)}][0],epoch)
-        writer.add_scalars(f'Validation posNorm',[{f'posblockNorm_{i}':valblockposNorm[i]/3 for i in range(5)}][0],epoch)
-        valavgBlockNSRaw=torch.tensor(valavgBlockNSRaw[0][1:6]).reshape(5,25,25)
-        valavgBlockPSRaw=torch.tensor(valavgBlockPSRaw[0][1:6]).reshape(5,25,25)
-        valavgbtwNegBlockRaw = torch.tensor(valavgbtwNegBlockRaw[0][1:6]).reshape(5,25,25)
-        valavgbtwPosBlockRaw = torch.tensor(valavgbtwPosBlockRaw[0][1:6]).reshape(5,25,25)
-        fig2,axes2=plt.subplots(4,5,figsize=(20,20))
-        fig3,axes3=plt.subplots(1,1,figsize=(10,10))
-        for r in range(5):
-            im=axes2[0][r].imshow(valavgBlockNSRaw[r],vmax=1,vmin=-1)
-            axes2[0][r].set_title(f'NS B{r}')
-            im=axes2[1][r].imshow(valavgbtwNegBlockRaw[r],vmax=1,vmin=-1)
-            axes2[1][r].set_title(f'Neg bwteen B{r+1},B{r+2}')
-            im=axes2[2][r].imshow(valavgBlockPSRaw[r],vmax=1,vmin=-1)
-            axes2[2][r].set_title(f'PS B{r}')
-            im=axes2[3][r].imshow(valavgbtwPosBlockRaw[r],vmax=1,vmin=-1)
-            axes2[3][r].set_title(f'Pos bwteen B{r+1},B{r+2}')
-            y=np.concatenate((valblocknegSeqNorm[0][r,:].reshape(-1,),valblocknegSeqNorm[1][r,:].reshape(-1,),valblocknegSeqNorm[2][r,:].reshape(-1,)))
-            x=np.tile(np.arange(25),3)
-            axes3.scatter(x,y,label=f'block_{r}')
-        plt.colorbar(im,ax=axes2.ravel().tolist())
-        axes3.legend()
-        axes3.grid()
-        writer.add_figure('Cos Similarity', fig2,epoch)
-        writer.add_figure('Test', fig3,epoch)
+            tmp[:c]=2
+            tmp[c:]=test_label[d+i]
+            idx=maxlen-1
+            if(len(data)>maxlen):
+                data=data[:maxlen-1]+[endid]
+                pos=pos[:maxlen]
+                tmp[-1]=2
+            else:
+                orglen=len(data)
+                idx=orglen-1
+                data=(data+([endid]*(maxlen-orglen)))
+                pos=(pos+['e0s']*(maxlen-orglen))
+                tmp[orglen:]=2
+            idxarray.append(idx)
+            targets.append(tmp)
+            sequences.append(data)
+            tokenpos.append(pos)
+        idxarray=np.array(idxarray)
+        targets=torch.tensor(np.array(targets),dtype=torch.long).to(device)
+        sequences=np.array(sequences)
+        tokenpos=np.array(tokenpos)
+        predict_history=np.zeros((batchsize,maxlen,3))
+        target=test_label[d:d+batchsize].to_numpy()
+        nidx=np.where(target==0)[0]
+        pidx=np.where(target==1)[0]
+        #nmind=np.zeros((len(nidx),maxlen//seqlen))
+        #pmind=np.zeros((len(pidx),maxlen//seqlen))
+        c=1 if (seqlen>=maxlen) else (maxlen-seqlen)
+        minlen =len(pidx)-1 if (len(nidx)>len(pidx)) else len(nidx)-1
+        previousOutput=None
+        curlfig = plt.figure()
+        curlax = curlfig.gca(projection='3d')
+        for i in range(0,c,sliding):
+            sequence=sequences[:,i:i+seqlen]
+            t=targets[:,i:i+seqlen]
+            poslist = tokenpos[:,i:i+seqlen]
+            permuteposlist = poslist[:,permuteidx]
+            diffcount+=np.sum(poslist!=permuteposlist,axis=-1)
+            pred,output,input_,state,mergeidx =model(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
+            u,v,w=curl(input_,output)
+            curlax.quiver(input_[:,:,0], input_[:,:,1], input_[:,:,2], u, v, w, length=0.1)
+            optimizer.zero_grad()
+            if(GRU==False and i<(sliding*7)):
+                ns,ps,btwgroups,nnorm,pnorm,nsraw,psraw = rnnOutputSimility(output[nidx],output[pidx],minlen)
+                avgblocknsraw.append(np.mean(nsraw,axis=0))
+                avgblockpsraw.append(np.mean(psraw,axis=0))
+                negNorm.append(nnorm)
+                posNorm.append(pnorm)
+                blocknegNorm.append(np.mean(np.mean(nnorm,axis=0)))
+                blockposNorm.append(np.mean(np.mean(pnorm,axis=0)))
+                blocknegSeqNorm.append(np.mean(nnorm,axis=0))
+                blockposSeqNorm.append(np.mean(pnorm,axis=0))
+                negSimialityRaw.append(ns)
+                posSimialityRaw.append(ps)
+                btwSimilityRaw.append(btwgroups)
+                if(i>0):
+                    negbtw,negbtwraw = rnnOutputSimility(previousOutput[nidx],output[nidx],len(nidx),1)
+                    posbtw,posbtwraw = rnnOutputSimility(previousOutput[pidx],output[pidx],len(pidx),1)
+                    avgblockbtwnegraw.append(np.mean(negbtwraw,axis=0))
+                    avgblockbtwposraw.append(np.mean(posbtwraw,axis=0))
+                    negbtwBlock.append(negbtw) # negbtw(sample,25)
+                    posbtwBlock.append(posbtw)
+                previousOutput=output.detach().clone()
+            loss=criterion(pred,t)
+            losses.append(loss.item())
+            pred=torch.nn.functional.softmax(pred,dim=1)
+            pred=pred.permute(0,2,1).detach().cpu().numpy()
+            predict_history[:,i:i+seqlen,:]=pred
+        if(GRU==False):
+            valblocknegNorm+=np.array(blocknegNorm[:6])
+            valblockposNorm+=np.array(blockposNorm[:6])
+            valblocknegSeqNorm.append(np.array(blocknegSeqNorm[:6]))
+            valblockposSeqNorm.append(np.array(blockposSeqNorm[:6]))
+            valnegNorm.append(np.array(negNorm[:6]))
+            valposNorm.append(np.array(posNorm[:6]))
+            valNegSimilityRaw.append(np.array(negSimialityRaw[:6]))
+            valPosSimilityRaw.append(np.array(posSimialityRaw[:6]))
+            valbtwNegBlock.append(np.array(negbtwBlock[:6]))
+            valbtwPosBlock.append(np.array(posbtwBlock[:6]))
+            valavgBlockNSRaw.append(np.array(avgblocknsraw[:6]))
+            valavgBlockPSRaw.append(np.array(avgblockpsraw[:6]))
+            valavgbtwNegBlockRaw.append(np.array(avgblockbtwnegraw[:6]))
+            valavgbtwPosBlockRaw.append(np.array(avgblockbtwposraw[:6]))
+            valbtwGroupSimilityRaw.append(np.array(btwSimilityRaw[:6]))
+        writer.add_figure('Curl',curlfig,epoch)
         plt.close('all')
-        #valavgBlockNSImg = make_grid(valavgBlockNSRaw.reshape(5,1,25,25), nrow=5)
-        #valavgBlockPSImg = make_grid(valavgBlockPSRaw.reshape(5,1,25,25), nrow=5)
-        #valavgbtwNegBlockImg = make_grid(valavgbtwNegBlockRaw.reshape(5,1,25,25),nrow=5)
-        #valavgbtwPosBlockImg = make_grid(valavgbtwPosBlockRaw.reshape(5,1,25,25),nrow=5)
-        #writer.add_image("Validation Neg seq*seq",valavgBlockNSImg,epoch)
-        #writer.add_image("Validation Pos seq*seq",valavgBlockPSImg,epoch)
-        #writer.add_image("Validation Neg Btw Block seq*seq",valavgbtwNegBlockImg,epoch)
-        #writer.add_image("Validation Pos Btw Block seq*seq",valavgbtwPosBlockImg,epoch)
-        for block in range(1,6):
-            ndata=np.vstack((valnegNorm[0][block,:,:],valnegNorm[1][block,:,:],valnegNorm[2][block,:,:]))
-            pdata=np.vstack((valposNorm[0][block,:,:],valposNorm[1][block,:,:],valposNorm[2][block,:,:]))
-            nsdata=np.concatenate((valNegSimilityRaw[0][block].reshape(-1,),valNegSimilityRaw[1][block].reshape(-1,),valNegSimilityRaw[2][block].reshape(-1,)))
-            psdata=np.concatenate((valPosSimilityRaw[0][block].reshape(-1,),valPosSimilityRaw[1][block].reshape(-1,),valPosSimilityRaw[2][block].reshape(-1,)))
-            btwdata=np.concatenate((valbtwGroupSimilityRaw[0][block].reshape(-1,),valbtwGroupSimilityRaw[1][block].reshape(-1,),valbtwGroupSimilityRaw[2][block].reshape(-1,)))
-            btwNegBlockdata = np.concatenate((valbtwNegBlock[0][block].reshape(-1,),valbtwNegBlock[1][block].reshape(-1,),valbtwNegBlock[2][block].reshape(-1,)))
-            btwPosBlockdata = np.concatenate((valbtwPosBlock[0][block].reshape(-1,),valbtwPosBlock[1][block].reshape(-1,),valbtwPosBlock[2][block].reshape(-1,)))
-            writer.add_histogram(f'Validation neg norm dist {block}',ndata,epoch)
-            writer.add_histogram(f'Validation pos norm dist {block}',pdata,epoch)
-            writer.add_histogram(f'Validation neg sim Dist {block}',nsdata,epoch)
-            writer.add_histogram(f'Validation pos sim Dist {block}',psdata,epoch)
-            writer.add_histogram(f'Validation btw sim Dist {block}',btwdata,epoch)
-            writer.add_histogram(f'Validation neg block sim Dist {block}',btwNegBlockdata,epoch)
-            writer.add_histogram(f'Validation pos block sim Dist {block}',btwPosBlockdata,epoch)
+        avgloss=np.mean(losses)
+        vallosses.append(avgloss)
+        est_prediction=[]
+        est_prediction2=[]
+        est_magnitude=[]
+        drawcount=0
+        #[ predict_median.append(np.median(predict_history[i, :idxarray[i]-1])) for i in range(batchsize) ]
+        #[ predict_mean.append(np.mean(predict_history[i, :idxarray[i]-1])) for i in range(batchsize) ]
+        maxidx= [ np.argmax(predict_history[i, idxarray[i]-21:idxarray[i]-1, :],axis=-1) for i in range(batchsize)]
+
+        for i,each in enumerate(maxidx):
+            if(each.shape[0]==0):
+                if(idxarray[i]<20):
+                    maxidx[i]=np.argmax(predict_history[i, idxarray[i]-6:idxarray[i]-1, :],axis=-1)
+                    drawcount+=1
+        [ est_prediction.append(np.mean(maxidx[i],axis=-1)) for i in range(batchsize) ]
+        [ est_magnitude.append(np.mean(np.diag(predict_history[i, idxarray[i]-maxidx[i].shape[0]:idxarray[i]-1,:].T[maxidx[i]]),axis=-1)) for i in range(batchsize) ]
+        est_prediction = np.where(np.isnan(est_prediction)==True,2,est_prediction)
+        batchaccy=np.sum(np.abs(est_prediction-target)<0.05)/batchsize
+        batchmagnitude=np.median(est_magnitude)
+        cr=classification_report(target,np.round(est_prediction),output_dict=True)
+        c=5 if(seqlen>=maxlen) else seqlen
+        maxidx= [ np.argmax(predict_history[i, c:idxarray[i]-1, :],axis=-1) for i in range(batchsize)]
+        [ est_prediction2.append(np.mean(maxidx[i],axis=-1)) for i in range(batchsize) ]
+        batchaccy2=np.sum(np.abs(est_prediction2-target)<0.05)/batchsize
+        key=list(cr.keys())
+        del cr[key[0]]['support']
+        del cr[key[1]]['support']
+        del cr['macro avg']['support']
+        valAvgAccy.append(batchaccy)
+        valAvgAccy2.append(batchaccy2)
+        negsample=sequences[nidx]
+        possample=sequences[pidx]
+        negsampleidx = np.argmax(np.sum(np.isin(negsample, trainposlabel), axis=-1))
+        possampleidx = np.argmax(np.sum(np.isin(possample, trainneglabel), axis=-1))
+        c = 5 if(seqlen>=maxlen) else seqlen
+        nprob=list(itertools.chain(*[  predict_history[n,c:idxarray[n],0] for n in nidx ]))
+        pprob=list(itertools.chain(*[  predict_history[p,c:idxarray[p],1] for p in pidx ]))
+        negSampleDiff=predict_history[nidx[negsampleidx],:,0]-predict_history[nidx[negsampleidx],:,1]
+        posSampleDiff=predict_history[pidx[possampleidx],:,1]-predict_history[pidx[possampleidx],:,0]
+        negsampletext = [ id2tok[tid].replace("$","\$") for tid in negsample[negsampleidx] ]
+        possampletext = [ id2tok[tid].replace("$","\$") for tid in possample[possampleidx] ]
+        negidx = [ negsampletext.index(id2tok[x]) for x in trainposlabel if(id2tok[x] in negsampletext)  ]
+        negidx2 = [ negsampletext.index(id2tok[x]) for x in trainneglabel if(id2tok[x] in negsampletext)  ]
+        posidx = [ possampletext.index(id2tok[x]) for x in trainneglabel if(id2tok[x] in possampletext) ]
+        posidx2 = [ possampletext.index(id2tok[x]) for x in trainposlabel if(id2tok[x] in possampletext) ]
+        #nimg = make_grid(torch.logit(img[nidx[:10]]),nrow=2,padding=5,normalize=False,pad_value=0.8)
+        #pimg = make_grid(torch.logit(img[pidx[:10]]),nrow=2,padding=5,normalize=False,pad_value=0.8)
+        #nimg = nimg.unsqueeze(dim=1)
+        #pimg = pimg.unsqueeze(dim=1)
+        writer.add_scalars(f'Validation Batch NegProb',{'mean':np.mean(nprob),'q25':np.quantile(nprob,0.25),'median':np.median(nprob),'q75':np.quantile(nprob,0.75)},valbatchcount)
+        writer.add_scalars(f'Validation Batch PosProb',{'mean':np.mean(pprob),'q25':np.quantile(pprob,0.25),'median':np.median(pprob),'q75':np.quantile(pprob,0.75)},valbatchcount)
+        writer.add_scalars('Validation ClassificationReport Neg Class',cr[key[0]],valbatchcount)
+        writer.add_scalars('Validation ClassificationReport Pos Class',cr[key[1]],valbatchcount)
+        writer.add_scalars('Validation ClassificationReport MacroAvg',cr['macro avg'],valbatchcount)
+        #writer.add_image(f'Validation NegImg', nimg, valbatchcount,dataformats='NCHW')
+        #writer.add_image(f'Validation PosImg', pimg, valbatchcount,dataformats='NCHW')
+        #if(GRU==False):
+        #    writer.add_histogram('Neg Validation Mind',nmind,valbatchcount)
+        #    writer.add_histogram('Pos Validation Mind',pmind,valbatchcount)
+        negendidx=idxarray[nidx[negsampleidx]]
+        posendidx=idxarray[pidx[possampleidx]]
+        axes[1].set_title(f'GT:{target[nidx[negsampleidx]]} Pred:{est_prediction[nidx[negsampleidx]]},{est_prediction2[nidx[negsampleidx]]}')
+        axes[1].plot(predict_history[nidx[negsampleidx],:negendidx,0].T,label='NegProb',marker='x')
+        axes[1].plot(predict_history[nidx[negsampleidx],:negendidx,1].T,label='PosProb',marker='o')
+        axes[1].set_xticks(list(range(negendidx)))
+        axes[1].set_xticklabels(negsampletext[:negendidx], rotation=90, ha='right',fontdict={'fontsize':4})
+        axes[3].set_title(f'GT:{target[pidx[possampleidx]]} Pred:{est_prediction[pidx[possampleidx]]},{est_prediction2[pidx[possampleidx]]}')
+        axes[3].plot(predict_history[pidx[possampleidx],:posendidx,0].T,label='NegProb',marker='x')
+        axes[3].plot(predict_history[pidx[possampleidx],:posendidx,1].T,label='PosProb',marker='o')
+        axes[3].set_xticks(list(range(posendidx)))
+        axes[3].set_xticklabels(possampletext[:posendidx], rotation=90, ha='right',fontdict={'fontsize':4})
+        axes[2].plot(posSampleDiff[:posendidx].T,label='Diff',color='g',marker='o',markersize=0.7,alpha=0.5)
+        axes[2].axhline(y=0,color='r')
+        axes[0].plot(negSampleDiff[:negendidx].T,label='Diff',color='g',marker='o',markersize=0.7,alpha=0.5)
+        axes[0].axhline(y=0,color='r')
+        if(len(posidx)>0): [ axes[2].axvline(i,linewidth=2,c='#F39C12') for i in posidx ]
+        if(len(posidx2)>0): [ axes[2].axvline(i,linewidth=2,c='#0000EE') for i in posidx2 ]
+        if(len(negidx)>0): [ axes[0].axvline(i,linewidth=2,c='#F39C12') for i in negidx]
+        if(len(negidx2)>0): [ axes[0].axvline(i,linewidth=2,c='#0000EE') for i in negidx2 ]
+        axes[2].set_title(",".join([ id2tok[x] for x in trainneglabel if(id2tok[x] in possampletext)]))
+        axes[0].set_title(",".join([ id2tok[x] for x in trainposlabel if(id2tok[x] in negsampletext)]))
+        [ axes[i].legend() for i in range(4) ]
+        fig.suptitle(f'Batch Accy : {batchaccy} {batchaccy2}')
+        plt.tight_layout()
+        fig.savefig(f'{tensorboardpath}/Validation_Epoch_{epoch}_batch_{valbatchcount}_switch{int(switch)}_preprocess{int(preprocessswitch)}_{avgloss:0.6f}_plot.png',dpi=400)
+        [ axes[i].clear() for i in range(4) ]
+        plt.cla()#
+        diffcount=np.mean(diffcount/idxarray)
+        valavgdiffcount.append(diffcount)
+        print(f'Epoch: {epoch:2d} Batch ValDoc#{(d+batchsize):5d}, Switch:{int(switch):1d}, Preprocess:{int(preprocessswitch):1d}, AvgLoss:{avgloss:0.3f}, AvgAccy:{batchaccy:0.3f}, AvgAccy2:{batchaccy2:0.3f}, DiffPOS:{diffcount:2.3f}',flush=True)
+        valbatchcount+=1
+    avgValloss=np.mean(vallosses)
+    valAvgAccy = np.mean(valAvgAccy)
+    valAvgAccy2 = np.mean(valAvgAccy2)
+    valavgdiffcount=np.mean(valavgdiffcount)
+    if(valAvgAccy>currentbestaccy):
+        currentbestaccy=valAvgAccy
+        torch.save(model,f'{weightPath}/Val_Epoch_{epoch}_accy_{currentbestaccy}_loss_{avgValloss}.pt')
+    writer.add_scalar(f'Validation AvgLoss',avgValloss,epoch)
+    writer.add_scalar(f'Validation AvgAccy',np.mean(valAvgAccy),epoch)
+    writer.add_scalar(f'Validation AvgAccy2',np.mean(valAvgAccy2),epoch)
+    writer.add_scalars(f'Validation negNorm',[{f'negblockNorm_{i}':valblocknegNorm[i]/3 for i in range(5)}][0],epoch)
+    writer.add_scalars(f'Validation posNorm',[{f'posblockNorm_{i}':valblockposNorm[i]/3 for i in range(5)}][0],epoch)
+    valavgBlockNSRaw=torch.tensor(valavgBlockNSRaw[0][1:6]).reshape(5,25,25)
+    valavgBlockPSRaw=torch.tensor(valavgBlockPSRaw[0][1:6]).reshape(5,25,25)
+    valavgbtwNegBlockRaw = torch.tensor(valavgbtwNegBlockRaw[0][1:6]).reshape(5,25,25)
+    valavgbtwPosBlockRaw = torch.tensor(valavgbtwPosBlockRaw[0][1:6]).reshape(5,25,25)
+    fig2,axes2=plt.subplots(4,5,figsize=(20,20))
+    fig3,axes3=plt.subplots(1,1,figsize=(10,10))
+    for r in range(5):
+        im=axes2[0][r].imshow(valavgBlockNSRaw[r],vmax=1,vmin=-1)
+        axes2[0][r].set_title(f'NS B{r}')
+        im=axes2[1][r].imshow(valavgbtwNegBlockRaw[r],vmax=1,vmin=-1)
+        axes2[1][r].set_title(f'Neg bwteen B{r+1},B{r+2}')
+        im=axes2[2][r].imshow(valavgBlockPSRaw[r],vmax=1,vmin=-1)
+        axes2[2][r].set_title(f'PS B{r}')
+        im=axes2[3][r].imshow(valavgbtwPosBlockRaw[r],vmax=1,vmin=-1)
+        axes2[3][r].set_title(f'Pos bwteen B{r+1},B{r+2}')
+        y=np.concatenate((valblocknegSeqNorm[0][r,:].reshape(-1,),valblocknegSeqNorm[1][r,:].reshape(-1,),valblocknegSeqNorm[2][r,:].reshape(-1,)))
+        x=np.tile(np.arange(25),3)
+        axes3.scatter(x,y,label=f'block_{r}')
+    plt.colorbar(im,ax=axes2.ravel().tolist())
+    axes3.legend()
+    axes3.grid()
+    writer.add_figure('Cos Similarity', fig2,epoch)
+    writer.add_figure('Test', fig3,epoch)
+    plt.close('all')
+    #valavgBlockNSImg = make_grid(valavgBlockNSRaw.reshape(5,1,25,25), nrow=5)
+    #valavgBlockPSImg = make_grid(valavgBlockPSRaw.reshape(5,1,25,25), nrow=5)
+    #valavgbtwNegBlockImg = make_grid(valavgbtwNegBlockRaw.reshape(5,1,25,25),nrow=5)
+    #valavgbtwPosBlockImg = make_grid(valavgbtwPosBlockRaw.reshape(5,1,25,25),nrow=5)
+    #writer.add_image("Validation Neg seq*seq",valavgBlockNSImg,epoch)
+    #writer.add_image("Validation Pos seq*seq",valavgBlockPSImg,epoch)
+    #writer.add_image("Validation Neg Btw Block seq*seq",valavgbtwNegBlockImg,epoch)
+    #writer.add_image("Validation Pos Btw Block seq*seq",valavgbtwPosBlockImg,epoch)
+    for block in range(1,6):
+        ndata=np.vstack((valnegNorm[0][block,:,:],valnegNorm[1][block,:,:],valnegNorm[2][block,:,:]))
+        pdata=np.vstack((valposNorm[0][block,:,:],valposNorm[1][block,:,:],valposNorm[2][block,:,:]))
+        nsdata=np.concatenate((valNegSimilityRaw[0][block].reshape(-1,),valNegSimilityRaw[1][block].reshape(-1,),valNegSimilityRaw[2][block].reshape(-1,)))
+        psdata=np.concatenate((valPosSimilityRaw[0][block].reshape(-1,),valPosSimilityRaw[1][block].reshape(-1,),valPosSimilityRaw[2][block].reshape(-1,)))
+        btwdata=np.concatenate((valbtwGroupSimilityRaw[0][block].reshape(-1,),valbtwGroupSimilityRaw[1][block].reshape(-1,),valbtwGroupSimilityRaw[2][block].reshape(-1,)))
+        btwNegBlockdata = np.concatenate((valbtwNegBlock[0][block].reshape(-1,),valbtwNegBlock[1][block].reshape(-1,),valbtwNegBlock[2][block].reshape(-1,)))
+        btwPosBlockdata = np.concatenate((valbtwPosBlock[0][block].reshape(-1,),valbtwPosBlock[1][block].reshape(-1,),valbtwPosBlock[2][block].reshape(-1,)))
+        writer.add_histogram(f'Validation neg norm dist {block}',ndata,epoch)
+        writer.add_histogram(f'Validation pos norm dist {block}',pdata,epoch)
+        writer.add_histogram(f'Validation neg sim Dist {block}',nsdata,epoch)
+        writer.add_histogram(f'Validation pos sim Dist {block}',psdata,epoch)
+        writer.add_histogram(f'Validation btw sim Dist {block}',btwdata,epoch)
+        writer.add_histogram(f'Validation neg block sim Dist {block}',btwNegBlockdata,epoch)
+        writer.add_histogram(f'Validation pos block sim Dist {block}',btwPosBlockdata,epoch)
     print(f'Epoch: {epoch:2d} Validation Finished, Avg Loss:{avgValloss:0.6f}, AvgAccy:{valAvgAccy:0.3f}, AvgAccy2:{valAvgAccy2:0.3f}, DiffPOS:{valavgdiffcount:2.3f}',flush=True)
     #print(f'Epoch: {epoch:2d} Validation Finished, Merge: {valmergeStatistic.most_common(n=10)}',flush=True)
     with open(f'{tensorboardpath}/trainOverAllTop10_MergeStatistic_{epoch}.pkl','wb') as f:
