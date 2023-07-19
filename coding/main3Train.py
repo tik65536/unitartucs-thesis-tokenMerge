@@ -89,7 +89,7 @@ def CellStateSimility(nstate,pstate,minlen):
 
 
 def curl(input_,output):
-    return torch.autograd().grad(output,input_,is_grads_batched=True)
+    return torch.autograd.grad(output,input_,is_grads_batched=True)
 
 
 
