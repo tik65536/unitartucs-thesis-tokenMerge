@@ -88,6 +88,10 @@ def CellStateSimility(nstate,pstate,minlen):
     return negSimiality,posSimiality,btwGroupSimiality
 
 
+def curl(input_,output):
+    return torch.autograd().grad(output,input_,is_grads_batched=True)
+
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-epoch', type=int, default=20,
@@ -412,6 +416,9 @@ for epoch in range(epochs):
             if(not carryforward):
                  state=model.init_state()
             pred,codeword, state ,mergeidx =  model(sequence, state, switch,permuteidx,onlyMerge,poslist,consecutive)
+            input_ = model.embeddingSpace(sequence)
+            grd=curl(input_,codeword)
+            print(grd.shape)
             diffcount+=np.sum(poslist!=permuteposlist,axis=-1)
             endidx = np.where(permuteposlist=='e0s')[0]
             endidx = np.in1d(range(permuteposlist.shape[0]),endidx)
