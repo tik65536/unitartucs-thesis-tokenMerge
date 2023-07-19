@@ -416,7 +416,7 @@ for epoch in range(epochs):
             if(not carryforward):
                  state=model.init_state()
             pred,codeword, state ,mergeidx =  model(sequence, state, switch,permuteidx,onlyMerge,poslist,consecutive)
-            input_ = model.embeddingSpace(sequence)
+            input_=torch.tensor(sequence).to(device)
             grd=curl(input_,codeword)
             print(grd.shape)
             diffcount+=np.sum(poslist!=permuteposlist,axis=-1)
