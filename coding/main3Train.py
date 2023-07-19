@@ -89,7 +89,13 @@ def CellStateSimility(nstate,pstate,minlen):
 
 
 def curl(input_,output):
-    return torch.autograd.grad(output,input_,is_grads_batched=True)
+    for i in range(output.shape[1]):
+        x=torch.autograd.grad(output[:,i,0],input_)
+        print(x.shape)
+        x=torch.autograd.grad(output[:,i,1],input_)
+        print(x.shape)
+        x=torch.autograd.grad(output[:,i,2],input_)
+        print(x.shape)
 
 
 
@@ -417,8 +423,7 @@ for epoch in range(epochs):
                  state=model.init_state()
             pred,codeword, state ,mergeidx =  model(sequence, state, switch,permuteidx,onlyMerge,poslist,consecutive)
             input_=torch.tensor(sequence).to(device)
-            grd=curl(input_,codeword)
-            print(grd.shape)
+            curl(input_,codeword)
             diffcount+=np.sum(poslist!=permuteposlist,axis=-1)
             endidx = np.where(permuteposlist=='e0s')[0]
             endidx = np.in1d(range(permuteposlist.shape[0]),endidx)
