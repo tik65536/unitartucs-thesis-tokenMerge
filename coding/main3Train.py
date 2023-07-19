@@ -92,11 +92,11 @@ def curl(input_,output):
     for i in range(output.shape[1]):
         # assume Embedding = x,y,z
         # Output dim 0 = P , we need P_y,P_z
-        x=torch.autograd.grad(output[:,i,0],input_,torch.ones_like(output[:,i,0],retain_graph=True))[0]
+        x=torch.autograd.grad(output[:,i,0],input_,torch.ones_like(output[:,i,0]),retain_graph=True)[0]
         P_y = x[:,:,1].detach().cpu().numpy()
         P_z = x[:,:,2].detach().cpu().numpy()
         # Output dim 1 = Q , we need Q_x,Q_z
-        x=torch.autograd.grad(output[:,i,1],input_,torch.ones_like(output[:,i,1],retain_graph=True))[0]
+        x=torch.autograd.grad(output[:,i,1],input_,torch.ones_like(output[:,i,1]),retain_graph=True)[0]
         Q_x = x[:,:,0].detach().cpu().numpy()
         Q_z = x[:,:,2].detach().cpu().numpy()
         # Output dim 2 = R , we need R_x,R_y
