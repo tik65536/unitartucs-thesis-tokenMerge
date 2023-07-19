@@ -423,6 +423,7 @@ for epoch in range(epochs):
                  state=model.init_state()
             pred,codeword, state ,mergeidx =  model(sequence, state, switch,permuteidx,onlyMerge,poslist,consecutive)
             input_=torch.tensor(sequence).to(device)
+            input_=model.embeddingSpace(input_)
             curl(input_,codeword)
             diffcount+=np.sum(poslist!=permuteposlist,axis=-1)
             endidx = np.where(permuteposlist=='e0s')[0]
