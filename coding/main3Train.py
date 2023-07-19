@@ -703,6 +703,7 @@ for epoch in range(epochs):
             diffcount+=np.sum(poslist!=permuteposlist,axis=-1)
             pred,output,input_,state,mergeidx =model(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
             u,v,w=curl(input_,output)
+            input_=input_.detach().cpu().numpy()
             curlax.quiver(input_[:,:,0], input_[:,:,1], input_[:,:,2], u, v, w, length=0.1)
             optimizer.zero_grad()
             if(GRU==False and i<(sliding*7)):
