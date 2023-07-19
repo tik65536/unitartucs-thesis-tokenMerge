@@ -90,11 +90,11 @@ def CellStateSimility(nstate,pstate,minlen):
 
 def curl(input_,output):
     for i in range(output.shape[1]):
-        x=torch.autograd.grad(output[:,i,0],input_)
+        x=torch.autograd.grad(output[:,i,0],input_,torch.ones_like(output[:,i,0]),retain_graph=True)
         print(x.shape)
-        x=torch.autograd.grad(output[:,i,1],input_)
+        x=torch.autograd.grad(output[:,i,1],input_,torch.ones_like(output[:,i,1]),retain_graph=True)
         print(x.shape)
-        x=torch.autograd.grad(output[:,i,2],input_)
+        x=torch.autograd.grad(output[:,i,2],input_,torch.ones_like(output[:,i,2]),retain_graph=True)
         print(x.shape)
 
 
