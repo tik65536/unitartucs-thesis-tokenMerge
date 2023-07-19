@@ -695,6 +695,7 @@ for epoch in range(epochs):
         previousOutput=None
         curlfig = plt.figure(constrained_layout=True)
         curlax = curlfig.gca(projection='3d')
+        co=['#81f34f','#3523ed','#d32daf','#ce5700','#e8a402']
         for i in range(0,c,sliding):
             sequence=sequences[:,i:i+seqlen]
             t=targets[:,i:i+seqlen]
@@ -702,10 +703,10 @@ for epoch in range(epochs):
             permuteposlist = poslist[:,permuteidx]
             diffcount+=np.sum(poslist!=permuteposlist,axis=-1)
             pred,output,input_,state,mergeidx =model(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
-            if(d<batchsize):
+            if(d<batchsize and i<125):
                 u,v,w=curl(input_,output)
                 input_=input_.detach().cpu().numpy()
-                curlax.quiver(input_[:,:,0], input_[:,:,1], input_[:,:,2], u, v, w, length=0.5,pivot='middle')
+                curlax.quiver(input_[:,:,0], input_[:,:,1], input_[:,:,2], u, v, w, c=co[(i//seqlen)] ,scale=0.5,pivot='middle')
                 optimizer.zero_grad()
             if(GRU==False and i<(sliding*7)):
                 ns,ps,btwgroups,nnorm,pnorm,nsraw,psraw = rnnOutputSimility(output[nidx],output[pidx],minlen)
