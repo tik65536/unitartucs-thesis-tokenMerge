@@ -754,7 +754,7 @@ for epoch in range(epochs):
             valavgbtwPosBlockRaw.append(np.array(avgblockbtwposraw[:6]))
             valbtwGroupSimilityRaw.append(np.array(btwSimilityRaw[:6]))
         if(d<batchsize):
-            with open('val_curldata.plk','wb') as f:
+            with open(f'{tensorboardpath}/val_curldata.plk','wb') as f:
                 pickle.dump(curldata,f)
             writer.add_figure('Curl',curlfig,epoch)
             plt.close('all')
