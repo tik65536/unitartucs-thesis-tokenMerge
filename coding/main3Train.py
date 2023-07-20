@@ -353,6 +353,7 @@ if(dynamicOpt):
 print(optstep)
 overallTop10Merge=Counter()
 valmergeStatistic=Counter()
+curldata={}
 for epoch in range(epochs):
     mergeStatistic=Counter()
     trainloss=[]
@@ -366,6 +367,7 @@ for epoch in range(epochs):
     #for d in range(0,len(train_text),batchsize):
     s=time.time()
     avgdiffcount=[]
+    curldata[epoch]={}
     for d in range(0,batchsize,batchsize):
         weight = torch.nn.functional.normalize(model.embeddingSpace.weight,dim=-1)
         state=model.init_state()
@@ -705,8 +707,9 @@ for epoch in range(epochs):
             pred,output,input_,state,mergeidx =model(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
             if(d<batchsize and i<125):
                 u,v,w=curl(input_,output)
+                curldata[epoch][i]=np.concatenate((input_,u,v,w))
                 input_=input_.detach().cpu().numpy()
-                curlax.quiver(input_[:,:,0], input_[:,:,1], input_[:,:,2], u, v, w, c=co[(i//seqlen)] ,scale=0.5,pivot='middle')
+                curlax.quiver(input_[:,:,0], input_[:,:,1], input_[:,:,2], u, v, w, c=co[(i//seqlen)] ,length=1,pivot='middle')
                 optimizer.zero_grad()
             if(GRU==False and i<(sliding*7)):
                 ns,ps,btwgroups,nnorm,pnorm,nsraw,psraw = rnnOutputSimility(output[nidx],output[pidx],minlen)
@@ -751,6 +754,8 @@ for epoch in range(epochs):
             valavgbtwPosBlockRaw.append(np.array(avgblockbtwposraw[:6]))
             valbtwGroupSimilityRaw.append(np.array(btwSimilityRaw[:6]))
         if(d<batchsize):
+            with open('val_curldata.plk','wb') as f:
+                pickle.dump(curldata,f)
             writer.add_figure('Curl',curlfig,epoch)
             plt.close('all')
         avgloss=np.mean(losses)
