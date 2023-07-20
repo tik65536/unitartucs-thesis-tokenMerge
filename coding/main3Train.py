@@ -95,15 +95,18 @@ def curl(input_,output):
         x=torch.autograd.grad(output[:,i,0],input_,torch.ones_like(output[:,i,0]),retain_graph=True)[0]
         P_y = x[:,:,1].detach().cpu().numpy()
         P_z = x[:,:,2].detach().cpu().numpy()
+        P_x = x[:,:,0].detach().cpu().numpy()
         # Output dim 1 = Q , we need Q_x,Q_z
         x=torch.autograd.grad(output[:,i,1],input_,torch.ones_like(output[:,i,1]),retain_graph=True)[0]
         Q_x = x[:,:,0].detach().cpu().numpy()
+        Q_y = x[:,:,1].detach().cpu().numpy()
         Q_z = x[:,:,2].detach().cpu().numpy()
         # Output dim 2 = R , we need R_x,R_y
         x=torch.autograd.grad(output[:,i,2],input_,torch.ones_like(output[:,i,2]),retain_graph=True)[0]
         R_x = x[:,:,0].detach().cpu().numpy()
         R_y = x[:,:,1].detach().cpu().numpy()
-        return R_y-Q_z,P_z-R_x,Q_x-P_y
+        R_z = x[:,:,2].detach().cpu().numpy()
+        return R_y-Q_z,P_z-R_x,Q_x-P_y,P_x,Q_y,R_z
 
 
 
@@ -354,6 +357,7 @@ print(optstep)
 overallTop10Merge=Counter()
 valmergeStatistic=Counter()
 curldata={}
+divdata={}
 for epoch in range(epochs):
     mergeStatistic=Counter()
     trainloss=[]
@@ -368,6 +372,7 @@ for epoch in range(epochs):
     s=time.time()
     avgdiffcount=[]
     curldata[epoch]={}
+    divdata[epoch]={}
     for d in range(0,batchsize,batchsize):
         weight = torch.nn.functional.normalize(model.embeddingSpace.weight,dim=-1)
         state=model.init_state()
@@ -697,7 +702,9 @@ for epoch in range(epochs):
         previousOutput=None
         curlfig = plt.figure(constrained_layout=True)
         curlax = curlfig.gca(projection='3d')
-        co=['#81f34f','#3523ed','#d32daf','#ce5700','#e8a402']
+        divfig = plt.figure(constrained_layout=True)
+        divax = divfig.gca(projection='3d')
+        co=['#81f34f','#3523ed','#d32daf','#ce5700','#e8a402','#e6534c','#faf21a']
         for i in range(0,c,sliding):
             sequence=sequences[:,i:i+seqlen]
             t=targets[:,i:i+seqlen]
@@ -705,11 +712,15 @@ for epoch in range(epochs):
             permuteposlist = poslist[:,permuteidx]
             diffcount+=np.sum(poslist!=permuteposlist,axis=-1)
             pred,output,input_,state,mergeidx =model(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
-            if(d<batchsize and i<125):
-                u,v,w=curl(input_,output)
+            if(d<batchsize and i<(sliding*7)):
+                u,v,w,u2,v2,w2=curl(input_,output)
                 input_=input_.detach().cpu().numpy()
-                curldata[epoch][i]=np.concatenate((input_,u,v,w))
-                curlax.quiver(input_[:,:,0], input_[:,:,1], input_[:,:,2], u, v, w, c=co[(i//seqlen)] ,length=1,pivot='middle')
+                curlax.quiver(input_[:,:,0], input_[:,:,1], input_[:,:,2], u, v, w, color=co[(i//seqlen)] ,length=1,pivot='middle')
+                divax.quiver(input_[:,:,0], input_[:,:,1], input_[:,:,2], u2, v2, w2, color=co[(i//seqlen)] ,length=1,pivot='middle')
+                u=np.stack((u,v,w),axis=-1)
+                u2=np.stack((u2,v2,w2),axis=-1)
+                curldata[epoch][i]=np.hstack((input_,u))
+                divdata[epoch][i]=np.hstack((input_,u2))
                 optimizer.zero_grad()
             if(GRU==False and i<(sliding*7)):
                 ns,ps,btwgroups,nnorm,pnorm,nsraw,psraw = rnnOutputSimility(output[nidx],output[pidx],minlen)
@@ -756,8 +767,11 @@ for epoch in range(epochs):
         if(d<batchsize):
             with open(f'{tensorboardpath}/val_curldata.plk','wb') as f:
                 pickle.dump(curldata,f)
+            with open(f'{tensorboardpath}/val_divdata.plk','wb') as f:
+                pickle.dump(divdata,f)
             writer.add_figure('Curl',curlfig,epoch)
-            plt.close('all')
+            writer.add_figure('Div',divfig,epoch)
+        plt.close('all')
         avgloss=np.mean(losses)
         vallosses.append(avgloss)
         est_prediction=[]
