@@ -707,8 +707,8 @@ for epoch in range(epochs):
             pred,output,input_,state,mergeidx =model(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
             if(d<batchsize and i<125):
                 u,v,w=curl(input_,output)
-                curldata[epoch][i]=np.concatenate((input_,u,v,w))
                 input_=input_.detach().cpu().numpy()
+                curldata[epoch][i]=np.concatenate((input_,u,v,w))
                 curlax.quiver(input_[:,:,0], input_[:,:,1], input_[:,:,2], u, v, w, c=co[(i//seqlen)] ,length=1,pivot='middle')
                 optimizer.zero_grad()
             if(GRU==False and i<(sliding*7)):
