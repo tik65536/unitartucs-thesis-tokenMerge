@@ -90,7 +90,6 @@ def CellStateSimility(nstate,pstate,minlen):
 
 def curl(input_,output):
     x=torch.autograd.grad(output[:,:,0],input_,torch.ones_like(output[:,:,0]),retain_graph=True)[0]
-    print(x)
     P_y = x[:,:,1].detach().cpu().numpy()
     P_z = x[:,:,2].detach().cpu().numpy()
     P_x = x[:,:,0].detach().cpu().numpy()
@@ -104,7 +103,19 @@ def curl(input_,output):
     R_x = x[:,:,0].detach().cpu().numpy()
     R_y = x[:,:,1].detach().cpu().numpy()
     R_z = x[:,:,2].detach().cpu().numpy()
-    return R_y-Q_z,P_z-R_x,Q_x-P_y,P_x,Q_y,R_z
+    x=torch.autograd.grad(output[:,:,3],input_,torch.ones_like(output[:,:,3]),retain_graph=True)[0]
+    BP_x = x[:,:,0].detach().cpu().numpy()
+    BP_y = x[:,:,1].detach().cpu().numpy()
+    BP_z = x[:,:,2].detach().cpu().numpy()
+    x=torch.autograd.grad(output[:,:,4],input_,torch.ones_like(output[:,:,4]),retain_graph=True)[0]
+    BR_x = x[:,:,0].detach().cpu().numpy()
+    BR_y = x[:,:,1].detach().cpu().numpy()
+    BR_z = x[:,:,2].detach().cpu().numpy()
+    x=torch.autograd.grad(output[:,:,5],input_,torch.ones_like(output[:,:,5]),retain_graph=True)[0]
+    BQ_x = x[:,:,0].detach().cpu().numpy()
+    BQ_y = x[:,:,1].detach().cpu().numpy()
+    BQ_z = x[:,:,2].detach().cpu().numpy()
+    return R_y-Q_z,P_z-R_x,Q_x-P_y,P_x,Q_y,R_z,BR_y-BQ_z,BP_z-BR_x,BQ_x-BP_y,BP_x,BQ_y,BR_z
 
 
 parser = argparse.ArgumentParser()
@@ -370,6 +381,10 @@ for epoch in range(epochs):
     avgdiffcount=[]
     curldata[epoch]={}
     divdata[epoch]={}
+    curldata[epoch]['forward']={}
+    curldata[epoch]['backward']={}
+    divdata[epoch]['forward']={}
+    divdata[epoch]['backward']={}
     for d in range(0,batchsize,batchsize):
         weight = torch.nn.functional.normalize(model.embeddingSpace.weight,dim=-1)
         state=model.init_state()
@@ -701,6 +716,10 @@ for epoch in range(epochs):
         curlax = curlfig.gca(projection='3d')
         divfig = plt.figure(constrained_layout=True)
         divax = divfig.gca(projection='3d')
+        backwardcurlfig = plt.figure(constrained_layout=True)
+        backwardcurlax = curlfig.gca(projection='3d')
+        backwardivfig = plt.figure(constrained_layout=True)
+        backwarddivax = divfig.gca(projection='3d')
         co=['#81f34f','#3523ed','#d32daf','#ce5700','#e8a402','#e6534c','#faf21a']
         for i in range(0,c,sliding):
             sequence=sequences[:,i:i+seqlen]
@@ -710,14 +729,20 @@ for epoch in range(epochs):
             diffcount+=np.sum(poslist!=permuteposlist,axis=-1)
             pred,output,input_,state,mergeidx =model(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
             if(d<batchsize and i<(sliding*7)):
-                u,v,w,u2,v2,w2=curl(input_,output)
-                output_=output.detach().cpu().numpy()
-                curlax.quiver(output_[:,:,0], output_[:,:,1], output_[:,:,2], u, v, w, color=co[(i//seqlen)] ,length=1,pivot='middle')
-                divax.quiver(output[:,:,0], output[:,:,1], output[:,:,2], u2, v2, w2, color=co[(i//seqlen)] ,length=1,pivot='middle')
+                u,v,w,u2,v2,w2,bu,bv,bw,bu2,bv2,bw2=curl(input_,output)
+                output=output.detach().cpu().numpy()
+                curlax.quiver(output[:,:,0], output[:,:,1], output[:,:,2], u, v, w, color=co[(i//seqlen)] ,length=0.5,normalize=True)
+                divax.quiver(output[:,:,0], output[:,:,1], output[:,:,2], u2, v2, w2, color=co[(i//seqlen)] ,length=0.5,normalize=True)
+                backwardcurlax.quiver(output[:,:,3], output[:,:,4], output[:,:,5], bu, bv, bw, color=co[(i//seqlen)] ,length=0.5,normalize=True)
+                backwarddivax.quiver(output[:,:,3], output[:,:,4], output[:,:,5], bu2, bv2, bw2, color=co[(i//seqlen)] ,length=0.5,normalize=True)
                 u=np.stack((u,v,w),axis=-1)
                 u2=np.stack((u2,v2,w2),axis=-1)
-                curldata[epoch][i]=np.hstack((output,u))
-                divdata[epoch][i]=np.hstack((output,u2))
+                curldata[epoch]['forward'][i]=np.hstack((output[:,:,:3],u))
+                divdata[epoch]['forward'][i]=np.hstack((output[:,:,:3],u2))
+                u=np.stack((bu,bv,bw),axis=-1)
+                u2=np.stack((bu2,bv2,bw2),axis=-1)
+                curldata[epoch]['backward'][i]=np.hstack((output[:,:,3:],u))
+                divdata[epoch]['backward'][i]=np.hstack((output[:,:,:3:],u2))
                 optimizer.zero_grad()
             if(GRU==False and i<(sliding*7)):
                 ns,ps,btwgroups,nnorm,pnorm,nsraw,psraw = rnnOutputSimility(output[nidx],output[pidx],minlen)
