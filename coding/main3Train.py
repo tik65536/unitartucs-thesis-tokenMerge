@@ -89,25 +89,22 @@ def CellStateSimility(nstate,pstate,minlen):
 
 
 def curl(input_,output):
-    for i in range(output.shape[1]):
-        # assume Embedding = x,y,z
-        # Output dim 0 = P , we need P_y,P_z
-        x=torch.autograd.grad(output[:,i,0],input_,torch.ones_like(output[:,i,0]),retain_graph=True)[0]
-        P_y = x[:,:,1].detach().cpu().numpy()
-        P_z = x[:,:,2].detach().cpu().numpy()
-        P_x = x[:,:,0].detach().cpu().numpy()
-        # Output dim 1 = Q , we need Q_x,Q_z
-        x=torch.autograd.grad(output[:,i,1],input_,torch.ones_like(output[:,i,1]),retain_graph=True)[0]
-        Q_x = x[:,:,0].detach().cpu().numpy()
-        Q_y = x[:,:,1].detach().cpu().numpy()
-        Q_z = x[:,:,2].detach().cpu().numpy()
-        # Output dim 2 = R , we need R_x,R_y
-        x=torch.autograd.grad(output[:,i,2],input_,torch.ones_like(output[:,i,2]),retain_graph=True)[0]
-        R_x = x[:,:,0].detach().cpu().numpy()
-        R_y = x[:,:,1].detach().cpu().numpy()
-        R_z = x[:,:,2].detach().cpu().numpy()
-        return R_y-Q_z,P_z-R_x,Q_x-P_y,P_x,Q_y,R_z
-
+    x=torch.autograd.grad(output[:,:,0],input_,torch.ones_like(output[:,:,0]),retain_graph=True)[0]
+    print(x)
+    P_y = x[:,:,1].detach().cpu().numpy()
+    P_z = x[:,:,2].detach().cpu().numpy()
+    P_x = x[:,:,0].detach().cpu().numpy()
+    # Output dim 1 = Q , we need Q_x,Q_z
+    x=torch.autograd.grad(output[:,:,1],input_,torch.ones_like(output[:,:,1]),retain_graph=True)[0]
+    Q_x = x[:,:,0].detach().cpu().numpy()
+    Q_y = x[:,:,1].detach().cpu().numpy()
+    Q_z = x[:,:,2].detach().cpu().numpy()
+    # Output dim 2 = R , we need R_x,R_y
+    x=torch.autograd.grad(output[:,:,2],input_,torch.ones_like(output[:,:,2]),retain_graph=True)[0]
+    R_x = x[:,:,0].detach().cpu().numpy()
+    R_y = x[:,:,1].detach().cpu().numpy()
+    R_z = x[:,:,2].detach().cpu().numpy()
+    return R_y-Q_z,P_z-R_x,Q_x-P_y,P_x,Q_y,R_z
 
 
 parser = argparse.ArgumentParser()
