@@ -793,8 +793,6 @@ for epoch in range(epochs):
                 pickle.dump(divdata,f)
             writer.add_figure('Curl',curlfig,epoch)
             writer.add_figure('Div',divfig,epoch)
-            del(curldata)
-            del(divdata)
         plt.close('all')
         avgloss=np.mean(losses)
         vallosses.append(avgloss)
