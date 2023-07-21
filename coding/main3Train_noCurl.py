@@ -411,7 +411,7 @@ for epoch in range(epochs):
             permuteposlist = poslist[:,permuteidx]
             if(not carryforward):
                  state=model.init_state()
-            pred,codeword, state ,mergeidx =  model(sequence, state, switch,permuteidx,onlyMerge,poslist,consecutive)
+            pred,codeword,_, state ,mergeidx =  model(sequence, state, switch,permuteidx,onlyMerge,poslist,consecutive)
             diffcount+=np.sum(poslist!=permuteposlist,axis=-1)
             endidx = np.where(permuteposlist=='e0s')[0]
             endidx = np.in1d(range(permuteposlist.shape[0]),endidx)
@@ -681,7 +681,7 @@ for epoch in range(epochs):
                 poslist = tokenpos[:,i:i+seqlen]
                 permuteposlist = poslist[:,permuteidx]
                 diffcount+=np.sum(poslist!=permuteposlist,axis=-1)
-                pred,output,state,mergeidx =model(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
+                pred,output,_,state,mergeidx =model(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
                 if(GRU==False and i<(sliding*7)):
                     ns,ps,btwgroups,nnorm,pnorm,nsraw,psraw = rnnOutputSimility(output[nidx],output[pidx],minlen)
                     avgblocknsraw.append(np.mean(nsraw,axis=0))
