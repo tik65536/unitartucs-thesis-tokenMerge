@@ -364,8 +364,6 @@ if(dynamicOpt):
 print(optstep)
 overallTop10Merge=Counter()
 valmergeStatistic=Counter()
-curldata={}
-divdata={}
 for epoch in range(epochs):
     mergeStatistic=Counter()
     trainloss=[]
@@ -379,12 +377,6 @@ for epoch in range(epochs):
     #for d in range(0,len(train_text),batchsize):
     s=time.time()
     avgdiffcount=[]
-    curldata[epoch]={}
-    divdata[epoch]={}
-    curldata[epoch]['forward']={}
-    curldata[epoch]['backward']={}
-    divdata[epoch]['forward']={}
-    divdata[epoch]['backward']={}
     for d in range(0,batchsize,batchsize):
         weight = torch.nn.functional.normalize(model.embeddingSpace.weight,dim=-1)
         state=model.init_state()
@@ -657,6 +649,15 @@ for epoch in range(epochs):
     tokendist=[]
     valavgdiffcount=[]
     for d in range(0,len(test_text),batchsize):
+        if(d<batchsize):
+            curldata={}
+            divdata={}
+            curldata[epoch]={}
+            divdata[epoch]={}
+            curldata[epoch]['forward']={}
+            curldata[epoch]['backward']={}
+            divdata[epoch]['forward']={}
+            divdata[epoch]['backward']={}
         diffcount=np.zeros((batchsize,))
         switch=bernoulli.sample()
         preprocessswitch=preprocessP.sample()
@@ -795,6 +796,8 @@ for epoch in range(epochs):
             writer.add_figure('Div',divfig,epoch)
             writer.add_figure('Backward Curl',backwardcurlfig,epoch)
             writer.add_figure('Backward Div',backwardivfig,epoch)
+            del(curldata)
+            del(divdata)
         plt.close('all')
         avgloss=np.mean(losses)
         vallosses.append(avgloss)
@@ -894,7 +897,8 @@ for epoch in range(epochs):
     valavgdiffcount=np.mean(valavgdiffcount)
     if(valAvgAccy>currentbestaccy):
         currentbestaccy=valAvgAccy
-        torch.save(model,f'{weightPath}/Val_Epoch_{epoch}_accy_{currentbestaccy}_loss_{avgValloss}.pt')
+        torch.save(model,f'{weightPath}/Val_best.pt')
+        #torch.save(model,f'{weightPath}/Val_Epoch_{epoch}_accy_{currentbestaccy}_loss_{avgValloss}.pt')
     writer.add_scalar(f'Validation AvgLoss',avgValloss,epoch)
     writer.add_scalar(f'Validation AvgAccy',np.mean(valAvgAccy),epoch)
     writer.add_scalar(f'Validation AvgAccy2',np.mean(valAvgAccy2),epoch)
