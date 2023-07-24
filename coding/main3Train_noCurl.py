@@ -99,8 +99,8 @@ parser.add_argument('-batch', type=int, default=5,
 parser.add_argument('-maxlen', type=int, default=600,
                     help='Max text len')
 
-parser.add_argument('-biasTrain', type=int, default=0,
-                    help='Use Bias Training Set')
+parser.add_argument('-HPCTrain', type=int, default=0,
+                    help='Use HPC Training Set')
 
 parser.add_argument('-trainSize', type=int, default=15000,
                     help='Train Set : 15000 or 5000')
@@ -205,7 +205,7 @@ optstep = args.optstep
 optstep = optstep*seqlen
 dynamicOpt = True if (args.dynamicOpt==1) else False
 retain=True if (optstep>1) else False
-bias = True if (args.biasTrain==1) else False
+bias = True if (args.HPCTrain==1) else False
 carryforward = True if (args.withHiddenState==1) else False
 kernelsize= args.predictkernelsize
 groupRelu = args.groupRelu
@@ -230,9 +230,14 @@ tensorboardpath=f"./Tensorboard2/{filename}"
 #valbatchsize=2
 #imdb_dataset = load_dataset('imdb', split=['train[10000:10010]', 'train[10000:10010]', 'test[:20]'])
 #imdb_dataset = load_dataset('imdb')
+vocab=None
+with  open('./Master_vocab.pkl','rb') as f:
+    vocab=pickle.load(f)
 if(bias):
-    with open('./bias_pos_trainpd.plk','rb') as f:
+    with open('./imdb_HPC_train_pd.plk','rb') as f:
         train_pd = pickle.load(f)
+    #with  open('./Master_vocab_2.pkl','rb') as f:
+    #    vocab=pickle.load(f)
 else:
     imdb_dataset = load_dataset('imdb', split=['train[5000:20000]']) if(trainSize==15000) else load_dataset('imdb',split=['train[10000:15000]'])
     train_pd=pd.DataFrame(columns=["text","label"])
@@ -250,20 +255,11 @@ print(f'Traing PD shape : {train_pd.shape}',flush=True)
 print(train_pd["label"].describe().T)
 print(f'Test PD shape : {test_pd.shape}',flush=True)
 print(test_pd["label"].describe().T)
-vocab=None
 
 
-with  open('./Master_vocab.pkl','rb') as f:
-    vocab=pickle.load(f)
 
-if(bias):
-    with open('./bias_pos_traincounter.plk','rb') as f:
-        traincounter=pickle.load(f)
-    del traincounter['s0s']
-    del traincounter['e0s']
-else:
-    with open('./traincounter.plk','rb') as f:
-        traincounter=pickle.load(f)
+with open('./traincounter.plk','rb') as f:
+    traincounter=pickle.load(f)
 reverse_traincounter=sorted(traincounter.items(), key=lambda pair: pair[1])
 
 

@@ -10,7 +10,7 @@ from torch.distributions.poisson import Poisson
 #Reference
 #https://www.kdnuggets.com/2020/07/pytorch-lstm-text-generation-tutorial.html
 def prepareMerge(x,token,permuteidx,seqlen,maxMerge):
-    tmp=np.zeros((seqlen,maxMerge),dtype=np.int)
+    tmp=np.zeros((seqlen,maxMerge),dtype=int)
     currentidx=seqlen
     j=seqlen-1
     individualmergeidx=[]

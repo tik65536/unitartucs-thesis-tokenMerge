@@ -14,6 +14,8 @@ from torchvision.utils import make_grid
 import datetime
 import pickle
 from matplotlib import pyplot as plt
+import matplotlib.cm as cm
+from matplotlib.colors import Normalize
 from sklearn.metrics import classification_report
 import warnings
 from collections import Counter
@@ -128,8 +130,8 @@ parser.add_argument('-batch', type=int, default=5,
 parser.add_argument('-maxlen', type=int, default=600,
                     help='Max text len')
 
-parser.add_argument('-biasTrain', type=int, default=0,
-                    help='Use Bias Training Set')
+parser.add_argument('-HPCTrain', type=int, default=0,
+                    help='Use HPC Training Set')
 
 parser.add_argument('-trainSize', type=int, default=15000,
                     help='Train Set : 15000 or 5000')
@@ -234,7 +236,7 @@ optstep = args.optstep
 optstep = optstep*seqlen
 dynamicOpt = True if (args.dynamicOpt==1) else False
 retain=True if (optstep>1) else False
-bias = True if (args.biasTrain==1) else False
+bias = True if (args.HPCTrain==1) else False
 carryforward = True if (args.withHiddenState==1) else False
 kernelsize= args.predictkernelsize
 groupRelu = args.groupRelu
@@ -260,7 +262,7 @@ tensorboardpath=f"./Tensorboard2/{filename}"
 #imdb_dataset = load_dataset('imdb', split=['train[10000:10010]', 'train[10000:10010]', 'test[:20]'])
 #imdb_dataset = load_dataset('imdb')
 if(bias):
-    with open('./bias_pos_trainpd.plk','rb') as f:
+    with open('./imdb_HPC_train_pd.plk','rb') as f:
         train_pd = pickle.load(f)
 else:
     imdb_dataset = load_dataset('imdb', split=['train[5000:20000]']) if(trainSize==15000) else load_dataset('imdb',split=['train[10000:15000]'])
@@ -354,7 +356,7 @@ test_text=test_pd['text']
 test_label=test_pd['label']
 trainbatchcount=0
 valbatchcount=0
-fig,axes=plt.subplots(4,1,figsize=(20,20), gridspec_kw={'height_ratios': [1,2,1,2]})
+#fig,axes=plt.subplots(4,1,figsize=(20,20), gridspec_kw={'height_ratios': [1,2,1,2]})
 #fig2,axes2=plt.subplots(4,5,figsize=(20,20))
 optstep = np.full(epochs,optstep)
 if(dynamicOpt):
@@ -588,32 +590,32 @@ for epoch in range(epochs):
         writer.add_scalars('Training ClassificationReport MarcoAvg',cr['macro avg'],trainbatchcount)
         negendidx=idxarray[nidx[negsampleidx]]
         posendidx=idxarray[pidx[possampleidx]]
-        axes[1].set_title(f'GT:{target[nidx[negsampleidx]]} Pred:{est_prediction[nidx[negsampleidx]]},{est_prediction2[nidx[negsampleidx]]}')
-        axes[1].plot(predict_history[nidx[negsampleidx],:negendidx,0].T,label='NegProb',marker='x')
-        axes[1].plot(predict_history[nidx[negsampleidx],:negendidx,1].T,label='PosProb',marker='o')
-        axes[1].set_xticks(list(range(negendidx)))
-        axes[1].set_xticklabels(negsampletext[:negendidx], rotation=90, ha='right',fontdict={'fontsize':4})
-        axes[3].set_title(f'GT:{target[pidx[possampleidx]]} Pred:{est_prediction[pidx[possampleidx]]},{est_prediction2[pidx[possampleidx]]}')
-        axes[3].plot(predict_history[pidx[possampleidx],:posendidx,0].T,label='NegProb',marker='x')
-        axes[3].plot(predict_history[pidx[possampleidx],:posendidx,1].T,label='PosProb',marker='o')
-        axes[3].set_xticks(list(range(posendidx)))
-        axes[3].set_xticklabels(possampletext[:posendidx], rotation=90, ha='right',fontdict={'fontsize':4})
-        axes[2].plot(posSampleDiff[:posendidx].T,label='Diff',color='g',marker='o',markersize=0.7,alpha=0.5)
-        axes[2].axhline(y=0,color='r')
-        axes[0].plot(negSampleDiff[:negendidx].T,label='Diff',color='g',marker='o',markersize=0.7,alpha=0.5)
-        axes[0].axhline(y=0,color='r')
-        if(len(posidx)>0): [ axes[2].axvline(i,linewidth=2,c='#F39C12') for i in posidx ]
-        if(len(posidx2)>0): [ axes[2].axvline(i,linewidth=2,c='#0000EE') for i in posidx2]
-        if(len(negidx)>0): [ axes[0].axvline(i,linewidth=2,c='#F39C12') for i in negidx]
-        if(len(negidx2)>0): [ axes[0].axvline(i,linewidth=2,c='#0000EE') for i in negidx2]
-        fig.suptitle(f'Batch Accy : {batchaccy} {batchaccy2}')
-        axes[2].set_title(",".join([ id2tok[x] for x in trainneglabel if(id2tok[x] in possampletext)]))
-        axes[0].set_title(",".join([ id2tok[x] for x in trainposlabel if(id2tok[x] in negsampletext)]))
-        [ axes[i].legend() for i in range(4) ]
-        plt.tight_layout()
-        fig.savefig(f'{tensorboardpath}/Training_Epoch_{epoch}_batch_{trainbatchcount}_switch{int(switch)}_preprocess{int(preprocessswitch)}_{avgloss:0.6f}_plot.png',dpi=400)
-        [ axes[i].clear() for i in range(4) ]
-        plt.cla()
+        #axes[1].set_title(f'GT:{target[nidx[negsampleidx]]} Pred:{est_prediction[nidx[negsampleidx]]},{est_prediction2[nidx[negsampleidx]]}')
+        #axes[1].plot(predict_history[nidx[negsampleidx],:negendidx,0].T,label='NegProb',marker='x')
+        #axes[1].plot(predict_history[nidx[negsampleidx],:negendidx,1].T,label='PosProb',marker='o')
+        #axes[1].set_xticks(list(range(negendidx)))
+        #axes[1].set_xticklabels(negsampletext[:negendidx], rotation=90, ha='right',fontdict={'fontsize':4})
+        #axes[3].set_title(f'GT:{target[pidx[possampleidx]]} Pred:{est_prediction[pidx[possampleidx]]},{est_prediction2[pidx[possampleidx]]}')
+        #axes[3].plot(predict_history[pidx[possampleidx],:posendidx,0].T,label='NegProb',marker='x')
+        #axes[3].plot(predict_history[pidx[possampleidx],:posendidx,1].T,label='PosProb',marker='o')
+        #axes[3].set_xticks(list(range(posendidx)))
+        #axes[3].set_xticklabels(possampletext[:posendidx], rotation=90, ha='right',fontdict={'fontsize':4})
+        #axes[2].plot(posSampleDiff[:posendidx].T,label='Diff',color='g',marker='o',markersize=0.7,alpha=0.5)
+        #axes[2].axhline(y=0,color='r')
+        #axes[0].plot(negSampleDiff[:negendidx].T,label='Diff',color='g',marker='o',markersize=0.7,alpha=0.5)
+        #axes[0].axhline(y=0,color='r')
+        #if(len(posidx)>0): [ axes[2].axvline(i,linewidth=2,c='#F39C12') for i in posidx ]
+        #if(len(posidx2)>0): [ axes[2].axvline(i,linewidth=2,c='#0000EE') for i in posidx2]
+        #if(len(negidx)>0): [ axes[0].axvline(i,linewidth=2,c='#F39C12') for i in negidx]
+        #if(len(negidx2)>0): [ axes[0].axvline(i,linewidth=2,c='#0000EE') for i in negidx2]
+        #fig.suptitle(f'Batch Accy : {batchaccy} {batchaccy2}')
+        #axes[2].set_title(",".join([ id2tok[x] for x in trainneglabel if(id2tok[x] in possampletext)]))
+        #axes[0].set_title(",".join([ id2tok[x] for x in trainposlabel if(id2tok[x] in negsampletext)]))
+        #[ axes[i].legend() for i in range(4) ]
+        #plt.tight_layout()
+        #fig.savefig(f'{tensorboardpath}/Training_Epoch_{epoch}_batch_{trainbatchcount}_switch{int(switch)}_preprocess{int(preprocessswitch)}_{avgloss:0.6f}_plot.png',dpi=400)
+        #[ axes[i].clear() for i in range(4) ]
+        #plt.cla()
         diffcount=np.mean(diffcount/idxarray)
         avgdiffcount.append(diffcount)
         e=time.time()
@@ -719,8 +721,13 @@ for epoch in range(epochs):
         divax = divfig.gca(projection='3d')
         backwardcurlfig = plt.figure(constrained_layout=True)
         backwardcurlax = curlfig.gca(projection='3d')
-        backwardivfig = plt.figure(constrained_layout=True)
-        backwarddivax = divfig.gca(projection='3d')
+        negcolormap = cm.viridis
+        poscolormap = cm.autumn
+        colors=np.arange(175)
+        norm = Normalize()
+        norm.autoscale(colors)
+        nco=negcolormap(norm(colors))
+        pco=poscolormap(norm(colors))
         co=['#81f34f','#3523ed','#d32daf','#ce5700','#e8a402','#e6534c','#faf21a']
         for i in range(0,c,sliding):
             sequence=sequences[:,i:i+seqlen]
@@ -753,10 +760,10 @@ for epoch in range(epochs):
             if(d<batchsize and i<(sliding*7)):
                 u,v,w,u2,v2,w2,bu,bv,bw,bu2,bv2,bw2=curl(input_,output)
                 output=output.detach().cpu().numpy()
-                curlax.quiver(output[:,:,0], output[:,:,1], output[:,:,2], u, v, w, color=co[(i//seqlen)],length=0.1 )
-                divax.quiver(output[:,:,0], output[:,:,1], output[:,:,2], u2, v2, w2, color=co[(i//seqlen)],length=0.1 )
-                backwardcurlax.quiver(output[:,:,3], output[:,:,4], output[:,:,5], bu, bv, bw, color=co[(i//seqlen)],length=0.1)
-                backwarddivax.quiver(output[:,:,3], output[:,:,4], output[:,:,5], bu2, bv2, bw2, color=co[(i//seqlen)],length=0.1)
+                curlax.quiver(output[nidx,:,0], output[nidx,:,1], output[nidx,:,2], u[nidx], v[nidx], w[nidx], color=nco[i:i+sliding],length=0.3,normalize=True )
+                curlax.quiver(output[pidx,:,0], output[pidx,:,1], output[pidx,:,2], u[pidx], v[pidx], w[pidx], color=pco[i:i+sliding],length=0.3,normalize=True )
+                divax.quiver(output[nidx,:,0], output[nidx,:,1], output[nidx,:,2], u2[nidx], v2[nidx], w2[nidx], color=nco[i:i+sliding],length=0.3,normalize=True )
+                divax.quiver(output[pidx,:,0], output[pidx,:,1], output[pidx,:,2], u2[pidx], v2[pidx], w2[pidx], color=pco[i:i+sliding],length=0.3,normalize=True )
                 u=np.stack((u,v,w),axis=-1)
                 u2=np.stack((u2,v2,w2),axis=-1)
                 curldata[epoch]['forward'][i]=np.hstack((output[:,:,:3],u))
@@ -788,14 +795,12 @@ for epoch in range(epochs):
             valavgbtwPosBlockRaw.append(np.array(avgblockbtwposraw[:6]))
             valbtwGroupSimilityRaw.append(np.array(btwSimilityRaw[:6]))
         if(d<batchsize):
-            with open(f'{tensorboardpath}/val_curldata.plk','wb') as f:
+            with open(f'{weightPath}/val_curldata_{epoch}.plk','wb') as f:
                 pickle.dump(curldata,f)
-            with open(f'{tensorboardpath}/val_divdata.plk','wb') as f:
+            with open(f'{weightPath}/val_divdata_{epoch}.plk','wb') as f:
                 pickle.dump(divdata,f)
             writer.add_figure('Curl',curlfig,epoch)
             writer.add_figure('Div',divfig,epoch)
-            writer.add_figure('Backward Curl',backwardcurlfig,epoch)
-            writer.add_figure('Backward Div',backwardivfig,epoch)
             del(curldata)
             del(divdata)
         plt.close('all')
@@ -861,32 +866,32 @@ for epoch in range(epochs):
         #    writer.add_histogram('Pos Validation Mind',pmind,valbatchcount)
         negendidx=idxarray[nidx[negsampleidx]]
         posendidx=idxarray[pidx[possampleidx]]
-        axes[1].set_title(f'GT:{target[nidx[negsampleidx]]} Pred:{est_prediction[nidx[negsampleidx]]},{est_prediction2[nidx[negsampleidx]]}')
-        axes[1].plot(predict_history[nidx[negsampleidx],:negendidx,0].T,label='NegProb',marker='x')
-        axes[1].plot(predict_history[nidx[negsampleidx],:negendidx,1].T,label='PosProb',marker='o')
-        axes[1].set_xticks(list(range(negendidx)))
-        axes[1].set_xticklabels(negsampletext[:negendidx], rotation=90, ha='right',fontdict={'fontsize':4})
-        axes[3].set_title(f'GT:{target[pidx[possampleidx]]} Pred:{est_prediction[pidx[possampleidx]]},{est_prediction2[pidx[possampleidx]]}')
-        axes[3].plot(predict_history[pidx[possampleidx],:posendidx,0].T,label='NegProb',marker='x')
-        axes[3].plot(predict_history[pidx[possampleidx],:posendidx,1].T,label='PosProb',marker='o')
-        axes[3].set_xticks(list(range(posendidx)))
-        axes[3].set_xticklabels(possampletext[:posendidx], rotation=90, ha='right',fontdict={'fontsize':4})
-        axes[2].plot(posSampleDiff[:posendidx].T,label='Diff',color='g',marker='o',markersize=0.7,alpha=0.5)
-        axes[2].axhline(y=0,color='r')
-        axes[0].plot(negSampleDiff[:negendidx].T,label='Diff',color='g',marker='o',markersize=0.7,alpha=0.5)
-        axes[0].axhline(y=0,color='r')
-        if(len(posidx)>0): [ axes[2].axvline(i,linewidth=2,c='#F39C12') for i in posidx ]
-        if(len(posidx2)>0): [ axes[2].axvline(i,linewidth=2,c='#0000EE') for i in posidx2 ]
-        if(len(negidx)>0): [ axes[0].axvline(i,linewidth=2,c='#F39C12') for i in negidx]
-        if(len(negidx2)>0): [ axes[0].axvline(i,linewidth=2,c='#0000EE') for i in negidx2 ]
-        axes[2].set_title(",".join([ id2tok[x] for x in trainneglabel if(id2tok[x] in possampletext)]))
-        axes[0].set_title(",".join([ id2tok[x] for x in trainposlabel if(id2tok[x] in negsampletext)]))
-        [ axes[i].legend() for i in range(4) ]
-        fig.suptitle(f'Batch Accy : {batchaccy} {batchaccy2}')
-        plt.tight_layout()
-        fig.savefig(f'{tensorboardpath}/Validation_Epoch_{epoch}_batch_{valbatchcount}_switch{int(switch)}_preprocess{int(preprocessswitch)}_{avgloss:0.6f}_plot.png',dpi=400)
-        [ axes[i].clear() for i in range(4) ]
-        plt.cla()#
+        #axes[1].set_title(f'GT:{target[nidx[negsampleidx]]} Pred:{est_prediction[nidx[negsampleidx]]},{est_prediction2[nidx[negsampleidx]]}')
+        #axes[1].plot(predict_history[nidx[negsampleidx],:negendidx,0].T,label='NegProb',marker='x')
+        #axes[1].plot(predict_history[nidx[negsampleidx],:negendidx,1].T,label='PosProb',marker='o')
+        #axes[1].set_xticks(list(range(negendidx)))
+        #axes[1].set_xticklabels(negsampletext[:negendidx], rotation=90, ha='right',fontdict={'fontsize':4})
+        #axes[3].set_title(f'GT:{target[pidx[possampleidx]]} Pred:{est_prediction[pidx[possampleidx]]},{est_prediction2[pidx[possampleidx]]}')
+        #axes[3].plot(predict_history[pidx[possampleidx],:posendidx,0].T,label='NegProb',marker='x')
+        #axes[3].plot(predict_history[pidx[possampleidx],:posendidx,1].T,label='PosProb',marker='o')
+        #axes[3].set_xticks(list(range(posendidx)))
+        #axes[3].set_xticklabels(possampletext[:posendidx], rotation=90, ha='right',fontdict={'fontsize':4})
+        #axes[2].plot(posSampleDiff[:posendidx].T,label='Diff',color='g',marker='o',markersize=0.7,alpha=0.5)
+        #axes[2].axhline(y=0,color='r')
+        #axes[0].plot(negSampleDiff[:negendidx].T,label='Diff',color='g',marker='o',markersize=0.7,alpha=0.5)
+        #axes[0].axhline(y=0,color='r')
+        #if(len(posidx)>0): [ axes[2].axvline(i,linewidth=2,c='#F39C12') for i in posidx ]
+        #if(len(posidx2)>0): [ axes[2].axvline(i,linewidth=2,c='#0000EE') for i in posidx2 ]
+        #if(len(negidx)>0): [ axes[0].axvline(i,linewidth=2,c='#F39C12') for i in negidx]
+        #if(len(negidx2)>0): [ axes[0].axvline(i,linewidth=2,c='#0000EE') for i in negidx2 ]
+        #axes[2].set_title(",".join([ id2tok[x] for x in trainneglabel if(id2tok[x] in possampletext)]))
+        #axes[0].set_title(",".join([ id2tok[x] for x in trainposlabel if(id2tok[x] in negsampletext)]))
+        #[ axes[i].legend() for i in range(4) ]
+        #fig.suptitle(f'Batch Accy : {batchaccy} {batchaccy2}')
+        #plt.tight_layout()
+        #fig.savefig(f'{tensorboardpath}/Validation_Epoch_{epoch}_batch_{valbatchcount}_switch{int(switch)}_preprocess{int(preprocessswitch)}_{avgloss:0.6f}_plot.png',dpi=400)
+        #[ axes[i].clear() for i in range(4) ]
+        #plt.cla()#
         diffcount=np.mean(diffcount/idxarray)
         valavgdiffcount.append(diffcount)
         print(f'Epoch: {epoch:2d} Batch ValDoc#{(d+batchsize):5d}, Switch:{int(switch):1d}, Preprocess:{int(preprocessswitch):1d}, AvgLoss:{avgloss:0.3f}, AvgAccy:{batchaccy:0.3f}, AvgAccy2:{batchaccy2:0.3f}, DiffPOS:{diffcount:2.3f}',flush=True)
@@ -953,8 +958,8 @@ for epoch in range(epochs):
         writer.add_histogram(f'Validation pos block sim Dist {block}',btwPosBlockdata,epoch)
     print(f'Epoch: {epoch:2d} Validation Finished, Avg Loss:{avgValloss:0.6f}, AvgAccy:{valAvgAccy:0.3f}, AvgAccy2:{valAvgAccy2:0.3f}, DiffPOS:{valavgdiffcount:2.3f}',flush=True)
     #print(f'Epoch: {epoch:2d} Validation Finished, Merge: {valmergeStatistic.most_common(n=10)}',flush=True)
-    with open(f'{tensorboardpath}/trainOverAllTop10_MergeStatistic_{epoch}.pkl','wb') as f:
-        pickle.dump(overallTop10Merge,f)
+    #with open(f'{tensorboardpath}/trainOverAllTop10_MergeStatistic_{epoch}.pkl','wb') as f:
+    #    pickle.dump(overallTop10Merge,f)
     #with open(f'{tensorboardpath}/ValMergeStatistic_{epoch}.pkl','wb') as f:
     #    pickle.dump(valmergeStatistic,f)
     print("")
