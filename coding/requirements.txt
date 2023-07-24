@@ -1,6 +1,5 @@
 datasets==1.18.3
 matplotlib==3.7.2
-numpy==1.21.0
 pandas==1.5.3
 scikit_learn==1.0.2
 spacy==3.5.0

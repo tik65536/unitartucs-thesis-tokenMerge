@@ -13,5 +13,5 @@ then
     service ssh start
 fi
 cd /workspace/unitartucs-thesis-tokenMerge/coding
-pip3 install -r requirements.txt
+pip3 install --no-input -r requirements.txt
 python -m spacy download en_core_web_md
