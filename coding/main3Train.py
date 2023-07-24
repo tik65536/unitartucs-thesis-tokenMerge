@@ -715,10 +715,10 @@ for epoch in range(epochs):
         c=1 if (seqlen>=maxlen) else (maxlen-seqlen)
         minlen =len(pidx)-1 if (len(nidx)>len(pidx)) else len(nidx)-1
         previousOutput=None
-        curlfig = plt.figure(constrained_layout=True)
-        curlax = curlfig.gca(projection='3d')
-        divfig = plt.figure(constrained_layout=True)
-        divax = divfig.gca(projection='3d')
+        curlfig = plt.figure(figsize=(10,10))
+        curlax=curlfig.add_subplot(projection='3d')
+        divfig = plt.figure(figsize=(10,10))
+        divax=divfig.add_subplot(projection='3d')
         backwardcurlfig = plt.figure(constrained_layout=True)
         backwardcurlax = curlfig.gca(projection='3d')
         negcolormap = cm.viridis
