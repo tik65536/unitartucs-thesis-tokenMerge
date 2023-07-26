@@ -264,6 +264,11 @@ tensorboardpath=f"./Tensorboard2/{filename}"
 if(bias):
     with open('./imdb_HPC_train_pd.plk','rb') as f:
         train_pd = pickle.load(f)
+        start=''
+        c = 5 if(seqlen>=maxlen) else seqlen
+        for i in range(c):
+            start+='s0s '
+        train_pd['text']=start+train_pd['text']
 else:
     imdb_dataset = load_dataset('imdb', split=['train[5000:20000]']) if(trainSize==15000) else load_dataset('imdb',split=['train[10000:15000]'])
     train_pd=pd.DataFrame(columns=["text","label"])
