@@ -3,6 +3,7 @@ apt-get update
 apt-get install vim -y
 apt-get install screen -y
 apt-get install htop -y
+apt-get install rsync -y
 if [[ $PUBLIC_KEY ]]
 then
     mkdir -p ~/.ssh
