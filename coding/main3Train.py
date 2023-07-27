@@ -119,6 +119,31 @@ def curl(input_,output):
     BQ_z = x[:,:,2].detach().cpu().numpy()
     return R_y-Q_z,P_z-R_x,Q_x-P_y,P_x,Q_y,R_z,BR_y-BQ_z,BP_z-BR_x,BQ_x-BP_y,BP_x,BQ_y,BR_z
 
+def curlPrediction(input_,output):
+    x=torch.autograd.grad(output[:,:,0],input_,torch.ones_like(output[:,:,0]),retain_graph=True)[0]
+    P_y = x[:,:,1].detach().cpu().numpy()
+    P_z = x[:,:,2].detach().cpu().numpy()
+    P_x = x[:,:,0].detach().cpu().numpy()
+    BP_x = x[:,:,3].detach().cpu().numpy()
+    BP_y = x[:,:,4].detach().cpu().numpy()
+    BP_z = x[:,:,5].detach().cpu().numpy()
+    # Output dim 1 = Q , we need Q_x,Q_z
+    x=torch.autograd.grad(output[:,:,1],input_,torch.ones_like(output[:,:,1]),retain_graph=True)[0]
+    Q_x = x[:,:,0].detach().cpu().numpy()
+    Q_y = x[:,:,1].detach().cpu().numpy()
+    Q_z = x[:,:,2].detach().cpu().numpy()
+    BQ_x = x[:,:,3].detach().cpu().numpy()
+    BQ_y = x[:,:,4].detach().cpu().numpy()
+    BQ_z = x[:,:,5].detach().cpu().numpy()
+    # Output dim 2 = R , we need R_x,R_y
+    x=torch.autograd.grad(output[:,:,2],input_,torch.ones_like(output[:,:,2]),retain_graph=True)[0]
+    R_x = x[:,:,0].detach().cpu().numpy()
+    R_y = x[:,:,1].detach().cpu().numpy()
+    R_z = x[:,:,2].detach().cpu().numpy()
+    BR_x = x[:,:,3].detach().cpu().numpy()
+    BR_y = x[:,:,4].detach().cpu().numpy()
+    BR_z = x[:,:,5].detach().cpu().numpy()
+    return R_y-Q_z,P_z-R_x,Q_x-P_y,P_x,Q_y,R_z,BR_y-BQ_z,BP_z-BR_x,BQ_x-BP_y,BP_x,BQ_y,BR_z
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-epoch', type=int, default=20,
@@ -658,13 +683,15 @@ for epoch in range(epochs):
     for d in range(0,len(test_text),batchsize):
         if(d<batchsize):
             curldata={}
-            divdata={}
             curldata[epoch]={}
-            divdata[epoch]={}
-            curldata[epoch]['forward']={}
-            curldata[epoch]['backward']={}
-            divdata[epoch]['forward']={}
-            divdata[epoch]['backward']={}
+            curldata[epoch]['LSTM']={}
+            curldata[epoch]['LSTM']={}
+            curldata[epoch]['Predict']={}
+            curldata[epoch]['Predict']={}
+            curldata[epoch]['LSTM']['forward']={}
+            curldata[epoch]['LSTM']['backward']={}
+            curldata[epoch]['Predict']['forward']={}
+            curldata[epoch]['Predict']['backward']={}
         diffcount=np.zeros((batchsize,))
         switch=bernoulli.sample()
         preprocessswitch=preprocessP.sample()
@@ -721,13 +748,21 @@ for epoch in range(epochs):
         minlen =len(pidx)-1 if (len(nidx)>len(pidx)) else len(nidx)-1
         previousOutput=None
         curlfig = plt.figure(figsize=(10,10))
-        curlax=curlfig.add_subplot(projection='3d')
         divfig = plt.figure(figsize=(10,10))
-        divax=divfig.add_subplot(projection='3d')
         backwardcurlfig = plt.figure(figsize=(10,10))
         backwarddivfig = plt.figure(figsize=(10,10))
+        curlfigPredict = plt.figure(figsize=(10,10))
+        divfigPredict = plt.figure(figsize=(10,10))
+        backwardcurlfigPredict = plt.figure(figsize=(10,10))
+        backwarddivfigPredict = plt.figure(figsize=(10,10))
+        curlax=curlfig.add_subplot(projection='3d')
+        divax=divfig.add_subplot(projection='3d')
         backwardcurlax = backwardcurlfig.add_subplot(projection='3d')
         backwarddivax = backwarddivfig.add_subplot(projection='3d')
+        curlaxpredict=curlfigPredict.add_subplot(projection='3d')
+        divaxpredict=divfigPredict.add_subplot(projection='3d')
+        backwardcurlaxpredict = backwardcurlfigPredict.add_subplot(projection='3d')
+        backwarddivaxpredict = backwarddivfigPredict.add_subplot(projection='3d')
         negcolormap = cm.viridis
         poscolormap = cm.autumn
         colors=np.arange(175)
@@ -743,6 +778,11 @@ for epoch in range(epochs):
             permuteposlist = poslist[:,permuteidx]
             diffcount+=np.sum(poslist!=permuteposlist,axis=-1)
             pred,output,input_,state,mergeidx =model(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
+            loss=criterion(pred,t)
+            losses.append(loss.item())
+            pred=torch.nn.functional.softmax(pred,dim=1)
+            pred=pred.permute(0,2,1)
+            #pred (N,Class,Seqlen)
             if(GRU==False and i<(sliding*7)):
                 ns,ps,btwgroups,nnorm,pnorm,nsraw,psraw = rnnOutputSimility(output[nidx],output[pidx],minlen)
                 avgblocknsraw.append(np.mean(nsraw,axis=0))
@@ -766,28 +806,38 @@ for epoch in range(epochs):
                 previousOutput=output.detach().clone()
             if(d<batchsize and i<(sliding*7)):
                 u,v,w,u2,v2,w2,bu,bv,bw,bu2,bv2,bw2=curl(input_,output)
+                p_u,p_v,p_w,p_u2,p_v2,p_w2,p_bu,p_bv,p_bw,p_bu2,p_bv2,p_bw2=curlPrediction(output,pred)
                 output=output.detach().cpu().numpy()
+                pred=pred.detach().cpu().numpy()
                 curlax.quiver(output[nidx,:,0], output[nidx,:,1], output[nidx,:,2], u[nidx], v[nidx], w[nidx], color=nco[i:i+sliding],length=0.3,normalize=True )
                 curlax.quiver(output[pidx,:,0], output[pidx,:,1], output[pidx,:,2], u[pidx], v[pidx], w[pidx], color=pco[i:i+sliding],length=0.3,normalize=True )
                 divax.quiver(output[nidx,:,0], output[nidx,:,1], output[nidx,:,2], u2[nidx], v2[nidx], w2[nidx], color=nco[i:i+sliding],length=0.3,normalize=True )
                 divax.quiver(output[pidx,:,0], output[pidx,:,1], output[pidx,:,2], u2[pidx], v2[pidx], w2[pidx], color=pco[i:i+sliding],length=0.3,normalize=True )
-                backwardcurlax.quiver(output[nidx,:,0], output[nidx,:,1], output[nidx,:,2], u[nidx], v[nidx], w[nidx], color=nco[i:i+sliding],length=0.3,normalize=True )
-                backwardcurlax.quiver(output[pidx,:,0], output[pidx,:,1], output[pidx,:,2], u[pidx], v[pidx], w[pidx], color=pco[i:i+sliding],length=0.3,normalize=True )
-                backwarddivax.quiver(output[nidx,:,0], output[nidx,:,1], output[nidx,:,2], u[nidx], v[nidx], w[nidx], color=nco[i:i+sliding],length=0.3,normalize=True )
-                backwarddivax.quiver(output[pidx,:,0], output[pidx,:,1], output[pidx,:,2], u[pidx], v[pidx], w[pidx], color=pco[i:i+sliding],length=0.3,normalize=True )
+                backwardcurlax.quiver(output[nidx,:,0], output[nidx,:,1], output[nidx,:,2], bu[nidx], bv[nidx], bw[nidx], color=nco[i:i+sliding],length=0.3,normalize=True )
+                backwardcurlax.quiver(output[pidx,:,0], output[pidx,:,1], output[pidx,:,2], bu[pidx], bv[pidx], bw[pidx], color=pco[i:i+sliding],length=0.3,normalize=True )
+                backwarddivax.quiver(output[nidx,:,0], output[nidx,:,1], output[nidx,:,2], bu2[nidx], bv2[nidx], bw2[nidx], color=nco[i:i+sliding],length=0.3,normalize=True )
+                backwarddivax.quiver(output[pidx,:,0], output[pidx,:,1], output[pidx,:,2], bu2[pidx], bv2[pidx], bw2[pidx], color=pco[i:i+sliding],length=0.3,normalize=True )
+                curlaxpredict.quiver(output[nidx,:,0], output[nidx,:,1], output[nidx,:,2], p_u[nidx], p_v[nidx], p_w[nidx], color=nco[i:i+sliding],length=0.3,normalize=True )
+                curlaxpredict.quiver(output[pidx,:,0], output[pidx,:,1], output[pidx,:,2], p_u[pidx], p_v[pidx], p_w[pidx], color=pco[i:i+sliding],length=0.3,normalize=True )
+                divaxpredict.quiver(output[nidx,:,0], output[nidx,:,1], output[nidx,:,2], p_u2[nidx], p_v2[nidx], p_w2[nidx], color=nco[i:i+sliding],length=0.3,normalize=True )
+                divaxpredict.quiver(output[pidx,:,0], output[pidx,:,1], output[pidx,:,2], p_u2[pidx], p_v2[pidx], p_w2[pidx], color=nco[i:i+sliding],length=0.3,normalize=True )
+                backwardcurlaxpredict.quiver(output[nidx,:,0], output[nidx,:,1], output[nidx,:,2], p_bu[nidx], p_bv[nidx], p_bw[nidx], color=nco[i:i+sliding],length=0.3,normalize=True )
+                backwardcurlaxpredict.quiver(output[pidx,:,0], output[pidx,:,1], output[pidx,:,2], p_bu[pidx], p_bv[pidx], p_bw[pidx], color=pco[i:i+sliding],length=0.3,normalize=True )
+                backwarddivaxpredict.quiver(output[nidx,:,0], output[nidx,:,1], output[nidx,:,2], p_bu2[nidx], p_bv2[nidx], p_bw2[nidx], color=nco[i:i+sliding],length=0.3,normalize=True )
+                backwarddivaxpredict.quiver(output[pidx,:,0], output[pidx,:,1], output[pidx,:,2], p_bu2[pidx], p_bv2[pidx], p_bw2[pidx], color=pco[i:i+sliding],length=0.3,normalize=True )
                 u=np.stack((u,v,w),axis=-1)
                 u2=np.stack((u2,v2,w2),axis=-1)
-                curldata[epoch]['forward'][i]=np.hstack((output[:,:,:3],u))
-                divdata[epoch]['forward'][i]=np.hstack((output[:,:,:3],u2))
+                curldata[epoch]['LSTM']['forward'][i]=np.hstack((output[:,:,:3],u,u2))
+                p_u=np.stack((p_u,p_v,p_w),axis=-1)
+                p_u2=np.stack((p_u2,p_v2,p_w2),axis=-1)
+                curldata[epoch]['Predict']['forward'][i]=np.hstack((pred,p_u,p_u2))
                 u=np.stack((bu,bv,bw),axis=-1)
                 u2=np.stack((bu2,bv2,bw2),axis=-1)
-                curldata[epoch]['backward'][i]=np.hstack((output[:,:,3:],u))
-                divdata[epoch]['backward'][i]=np.hstack((output[:,:,:3:],u2))
+                curldata[epoch]['LSTM']['backward'][i]=np.hstack((output[:,:,3:],u,u2))
+                p_u=np.stack((p_bu,p_bv,p_bw),axis=-1)
+                p_u2=np.stack((p_bu2,p_bv2,p_bw2),axis=-1)
+                curldata[epoch]['Predict']['backward'][i]=np.hstack((pred,p_u,p_u2))
                 optimizer.zero_grad()
-            loss=criterion(pred,t)
-            losses.append(loss.item())
-            pred=torch.nn.functional.softmax(pred,dim=1)
-            pred=pred.permute(0,2,1).detach().cpu().numpy()
             predict_history[:,i:i+seqlen,:]=pred
         if(GRU==False):
             valblocknegNorm+=np.array(blocknegNorm[:6])
@@ -808,12 +858,14 @@ for epoch in range(epochs):
         if(d<batchsize):
             with open(f'{weightPath}/val_curldata_{epoch}.plk','wb') as f:
                 pickle.dump(curldata,f)
-            with open(f'{weightPath}/val_divdata_{epoch}.plk','wb') as f:
-                pickle.dump(divdata,f)
             writer.add_figure('Curl',curlfig,epoch)
             writer.add_figure('Div',divfig,epoch)
             writer.add_figure('Backward Curl',backwardcurlfig,epoch)
             writer.add_figure('Backward Div',backwarddivfig,epoch)
+            writer.add_figure('Predict Curl',curlfigPredict,epoch)
+            writer.add_figure('Predict Div',divfigPredict,epoch)
+            writer.add_figure('Predict Backward Curl',backwardcurlfigPredict,epoch)
+            writer.add_figure('Predict Backward Div',backwarddivfigPredict,epoch)
             del(curldata)
             del(divdata)
         plt.close('all')
