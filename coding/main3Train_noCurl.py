@@ -236,6 +236,11 @@ with  open('./Master_vocab.pkl','rb') as f:
 if(bias):
     with open('./imdb_HPC_train_pd.plk','rb') as f:
         train_pd = pickle.load(f)
+    start=''
+    c = 5 if(seqlen>=maxlen) else seqlen
+    for i in range(c):
+        start+='s0s '
+    train_pd['text']=start+train_pd['text']
     #with  open('./Master_vocab_2.pkl','rb') as f:
     #    vocab=pickle.load(f)
 else:
