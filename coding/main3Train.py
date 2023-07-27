@@ -838,6 +838,7 @@ for epoch in range(epochs):
                 p_u2=np.stack((p_bu2,p_bv2,p_bw2),axis=-1)
                 curldata[epoch]['Predict']['backward'][i]=np.hstack((pred,p_u,p_u2))
                 optimizer.zero_grad()
+            pred=pred.detach().cpu().numpy()
             predict_history[:,i:i+seqlen,:]=pred
         if(GRU==False):
             valblocknegNorm+=np.array(blocknegNorm[:6])
