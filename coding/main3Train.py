@@ -860,6 +860,8 @@ for epoch in range(epochs):
         if(d<batchsize):
             with open(f'{weightPath}/val_curldata_{epoch}.plk','wb') as f:
                 pickle.dump(curldata,f)
+            with open(f'{weightPath}/predHist_{epoch}.plk','wb') as f:
+                pickle.dump(predict_history,f)
             writer.add_figure('Curl',curlfig,epoch)
             writer.add_figure('Div',divfig,epoch)
             writer.add_figure('Backward Curl',backwardcurlfig,epoch)
@@ -888,6 +890,9 @@ for epoch in range(epochs):
         [ est_prediction.append(np.mean(maxidx[i],axis=-1)) for i in range(batchsize) ]
         [ est_magnitude.append(np.mean(np.diag(predict_history[i, idxarray[i]-maxidx[i].shape[0]:idxarray[i]-1,:].T[maxidx[i]]),axis=-1)) for i in range(batchsize) ]
         est_prediction = np.where(np.isnan(est_prediction)==True,2,est_prediction)
+        if(d<batchsize):
+            with open(f'{weightPath}/EstPred_{epoch}.plk','wb') as f:
+                pickle.dump(est_prediction,f)
         batchaccy=np.sum(np.abs(est_prediction-target)<0.05)/batchsize
         batchmagnitude=np.median(est_magnitude)
         cr=classification_report(target,np.round(est_prediction),output_dict=True)
