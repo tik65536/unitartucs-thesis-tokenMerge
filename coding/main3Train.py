@@ -860,8 +860,6 @@ for epoch in range(epochs):
         if(d<batchsize):
             with open(f'{weightPath}/val_curldata_{epoch}.plk','wb') as f:
                 pickle.dump(curldata,f)
-            with open(f'{weightPath}/predHist_{epoch}.plk','wb') as f:
-                pickle.dump(predict_history,f)
             writer.add_figure('Curl',curlfig,epoch)
             writer.add_figure('Div',divfig,epoch)
             writer.add_figure('Backward Curl',backwardcurlfig,epoch)
