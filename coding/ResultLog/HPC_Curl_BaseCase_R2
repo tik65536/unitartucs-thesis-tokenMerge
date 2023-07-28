@@ -1,0 +1,1091 @@
+Run Para : Namespace(epoch=1000, batch=1000, maxlen=600, HPCTrain=1, trainSize=15000, optstep=1, dynamicOpt=0, RMS=0, codewordNorm=0, preprocesstext=1.0, embeddingDim=3, seqlen=25, slide=25, GRU=0, hiddenLayer=3, hiddenSize=3, bidirection=1, withHiddenState=1, numconv1d=0, groupRelu=1, convpredict=0, predictkernelsize=2, interventionP=0.0, mergeRate=3, maxmerge=2, minmerge=2, remark='HPC_Curl_BaseCase_R2_', permuteidx=None, onlyMerge=[], skipPOS=[], consecutive=0)
+Traing PD shape : (15000, 2)
+count    15000.000000
+mean         0.500000
+std          0.500017
+min          0.000000
+25%          0.000000
+50%          0.500000
+75%          1.000000
+max          1.000000
+Name: label, dtype: float64
+Test PD shape : (3000, 2)
+count    3000.000000
+mean        0.500000
+std         0.500083
+min         0.000000
+25%         0.000000
+50%         0.500000
+75%         1.000000
+max         1.000000
+Name: label, dtype: float64
+Vocab len: 183398
+Embedding Space 2 Conv1D block size:1
+torch.Size([3, 6])
+weight_ih_l0 torch.Size([12, 3])
+weight_hh_l0 torch.Size([12, 3])
+weight_ih_l0_reverse torch.Size([12, 3])
+weight_hh_l0_reverse torch.Size([12, 3])
+weight_ih_l1 torch.Size([12, 6])
+weight_hh_l1 torch.Size([12, 3])
+weight_ih_l1_reverse torch.Size([12, 6])
+weight_hh_l1_reverse torch.Size([12, 3])
+weight_ih_l2 torch.Size([12, 6])
+weight_hh_l2 torch.Size([12, 3])
+weight_ih_l2_reverse torch.Size([12, 6])
+weight_hh_l2_reverse torch.Size([12, 3])
+[25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+ 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25]
+Epoch: 0 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.8126, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  0 Training Finished, AvgTrainingLoss:0.812579, AvgAccy:0.000, DiffPOS:0.000, Time:36.5004, Time2:0.3415
+Epoch:  0 Training Finished, Merge:[]
+Epoch:  0 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.760, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  0 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.756, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  0 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.758, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  0 Validation Finished, Avg Loss:0.757910, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+
+Epoch: 1 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.7462, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  1 Training Finished, AvgTrainingLoss:0.746185, AvgAccy:0.000, DiffPOS:0.000, Time:29.3034, Time2:0.1680
+Epoch:  1 Training Finished, Merge:[]
+Epoch:  1 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.685, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  1 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.680, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  1 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.683, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  1 Validation Finished, Avg Loss:0.682662, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+
+Epoch: 2 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.6784, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  2 Training Finished, AvgTrainingLoss:0.678447, AvgAccy:0.000, DiffPOS:0.000, Time:35.4760, Time2:0.1400
+Epoch:  2 Training Finished, Merge:[]
+Epoch:  2 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.600, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  2 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.593, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  2 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.598, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  2 Validation Finished, Avg Loss:0.596799, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+
+Epoch: 3 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.5969, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  3 Training Finished, AvgTrainingLoss:0.596946, AvgAccy:0.000, DiffPOS:0.000, Time:29.2070, Time2:0.1359
+Epoch:  3 Training Finished, Merge:[]
+Epoch:  3 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.510, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  3 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.503, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  3 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.509, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  3 Validation Finished, Avg Loss:0.507345, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+
+Epoch: 4 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.5059, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  4 Training Finished, AvgTrainingLoss:0.505863, AvgAccy:0.000, DiffPOS:0.000, Time:33.7367, Time2:0.1529
+Epoch:  4 Training Finished, Merge:[]
+Epoch:  4 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.433, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  4 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.426, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  4 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.433, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  4 Validation Finished, Avg Loss:0.430571, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+
+Epoch: 5 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.4449, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  5 Training Finished, AvgTrainingLoss:0.444908, AvgAccy:0.000, DiffPOS:0.000, Time:29.5863, Time2:0.1534
+Epoch:  5 Training Finished, Merge:[]
+Epoch:  5 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.377, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  5 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.370, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  5 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.377, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  5 Validation Finished, Avg Loss:0.374699, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+
+Epoch: 6 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.3871, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  6 Training Finished, AvgTrainingLoss:0.387061, AvgAccy:0.000, DiffPOS:0.000, Time:28.7145, Time2:0.1419
+Epoch:  6 Training Finished, Merge:[]
+Epoch:  6 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.337, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  6 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.330, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  6 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.338, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  6 Validation Finished, Avg Loss:0.334721, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+
+Epoch: 7 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.3585, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  7 Training Finished, AvgTrainingLoss:0.358518, AvgAccy:0.000, DiffPOS:0.000, Time:29.2655, Time2:0.1702
+Epoch:  7 Training Finished, Merge:[]
+Epoch:  7 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.306, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  7 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.299, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  7 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.307, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+Epoch:  7 Validation Finished, Avg Loss:0.304135, AvgAccy:0.000, AvgAccy2:0.000, DiffPOS:0.000
+
+Epoch: 8 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.3281, AvgAccy:0.011, AvgAccy2:0.006, DiffPOS:0.000
+Epoch:  8 Training Finished, AvgTrainingLoss:0.328063, AvgAccy:0.011, DiffPOS:0.000, Time:31.9305, Time2:0.1344
+Epoch:  8 Training Finished, Merge:[]
+Epoch:  8 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.281, AvgAccy:0.073, AvgAccy2:0.009, DiffPOS:0.000
+Epoch:  8 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.274, AvgAccy:0.082, AvgAccy2:0.010, DiffPOS:0.000
+Epoch:  8 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.282, AvgAccy:0.071, AvgAccy2:0.011, DiffPOS:0.000
+Epoch:  8 Validation Finished, Avg Loss:0.279204, AvgAccy:0.075, AvgAccy2:0.010, DiffPOS:0.000
+
+Epoch: 9 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.2942, AvgAccy:0.101, AvgAccy2:0.031, DiffPOS:0.000
+Epoch:  9 Training Finished, AvgTrainingLoss:0.294157, AvgAccy:0.101, DiffPOS:0.000, Time:33.5782, Time2:0.1585
+Epoch:  9 Training Finished, Merge:[]
+Epoch:  9 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.261, AvgAccy:0.128, AvgAccy2:0.119, DiffPOS:0.000
+Epoch:  9 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.255, AvgAccy:0.146, AvgAccy2:0.113, DiffPOS:0.000
+Epoch:  9 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.263, AvgAccy:0.153, AvgAccy2:0.104, DiffPOS:0.000
+Epoch:  9 Validation Finished, Avg Loss:0.259831, AvgAccy:0.142, AvgAccy2:0.112, DiffPOS:0.000
+
+Epoch: 10 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.2783, AvgAccy:0.174, AvgAccy2:0.008, DiffPOS:0.000
+Epoch: 10 Training Finished, AvgTrainingLoss:0.278291, AvgAccy:0.174, DiffPOS:0.000, Time:28.6262, Time2:0.1297
+Epoch: 10 Training Finished, Merge:[]
+Epoch: 10 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.248, AvgAccy:0.191, AvgAccy2:0.249, DiffPOS:0.000
+Epoch: 10 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.241, AvgAccy:0.204, AvgAccy2:0.249, DiffPOS:0.000
+Epoch: 10 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.249, AvgAccy:0.203, AvgAccy2:0.240, DiffPOS:0.000
+Epoch: 10 Validation Finished, Avg Loss:0.246134, AvgAccy:0.199, AvgAccy2:0.246, DiffPOS:0.000
+
+Epoch: 11 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.2548, AvgAccy:0.216, AvgAccy2:0.012, DiffPOS:0.000
+Epoch: 11 Training Finished, AvgTrainingLoss:0.254779, AvgAccy:0.216, DiffPOS:0.000, Time:27.8228, Time2:0.1386
+Epoch: 11 Training Finished, Merge:[]
+Epoch: 11 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.238, AvgAccy:0.288, AvgAccy2:0.345, DiffPOS:0.000
+Epoch: 11 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.232, AvgAccy:0.292, AvgAccy2:0.358, DiffPOS:0.000
+Epoch: 11 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.240, AvgAccy:0.294, AvgAccy2:0.332, DiffPOS:0.000
+Epoch: 11 Validation Finished, Avg Loss:0.236511, AvgAccy:0.291, AvgAccy2:0.345, DiffPOS:0.000
+
+Epoch: 12 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.2547, AvgAccy:0.315, AvgAccy2:0.008, DiffPOS:0.000
+Epoch: 12 Training Finished, AvgTrainingLoss:0.254693, AvgAccy:0.315, DiffPOS:0.000, Time:34.7003, Time2:0.1317
+Epoch: 12 Training Finished, Merge:[]
+Epoch: 12 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.230, AvgAccy:0.348, AvgAccy2:0.396, DiffPOS:0.000
+Epoch: 12 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.225, AvgAccy:0.351, AvgAccy2:0.404, DiffPOS:0.000
+Epoch: 12 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.232, AvgAccy:0.337, AvgAccy2:0.376, DiffPOS:0.000
+Epoch: 12 Validation Finished, Avg Loss:0.228963, AvgAccy:0.345, AvgAccy2:0.392, DiffPOS:0.000
+
+Epoch: 13 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.2404, AvgAccy:0.335, AvgAccy2:0.010, DiffPOS:0.000
+Epoch: 13 Training Finished, AvgTrainingLoss:0.240437, AvgAccy:0.335, DiffPOS:0.000, Time:28.9870, Time2:0.1369
+Epoch: 13 Training Finished, Merge:[]
+Epoch: 13 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.224, AvgAccy:0.376, AvgAccy2:0.418, DiffPOS:0.000
+Epoch: 13 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.219, AvgAccy:0.372, AvgAccy2:0.420, DiffPOS:0.000
+Epoch: 13 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.226, AvgAccy:0.368, AvgAccy2:0.405, DiffPOS:0.000
+Epoch: 13 Validation Finished, Avg Loss:0.223119, AvgAccy:0.372, AvgAccy2:0.414, DiffPOS:0.000
+
+Epoch: 14 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.2136, AvgAccy:0.357, AvgAccy2:0.007, DiffPOS:0.000
+Epoch: 14 Training Finished, AvgTrainingLoss:0.213555, AvgAccy:0.357, DiffPOS:0.000, Time:27.0358, Time2:0.1466
+Epoch: 14 Training Finished, Merge:[]
+Epoch: 14 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.221, AvgAccy:0.405, AvgAccy2:0.436, DiffPOS:0.000
+Epoch: 14 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.215, AvgAccy:0.411, AvgAccy2:0.448, DiffPOS:0.000
+Epoch: 14 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.222, AvgAccy:0.392, AvgAccy2:0.426, DiffPOS:0.000
+Epoch: 14 Validation Finished, Avg Loss:0.219424, AvgAccy:0.403, AvgAccy2:0.437, DiffPOS:0.000
+
+Epoch: 15 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.2128, AvgAccy:0.364, AvgAccy2:0.009, DiffPOS:0.000
+Epoch: 15 Training Finished, AvgTrainingLoss:0.212790, AvgAccy:0.364, DiffPOS:0.000, Time:30.5454, Time2:0.1725
+Epoch: 15 Training Finished, Merge:[]
+Epoch: 15 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.218, AvgAccy:0.412, AvgAccy2:0.441, DiffPOS:0.000
+Epoch: 15 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.213, AvgAccy:0.423, AvgAccy2:0.456, DiffPOS:0.000
+Epoch: 15 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.219, AvgAccy:0.396, AvgAccy2:0.427, DiffPOS:0.000
+Epoch: 15 Validation Finished, Avg Loss:0.216627, AvgAccy:0.410, AvgAccy2:0.441, DiffPOS:0.000
+
+Epoch: 16 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.2087, AvgAccy:0.404, AvgAccy2:0.012, DiffPOS:0.000
+Epoch: 16 Training Finished, AvgTrainingLoss:0.208683, AvgAccy:0.404, DiffPOS:0.000, Time:29.5707, Time2:0.1273
+Epoch: 16 Training Finished, Merge:[]
+Epoch: 16 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.216, AvgAccy:0.416, AvgAccy2:0.447, DiffPOS:0.000
+Epoch: 16 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.211, AvgAccy:0.437, AvgAccy2:0.468, DiffPOS:0.000
+Epoch: 16 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.218, AvgAccy:0.400, AvgAccy2:0.433, DiffPOS:0.000
+Epoch: 16 Validation Finished, Avg Loss:0.215086, AvgAccy:0.418, AvgAccy2:0.449, DiffPOS:0.000
+
+Epoch: 17 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.2056, AvgAccy:0.383, AvgAccy2:0.011, DiffPOS:0.000
+Epoch: 17 Training Finished, AvgTrainingLoss:0.205604, AvgAccy:0.383, DiffPOS:0.000, Time:29.3551, Time2:0.1351
+Epoch: 17 Training Finished, Merge:[]
+Epoch: 17 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.215, AvgAccy:0.395, AvgAccy2:0.447, DiffPOS:0.000
+Epoch: 17 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.210, AvgAccy:0.410, AvgAccy2:0.462, DiffPOS:0.000
+Epoch: 17 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.216, AvgAccy:0.383, AvgAccy2:0.430, DiffPOS:0.000
+Epoch: 17 Validation Finished, Avg Loss:0.213900, AvgAccy:0.396, AvgAccy2:0.446, DiffPOS:0.000
+
+Epoch: 18 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1965, AvgAccy:0.373, AvgAccy2:0.008, DiffPOS:0.000
+Epoch: 18 Training Finished, AvgTrainingLoss:0.196528, AvgAccy:0.373, DiffPOS:0.000, Time:30.2951, Time2:0.5696
+Epoch: 18 Training Finished, Merge:[]
+Epoch: 18 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.215, AvgAccy:0.375, AvgAccy2:0.442, DiffPOS:0.000
+Epoch: 18 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.210, AvgAccy:0.384, AvgAccy2:0.452, DiffPOS:0.000
+Epoch: 18 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.216, AvgAccy:0.358, AvgAccy2:0.425, DiffPOS:0.000
+Epoch: 18 Validation Finished, Avg Loss:0.213670, AvgAccy:0.372, AvgAccy2:0.440, DiffPOS:0.000
+
+Epoch: 19 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1847, AvgAccy:0.350, AvgAccy2:0.012, DiffPOS:0.000
+Epoch: 19 Training Finished, AvgTrainingLoss:0.184689, AvgAccy:0.350, DiffPOS:0.000, Time:34.4518, Time2:0.1261
+Epoch: 19 Training Finished, Merge:[]
+Epoch: 19 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.215, AvgAccy:0.346, AvgAccy2:0.440, DiffPOS:0.000
+Epoch: 19 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.210, AvgAccy:0.352, AvgAccy2:0.444, DiffPOS:0.000
+Epoch: 19 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.216, AvgAccy:0.342, AvgAccy2:0.419, DiffPOS:0.000
+Epoch: 19 Validation Finished, Avg Loss:0.213741, AvgAccy:0.347, AvgAccy2:0.434, DiffPOS:0.000
+
+Epoch: 20 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1854, AvgAccy:0.345, AvgAccy2:0.009, DiffPOS:0.000
+Epoch: 20 Training Finished, AvgTrainingLoss:0.185392, AvgAccy:0.345, DiffPOS:0.000, Time:28.5229, Time2:0.1436
+Epoch: 20 Training Finished, Merge:[]
+Epoch: 20 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.216, AvgAccy:0.302, AvgAccy2:0.421, DiffPOS:0.000
+Epoch: 20 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.211, AvgAccy:0.298, AvgAccy2:0.428, DiffPOS:0.000
+Epoch: 20 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.216, AvgAccy:0.310, AvgAccy2:0.402, DiffPOS:0.000
+Epoch: 20 Validation Finished, Avg Loss:0.214247, AvgAccy:0.303, AvgAccy2:0.417, DiffPOS:0.000
+
+Epoch: 21 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1805, AvgAccy:0.319, AvgAccy2:0.016, DiffPOS:0.000
+Epoch: 21 Training Finished, AvgTrainingLoss:0.180457, AvgAccy:0.319, DiffPOS:0.000, Time:28.5547, Time2:0.1213
+Epoch: 21 Training Finished, Merge:[]
+Epoch: 21 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.216, AvgAccy:0.249, AvgAccy2:0.399, DiffPOS:0.000
+Epoch: 21 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.212, AvgAccy:0.249, AvgAccy2:0.410, DiffPOS:0.000
+Epoch: 21 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.216, AvgAccy:0.256, AvgAccy2:0.378, DiffPOS:0.000
+Epoch: 21 Validation Finished, Avg Loss:0.214889, AvgAccy:0.251, AvgAccy2:0.396, DiffPOS:0.000
+
+Epoch: 22 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1809, AvgAccy:0.296, AvgAccy2:0.013, DiffPOS:0.000
+Epoch: 22 Training Finished, AvgTrainingLoss:0.180893, AvgAccy:0.296, DiffPOS:0.000, Time:30.2191, Time2:0.1542
+Epoch: 22 Training Finished, Merge:[]
+Epoch: 22 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.217, AvgAccy:0.205, AvgAccy2:0.365, DiffPOS:0.000
+Epoch: 22 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.213, AvgAccy:0.216, AvgAccy2:0.382, DiffPOS:0.000
+Epoch: 22 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.217, AvgAccy:0.220, AvgAccy2:0.354, DiffPOS:0.000
+Epoch: 22 Validation Finished, Avg Loss:0.215666, AvgAccy:0.214, AvgAccy2:0.367, DiffPOS:0.000
+
+Epoch: 23 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1732, AvgAccy:0.258, AvgAccy2:0.022, DiffPOS:0.000
+Epoch: 23 Training Finished, AvgTrainingLoss:0.173197, AvgAccy:0.258, DiffPOS:0.000, Time:33.5382, Time2:0.1308
+Epoch: 23 Training Finished, Merge:[]
+Epoch: 23 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.218, AvgAccy:0.195, AvgAccy2:0.346, DiffPOS:0.000
+Epoch: 23 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.214, AvgAccy:0.198, AvgAccy2:0.363, DiffPOS:0.000
+Epoch: 23 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.218, AvgAccy:0.209, AvgAccy2:0.332, DiffPOS:0.000
+Epoch: 23 Validation Finished, Avg Loss:0.216944, AvgAccy:0.201, AvgAccy2:0.347, DiffPOS:0.000
+
+Epoch: 24 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1637, AvgAccy:0.247, AvgAccy2:0.016, DiffPOS:0.000
+Epoch: 24 Training Finished, AvgTrainingLoss:0.163731, AvgAccy:0.247, DiffPOS:0.000, Time:26.9605, Time2:0.1477
+Epoch: 24 Training Finished, Merge:[]
+Epoch: 24 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.220, AvgAccy:0.179, AvgAccy2:0.329, DiffPOS:0.000
+Epoch: 24 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.216, AvgAccy:0.187, AvgAccy2:0.352, DiffPOS:0.000
+Epoch: 24 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.220, AvgAccy:0.196, AvgAccy2:0.318, DiffPOS:0.000
+Epoch: 24 Validation Finished, Avg Loss:0.218690, AvgAccy:0.187, AvgAccy2:0.333, DiffPOS:0.000
+
+Epoch: 25 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1678, AvgAccy:0.234, AvgAccy2:0.024, DiffPOS:0.000
+Epoch: 25 Training Finished, AvgTrainingLoss:0.167782, AvgAccy:0.234, DiffPOS:0.000, Time:28.1305, Time2:0.1435
+Epoch: 25 Training Finished, Merge:[]
+Epoch: 25 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.222, AvgAccy:0.156, AvgAccy2:0.303, DiffPOS:0.000
+Epoch: 25 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.218, AvgAccy:0.166, AvgAccy2:0.320, DiffPOS:0.000
+Epoch: 25 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.222, AvgAccy:0.175, AvgAccy2:0.298, DiffPOS:0.000
+Epoch: 25 Validation Finished, Avg Loss:0.220408, AvgAccy:0.166, AvgAccy2:0.307, DiffPOS:0.000
+
+Epoch: 26 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1674, AvgAccy:0.197, AvgAccy2:0.019, DiffPOS:0.000
+Epoch: 26 Training Finished, AvgTrainingLoss:0.167428, AvgAccy:0.197, DiffPOS:0.000, Time:30.1920, Time2:0.1327
+Epoch: 26 Training Finished, Merge:[]
+Epoch: 26 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.224, AvgAccy:0.144, AvgAccy2:0.279, DiffPOS:0.000
+Epoch: 26 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.220, AvgAccy:0.152, AvgAccy2:0.303, DiffPOS:0.000
+Epoch: 26 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.224, AvgAccy:0.155, AvgAccy2:0.283, DiffPOS:0.000
+Epoch: 26 Validation Finished, Avg Loss:0.222480, AvgAccy:0.150, AvgAccy2:0.288, DiffPOS:0.000
+
+Epoch: 27 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1717, AvgAccy:0.160, AvgAccy2:0.025, DiffPOS:0.000
+Epoch: 27 Training Finished, AvgTrainingLoss:0.171659, AvgAccy:0.160, DiffPOS:0.000, Time:34.3899, Time2:0.1538
+Epoch: 27 Training Finished, Merge:[]
+Epoch: 27 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.226, AvgAccy:0.081, AvgAccy2:0.143, DiffPOS:0.000
+Epoch: 27 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.222, AvgAccy:0.088, AvgAccy2:0.118, DiffPOS:0.000
+Epoch: 27 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.225, AvgAccy:0.091, AvgAccy2:0.120, DiffPOS:0.000
+Epoch: 27 Validation Finished, Avg Loss:0.224323, AvgAccy:0.087, AvgAccy2:0.127, DiffPOS:0.000
+
+Epoch: 28 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1612, AvgAccy:0.076, AvgAccy2:0.000, DiffPOS:0.000
+Epoch: 28 Training Finished, AvgTrainingLoss:0.161175, AvgAccy:0.076, DiffPOS:0.000, Time:28.2583, Time2:0.1560
+Epoch: 28 Training Finished, Merge:[]
+Epoch: 28 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.228, AvgAccy:0.050, AvgAccy2:0.044, DiffPOS:0.000
+Epoch: 28 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.224, AvgAccy:0.054, AvgAccy2:0.042, DiffPOS:0.000
+Epoch: 28 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.227, AvgAccy:0.062, AvgAccy2:0.065, DiffPOS:0.000
+Epoch: 28 Validation Finished, Avg Loss:0.226292, AvgAccy:0.055, AvgAccy2:0.050, DiffPOS:0.000
+
+Epoch: 29 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1600, AvgAccy:0.049, AvgAccy2:0.001, DiffPOS:0.000
+Epoch: 29 Training Finished, AvgTrainingLoss:0.160050, AvgAccy:0.049, DiffPOS:0.000, Time:28.4539, Time2:0.1395
+Epoch: 29 Training Finished, Merge:[]
+Epoch: 29 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.230, AvgAccy:0.092, AvgAccy2:0.110, DiffPOS:0.000
+Epoch: 29 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.226, AvgAccy:0.089, AvgAccy2:0.114, DiffPOS:0.000
+Epoch: 29 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.229, AvgAccy:0.103, AvgAccy2:0.117, DiffPOS:0.000
+Epoch: 29 Validation Finished, Avg Loss:0.228489, AvgAccy:0.095, AvgAccy2:0.114, DiffPOS:0.000
+
+Epoch: 30 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1579, AvgAccy:0.058, AvgAccy2:0.001, DiffPOS:0.000
+Epoch: 30 Training Finished, AvgTrainingLoss:0.157897, AvgAccy:0.058, DiffPOS:0.000, Time:34.3607, Time2:0.9811
+Epoch: 30 Training Finished, Merge:[]
+Epoch: 30 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.232, AvgAccy:0.059, AvgAccy2:0.043, DiffPOS:0.000
+Epoch: 30 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.228, AvgAccy:0.064, AvgAccy2:0.045, DiffPOS:0.000
+Epoch: 30 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.231, AvgAccy:0.071, AvgAccy2:0.053, DiffPOS:0.000
+Epoch: 30 Validation Finished, Avg Loss:0.230480, AvgAccy:0.065, AvgAccy2:0.047, DiffPOS:0.000
+
+Epoch: 31 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1568, AvgAccy:0.121, AvgAccy2:0.012, DiffPOS:0.000
+Epoch: 31 Training Finished, AvgTrainingLoss:0.156764, AvgAccy:0.121, DiffPOS:0.000, Time:28.2906, Time2:0.1223
+Epoch: 31 Training Finished, Merge:[]
+Epoch: 31 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.234, AvgAccy:0.083, AvgAccy2:0.172, DiffPOS:0.000
+Epoch: 31 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.231, AvgAccy:0.092, AvgAccy2:0.154, DiffPOS:0.000
+Epoch: 31 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.234, AvgAccy:0.097, AvgAccy2:0.160, DiffPOS:0.000
+Epoch: 31 Validation Finished, Avg Loss:0.232896, AvgAccy:0.091, AvgAccy2:0.162, DiffPOS:0.000
+
+Epoch: 32 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1558, AvgAccy:0.140, AvgAccy2:0.039, DiffPOS:0.000
+Epoch: 32 Training Finished, AvgTrainingLoss:0.155795, AvgAccy:0.140, DiffPOS:0.000, Time:28.8873, Time2:0.1514
+Epoch: 32 Training Finished, Merge:[]
+Epoch: 32 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.237, AvgAccy:0.186, AvgAccy2:0.346, DiffPOS:0.000
+Epoch: 32 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.233, AvgAccy:0.188, AvgAccy2:0.364, DiffPOS:0.000
+Epoch: 32 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.237, AvgAccy:0.202, AvgAccy2:0.331, DiffPOS:0.000
+Epoch: 32 Validation Finished, Avg Loss:0.235584, AvgAccy:0.192, AvgAccy2:0.347, DiffPOS:0.000
+
+Epoch: 33 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1580, AvgAccy:0.224, AvgAccy2:0.057, DiffPOS:0.000
+Epoch: 33 Training Finished, AvgTrainingLoss:0.158027, AvgAccy:0.224, DiffPOS:0.000, Time:30.4395, Time2:0.1440
+Epoch: 33 Training Finished, Merge:[]
+Epoch: 33 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.240, AvgAccy:0.205, AvgAccy2:0.363, DiffPOS:0.000
+Epoch: 33 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.236, AvgAccy:0.211, AvgAccy2:0.381, DiffPOS:0.000
+Epoch: 33 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.240, AvgAccy:0.218, AvgAccy2:0.343, DiffPOS:0.000
+Epoch: 33 Validation Finished, Avg Loss:0.238343, AvgAccy:0.211, AvgAccy2:0.362, DiffPOS:0.000
+
+Epoch: 34 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1558, AvgAccy:0.211, AvgAccy2:0.044, DiffPOS:0.000
+Epoch: 34 Training Finished, AvgTrainingLoss:0.155838, AvgAccy:0.211, DiffPOS:0.000, Time:33.4204, Time2:0.1224
+Epoch: 34 Training Finished, Merge:[]
+Epoch: 34 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.241, AvgAccy:0.046, AvgAccy2:0.017, DiffPOS:0.000
+Epoch: 34 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.237, AvgAccy:0.046, AvgAccy2:0.015, DiffPOS:0.000
+Epoch: 34 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.241, AvgAccy:0.061, AvgAccy2:0.022, DiffPOS:0.000
+Epoch: 34 Validation Finished, Avg Loss:0.239752, AvgAccy:0.051, AvgAccy2:0.018, DiffPOS:0.000
+
+Epoch: 35 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1527, AvgAccy:0.034, AvgAccy2:0.000, DiffPOS:0.000
+Epoch: 35 Training Finished, AvgTrainingLoss:0.152666, AvgAccy:0.034, DiffPOS:0.000, Time:28.1093, Time2:0.1373
+Epoch: 35 Training Finished, Merge:[]
+Epoch: 35 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.244, AvgAccy:0.090, AvgAccy2:0.214, DiffPOS:0.000
+Epoch: 35 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.240, AvgAccy:0.110, AvgAccy2:0.205, DiffPOS:0.000
+Epoch: 35 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.243, AvgAccy:0.109, AvgAccy2:0.210, DiffPOS:0.000
+Epoch: 35 Validation Finished, Avg Loss:0.242205, AvgAccy:0.103, AvgAccy2:0.210, DiffPOS:0.000
+
+Epoch: 36 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1565, AvgAccy:0.133, AvgAccy2:0.056, DiffPOS:0.000
+Epoch: 36 Training Finished, AvgTrainingLoss:0.156490, AvgAccy:0.133, DiffPOS:0.000, Time:28.9548, Time2:0.1192
+Epoch: 36 Training Finished, Merge:[]
+Epoch: 36 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.246, AvgAccy:0.130, AvgAccy2:0.284, DiffPOS:0.000
+Epoch: 36 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.242, AvgAccy:0.134, AvgAccy2:0.298, DiffPOS:0.000
+Epoch: 36 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.245, AvgAccy:0.153, AvgAccy2:0.274, DiffPOS:0.000
+Epoch: 36 Validation Finished, Avg Loss:0.244371, AvgAccy:0.139, AvgAccy2:0.285, DiffPOS:0.000
+
+Epoch: 37 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1517, AvgAccy:0.173, AvgAccy2:0.056, DiffPOS:0.000
+Epoch: 37 Training Finished, AvgTrainingLoss:0.151693, AvgAccy:0.173, DiffPOS:0.000, Time:30.8660, Time2:0.1225
+Epoch: 37 Training Finished, Merge:[]
+Epoch: 37 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.248, AvgAccy:0.102, AvgAccy2:0.244, DiffPOS:0.000
+Epoch: 37 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.244, AvgAccy:0.116, AvgAccy2:0.249, DiffPOS:0.000
+Epoch: 37 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.248, AvgAccy:0.128, AvgAccy2:0.240, DiffPOS:0.000
+Epoch: 37 Validation Finished, Avg Loss:0.246768, AvgAccy:0.115, AvgAccy2:0.244, DiffPOS:0.000
+
+Epoch: 38 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1541, AvgAccy:0.126, AvgAccy2:0.006, DiffPOS:0.000
+Epoch: 38 Training Finished, AvgTrainingLoss:0.154093, AvgAccy:0.126, DiffPOS:0.000, Time:34.5649, Time2:0.1080
+Epoch: 38 Training Finished, Merge:[]
+Epoch: 38 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.250, AvgAccy:0.431, AvgAccy2:0.465, DiffPOS:0.000
+Epoch: 38 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.247, AvgAccy:0.420, AvgAccy2:0.454, DiffPOS:0.000
+Epoch: 38 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.249, AvgAccy:0.470, AvgAccy2:0.503, DiffPOS:0.000
+Epoch: 38 Validation Finished, Avg Loss:0.248664, AvgAccy:0.440, AvgAccy2:0.474, DiffPOS:0.000
+
+Epoch: 39 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1509, AvgAccy:0.368, AvgAccy2:0.138, DiffPOS:0.000
+Epoch: 39 Training Finished, AvgTrainingLoss:0.150878, AvgAccy:0.368, DiffPOS:0.000, Time:28.4502, Time2:0.1381
+Epoch: 39 Training Finished, Merge:[]
+Epoch: 39 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.253, AvgAccy:0.014, AvgAccy2:0.013, DiffPOS:0.000
+Epoch: 39 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.249, AvgAccy:0.015, AvgAccy2:0.008, DiffPOS:0.000
+Epoch: 39 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.252, AvgAccy:0.011, AvgAccy2:0.008, DiffPOS:0.000
+Epoch: 39 Validation Finished, Avg Loss:0.251098, AvgAccy:0.013, AvgAccy2:0.010, DiffPOS:0.000
+
+Epoch: 40 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1526, AvgAccy:0.079, AvgAccy2:0.000, DiffPOS:0.000
+Epoch: 40 Training Finished, AvgTrainingLoss:0.152606, AvgAccy:0.079, DiffPOS:0.000, Time:30.2904, Time2:0.1461
+Epoch: 40 Training Finished, Merge:[]
+Epoch: 40 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.255, AvgAccy:0.171, AvgAccy2:0.333, DiffPOS:0.000
+Epoch: 40 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.251, AvgAccy:0.174, AvgAccy2:0.347, DiffPOS:0.000
+Epoch: 40 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.255, AvgAccy:0.190, AvgAccy2:0.321, DiffPOS:0.000
+Epoch: 40 Validation Finished, Avg Loss:0.253787, AvgAccy:0.178, AvgAccy2:0.334, DiffPOS:0.000
+
+Epoch: 41 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1511, AvgAccy:0.201, AvgAccy2:0.072, DiffPOS:0.000
+Epoch: 41 Training Finished, AvgTrainingLoss:0.151059, AvgAccy:0.201, DiffPOS:0.000, Time:30.6926, Time2:0.1430
+Epoch: 41 Training Finished, Merge:[]
+Epoch: 41 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.257, AvgAccy:0.368, AvgAccy2:0.440, DiffPOS:0.000
+Epoch: 41 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.253, AvgAccy:0.365, AvgAccy2:0.422, DiffPOS:0.000
+Epoch: 41 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.256, AvgAccy:0.410, AvgAccy2:0.475, DiffPOS:0.000
+Epoch: 41 Validation Finished, Avg Loss:0.255448, AvgAccy:0.381, AvgAccy2:0.446, DiffPOS:0.000
+
+Epoch: 42 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1531, AvgAccy:0.384, AvgAccy2:0.144, DiffPOS:0.000
+Epoch: 42 Training Finished, AvgTrainingLoss:0.153092, AvgAccy:0.384, DiffPOS:0.000, Time:35.1733, Time2:0.1335
+Epoch: 42 Training Finished, Merge:[]
+Epoch: 42 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.259, AvgAccy:0.386, AvgAccy2:0.449, DiffPOS:0.000
+Epoch: 42 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.255, AvgAccy:0.367, AvgAccy2:0.428, DiffPOS:0.000
+Epoch: 42 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.258, AvgAccy:0.419, AvgAccy2:0.477, DiffPOS:0.000
+Epoch: 42 Validation Finished, Avg Loss:0.257347, AvgAccy:0.391, AvgAccy2:0.451, DiffPOS:0.000
+
+Epoch: 43 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1483, AvgAccy:0.382, AvgAccy2:0.145, DiffPOS:0.000
+Epoch: 43 Training Finished, AvgTrainingLoss:0.148263, AvgAccy:0.382, DiffPOS:0.000, Time:28.4674, Time2:0.1476
+Epoch: 43 Training Finished, Merge:[]
+Epoch: 43 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.260, AvgAccy:0.468, AvgAccy2:0.480, DiffPOS:0.000
+Epoch: 43 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.257, AvgAccy:0.460, AvgAccy2:0.463, DiffPOS:0.000
+Epoch: 43 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.259, AvgAccy:0.500, AvgAccy2:0.516, DiffPOS:0.000
+Epoch: 43 Validation Finished, Avg Loss:0.258916, AvgAccy:0.476, AvgAccy2:0.486, DiffPOS:0.000
+
+Epoch: 44 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1480, AvgAccy:0.462, AvgAccy2:0.251, DiffPOS:0.000
+Epoch: 44 Training Finished, AvgTrainingLoss:0.147978, AvgAccy:0.462, DiffPOS:0.000, Time:28.5305, Time2:0.1537
+Epoch: 44 Training Finished, Merge:[]
+Epoch: 44 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.263, AvgAccy:0.469, AvgAccy2:0.478, DiffPOS:0.000
+Epoch: 44 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.259, AvgAccy:0.461, AvgAccy2:0.463, DiffPOS:0.000
+Epoch: 44 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.262, AvgAccy:0.501, AvgAccy2:0.516, DiffPOS:0.000
+Epoch: 44 Validation Finished, Avg Loss:0.261113, AvgAccy:0.477, AvgAccy2:0.486, DiffPOS:0.000
+
+Epoch: 45 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1454, AvgAccy:0.487, AvgAccy2:0.252, DiffPOS:0.000
+Epoch: 45 Training Finished, AvgTrainingLoss:0.145413, AvgAccy:0.487, DiffPOS:0.000, Time:34.7577, Time2:0.1513
+Epoch: 45 Training Finished, Merge:[]
+Epoch: 45 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.265, AvgAccy:0.473, AvgAccy2:0.480, DiffPOS:0.000
+Epoch: 45 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.261, AvgAccy:0.461, AvgAccy2:0.463, DiffPOS:0.000
+Epoch: 45 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.263, AvgAccy:0.507, AvgAccy2:0.516, DiffPOS:0.000
+Epoch: 45 Validation Finished, Avg Loss:0.263068, AvgAccy:0.480, AvgAccy2:0.486, DiffPOS:0.000
+
+Epoch: 46 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1398, AvgAccy:0.453, AvgAccy2:0.314, DiffPOS:0.000
+Epoch: 46 Training Finished, AvgTrainingLoss:0.139794, AvgAccy:0.453, DiffPOS:0.000, Time:27.2109, Time2:0.1414
+Epoch: 46 Training Finished, Merge:[]
+Epoch: 46 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.267, AvgAccy:0.443, AvgAccy2:0.471, DiffPOS:0.000
+Epoch: 46 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.263, AvgAccy:0.445, AvgAccy2:0.461, DiffPOS:0.000
+Epoch: 46 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.266, AvgAccy:0.478, AvgAccy2:0.509, DiffPOS:0.000
+Epoch: 46 Validation Finished, Avg Loss:0.265188, AvgAccy:0.455, AvgAccy2:0.480, DiffPOS:0.000
+
+Epoch: 47 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1420, AvgAccy:0.442, AvgAccy2:0.188, DiffPOS:0.000
+Epoch: 47 Training Finished, AvgTrainingLoss:0.142038, AvgAccy:0.442, DiffPOS:0.000, Time:27.9721, Time2:0.1459
+Epoch: 47 Training Finished, Merge:[]
+Epoch: 47 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.268, AvgAccy:0.431, AvgAccy2:0.466, DiffPOS:0.000
+Epoch: 47 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.265, AvgAccy:0.432, AvgAccy2:0.457, DiffPOS:0.000
+Epoch: 47 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.268, AvgAccy:0.466, AvgAccy2:0.506, DiffPOS:0.000
+Epoch: 47 Validation Finished, Avg Loss:0.266958, AvgAccy:0.443, AvgAccy2:0.476, DiffPOS:0.000
+
+Epoch: 48 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1441, AvgAccy:0.329, AvgAccy2:0.188, DiffPOS:0.000
+Epoch: 48 Training Finished, AvgTrainingLoss:0.144083, AvgAccy:0.329, DiffPOS:0.000, Time:30.5401, Time2:0.1449
+Epoch: 48 Training Finished, Merge:[]
+Epoch: 48 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.271, AvgAccy:0.084, AvgAccy2:0.106, DiffPOS:0.000
+Epoch: 48 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.267, AvgAccy:0.077, AvgAccy2:0.109, DiffPOS:0.000
+Epoch: 48 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.270, AvgAccy:0.083, AvgAccy2:0.141, DiffPOS:0.000
+Epoch: 48 Validation Finished, Avg Loss:0.269171, AvgAccy:0.081, AvgAccy2:0.119, DiffPOS:0.000
+
+Epoch: 49 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1446, AvgAccy:0.041, AvgAccy2:0.000, DiffPOS:0.000
+Epoch: 49 Training Finished, AvgTrainingLoss:0.144637, AvgAccy:0.041, DiffPOS:0.000, Time:32.8575, Time2:0.1391
+Epoch: 49 Training Finished, Merge:[]
+Epoch: 49 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.272, AvgAccy:0.178, AvgAccy2:0.341, DiffPOS:0.000
+Epoch: 49 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.269, AvgAccy:0.203, AvgAccy2:0.343, DiffPOS:0.000
+Epoch: 49 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.272, AvgAccy:0.205, AvgAccy2:0.373, DiffPOS:0.000
+Epoch: 49 Validation Finished, Avg Loss:0.270919, AvgAccy:0.195, AvgAccy2:0.352, DiffPOS:0.000
+
+Epoch: 50 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1478, AvgAccy:0.235, AvgAccy2:0.097, DiffPOS:0.000
+Epoch: 50 Training Finished, AvgTrainingLoss:0.147846, AvgAccy:0.235, DiffPOS:0.000, Time:29.5785, Time2:0.1540
+Epoch: 50 Training Finished, Merge:[]
+Epoch: 50 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.275, AvgAccy:0.261, AvgAccy2:0.403, DiffPOS:0.000
+Epoch: 50 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.271, AvgAccy:0.272, AvgAccy2:0.410, DiffPOS:0.000
+Epoch: 50 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.274, AvgAccy:0.292, AvgAccy2:0.440, DiffPOS:0.000
+Epoch: 50 Validation Finished, Avg Loss:0.273107, AvgAccy:0.275, AvgAccy2:0.418, DiffPOS:0.000
+
+Epoch: 51 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1459, AvgAccy:0.279, AvgAccy2:0.147, DiffPOS:0.000
+Epoch: 51 Training Finished, AvgTrainingLoss:0.145858, AvgAccy:0.279, DiffPOS:0.000, Time:29.8116, Time2:0.1522
+Epoch: 51 Training Finished, Merge:[]
+Epoch: 51 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.277, AvgAccy:0.471, AvgAccy2:0.479, DiffPOS:0.000
+Epoch: 51 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.273, AvgAccy:0.458, AvgAccy2:0.464, DiffPOS:0.000
+Epoch: 51 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.275, AvgAccy:0.500, AvgAccy2:0.516, DiffPOS:0.000
+Epoch: 51 Validation Finished, Avg Loss:0.274965, AvgAccy:0.476, AvgAccy2:0.486, DiffPOS:0.000
+
+Epoch: 52 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1434, AvgAccy:0.402, AvgAccy2:0.310, DiffPOS:0.000
+Epoch: 52 Training Finished, AvgTrainingLoss:0.143422, AvgAccy:0.402, DiffPOS:0.000, Time:31.2096, Time2:0.1372
+Epoch: 52 Training Finished, Merge:[]
+Epoch: 52 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.279, AvgAccy:0.177, AvgAccy2:0.361, DiffPOS:0.000
+Epoch: 52 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.275, AvgAccy:0.196, AvgAccy2:0.377, DiffPOS:0.000
+Epoch: 52 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.278, AvgAccy:0.194, AvgAccy2:0.391, DiffPOS:0.000
+Epoch: 52 Validation Finished, Avg Loss:0.277089, AvgAccy:0.189, AvgAccy2:0.376, DiffPOS:0.000
+
+Epoch: 53 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1378, AvgAccy:0.212, AvgAccy2:0.125, DiffPOS:0.000
+Epoch: 53 Training Finished, AvgTrainingLoss:0.137817, AvgAccy:0.212, DiffPOS:0.000, Time:33.3532, Time2:0.1695
+Epoch: 53 Training Finished, Merge:[]
+Epoch: 53 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.281, AvgAccy:0.473, AvgAccy2:0.479, DiffPOS:0.000
+Epoch: 53 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.277, AvgAccy:0.458, AvgAccy2:0.464, DiffPOS:0.000
+Epoch: 53 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.279, AvgAccy:0.505, AvgAccy2:0.516, DiffPOS:0.000
+Epoch: 53 Validation Finished, Avg Loss:0.278942, AvgAccy:0.479, AvgAccy2:0.486, DiffPOS:0.000
+
+Epoch: 54 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1425, AvgAccy:0.413, AvgAccy2:0.292, DiffPOS:0.000
+Epoch: 54 Training Finished, AvgTrainingLoss:0.142518, AvgAccy:0.413, DiffPOS:0.000, Time:29.6575, Time2:0.1761
+Epoch: 54 Training Finished, Merge:[]
+Epoch: 54 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.282, AvgAccy:0.154, AvgAccy2:0.339, DiffPOS:0.000
+Epoch: 54 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.279, AvgAccy:0.158, AvgAccy2:0.342, DiffPOS:0.000
+Epoch: 54 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.281, AvgAccy:0.167, AvgAccy2:0.363, DiffPOS:0.000
+Epoch: 54 Validation Finished, Avg Loss:0.280756, AvgAccy:0.160, AvgAccy2:0.348, DiffPOS:0.000
+
+Epoch: 55 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1449, AvgAccy:0.148, AvgAccy2:0.000, DiffPOS:0.000
+Epoch: 55 Training Finished, AvgTrainingLoss:0.144934, AvgAccy:0.148, DiffPOS:0.000, Time:29.8028, Time2:0.1570
+Epoch: 55 Training Finished, Merge:[]
+Epoch: 55 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.284, AvgAccy:0.383, AvgAccy2:0.464, DiffPOS:0.000
+Epoch: 55 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.281, AvgAccy:0.386, AvgAccy2:0.471, DiffPOS:0.000
+Epoch: 55 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.284, AvgAccy:0.352, AvgAccy2:0.439, DiffPOS:0.000
+Epoch: 55 Validation Finished, Avg Loss:0.282881, AvgAccy:0.374, AvgAccy2:0.458, DiffPOS:0.000
+
+Epoch: 56 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1434, AvgAccy:0.369, AvgAccy2:0.174, DiffPOS:0.000
+Epoch: 56 Training Finished, AvgTrainingLoss:0.143393, AvgAccy:0.369, DiffPOS:0.000, Time:31.4808, Time2:0.1432
+Epoch: 56 Training Finished, Merge:[]
+Epoch: 56 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.286, AvgAccy:0.112, AvgAccy2:0.244, DiffPOS:0.000
+Epoch: 56 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.282, AvgAccy:0.113, AvgAccy2:0.256, DiffPOS:0.000
+Epoch: 56 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.285, AvgAccy:0.127, AvgAccy2:0.267, DiffPOS:0.000
+Epoch: 56 Validation Finished, Avg Loss:0.284460, AvgAccy:0.117, AvgAccy2:0.256, DiffPOS:0.000
+
+Epoch: 57 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1442, AvgAccy:0.128, AvgAccy2:0.001, DiffPOS:0.000
+Epoch: 57 Training Finished, AvgTrainingLoss:0.144248, AvgAccy:0.128, DiffPOS:0.000, Time:29.4895, Time2:0.1400
+Epoch: 57 Training Finished, Merge:[]
+Epoch: 57 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.288, AvgAccy:0.351, AvgAccy2:0.445, DiffPOS:0.000
+Epoch: 57 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.284, AvgAccy:0.358, AvgAccy2:0.454, DiffPOS:0.000
+Epoch: 57 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.287, AvgAccy:0.333, AvgAccy2:0.422, DiffPOS:0.000
+Epoch: 57 Validation Finished, Avg Loss:0.286453, AvgAccy:0.347, AvgAccy2:0.440, DiffPOS:0.000
+
+Epoch: 58 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1386, AvgAccy:0.281, AvgAccy2:0.045, DiffPOS:0.000
+Epoch: 58 Training Finished, AvgTrainingLoss:0.138589, AvgAccy:0.281, DiffPOS:0.000, Time:28.9058, Time2:0.1690
+Epoch: 58 Training Finished, Merge:[]
+Epoch: 58 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.289, AvgAccy:0.173, AvgAccy2:0.411, DiffPOS:0.000
+Epoch: 58 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.286, AvgAccy:0.184, AvgAccy2:0.409, DiffPOS:0.000
+Epoch: 58 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.288, AvgAccy:0.207, AvgAccy2:0.449, DiffPOS:0.000
+Epoch: 58 Validation Finished, Avg Loss:0.287711, AvgAccy:0.188, AvgAccy2:0.423, DiffPOS:0.000
+
+Epoch: 59 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1415, AvgAccy:0.152, AvgAccy2:0.196, DiffPOS:0.000
+Epoch: 59 Training Finished, AvgTrainingLoss:0.141477, AvgAccy:0.152, DiffPOS:0.000, Time:30.7300, Time2:0.1531
+Epoch: 59 Training Finished, Merge:[]
+Epoch: 59 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.291, AvgAccy:0.172, AvgAccy2:0.413, DiffPOS:0.000
+Epoch: 59 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.287, AvgAccy:0.179, AvgAccy2:0.418, DiffPOS:0.000
+Epoch: 59 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.290, AvgAccy:0.205, AvgAccy2:0.454, DiffPOS:0.000
+Epoch: 59 Validation Finished, Avg Loss:0.289462, AvgAccy:0.185, AvgAccy2:0.428, DiffPOS:0.000
+
+Epoch: 60 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1430, AvgAccy:0.191, AvgAccy2:0.212, DiffPOS:0.000
+Epoch: 60 Training Finished, AvgTrainingLoss:0.143000, AvgAccy:0.191, DiffPOS:0.000, Time:35.1858, Time2:0.1757
+Epoch: 60 Training Finished, Merge:[]
+Epoch: 60 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.292, AvgAccy:0.150, AvgAccy2:0.402, DiffPOS:0.000
+Epoch: 60 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.289, AvgAccy:0.165, AvgAccy2:0.400, DiffPOS:0.000
+Epoch: 60 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.291, AvgAccy:0.182, AvgAccy2:0.442, DiffPOS:0.000
+Epoch: 60 Validation Finished, Avg Loss:0.290822, AvgAccy:0.166, AvgAccy2:0.415, DiffPOS:0.000
+
+Epoch: 61 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1409, AvgAccy:0.190, AvgAccy2:0.205, DiffPOS:0.000
+Epoch: 61 Training Finished, AvgTrainingLoss:0.140859, AvgAccy:0.190, DiffPOS:0.000, Time:28.8690, Time2:0.1465
+Epoch: 61 Training Finished, Merge:[]
+Epoch: 61 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.294, AvgAccy:0.467, AvgAccy2:0.478, DiffPOS:0.000
+Epoch: 61 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.290, AvgAccy:0.457, AvgAccy2:0.465, DiffPOS:0.000
+Epoch: 61 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.292, AvgAccy:0.497, AvgAccy2:0.514, DiffPOS:0.000
+Epoch: 61 Validation Finished, Avg Loss:0.292159, AvgAccy:0.474, AvgAccy2:0.486, DiffPOS:0.000
+
+Epoch: 62 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1398, AvgAccy:0.411, AvgAccy2:0.425, DiffPOS:0.000
+Epoch: 62 Training Finished, AvgTrainingLoss:0.139759, AvgAccy:0.411, DiffPOS:0.000, Time:29.7127, Time2:0.1309
+Epoch: 62 Training Finished, Merge:[]
+Epoch: 62 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.295, AvgAccy:0.116, AvgAccy2:0.290, DiffPOS:0.000
+Epoch: 62 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.291, AvgAccy:0.113, AvgAccy2:0.290, DiffPOS:0.000
+Epoch: 62 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.294, AvgAccy:0.124, AvgAccy2:0.303, DiffPOS:0.000
+Epoch: 62 Validation Finished, Avg Loss:0.293112, AvgAccy:0.118, AvgAccy2:0.294, DiffPOS:0.000
+
+Epoch: 63 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1414, AvgAccy:0.131, AvgAccy2:0.059, DiffPOS:0.000
+Epoch: 63 Training Finished, AvgTrainingLoss:0.141416, AvgAccy:0.131, DiffPOS:0.000, Time:30.9713, Time2:0.1564
+Epoch: 63 Training Finished, Merge:[]
+Epoch: 63 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.296, AvgAccy:0.126, AvgAccy2:0.341, DiffPOS:0.000
+Epoch: 63 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.292, AvgAccy:0.121, AvgAccy2:0.349, DiffPOS:0.000
+Epoch: 63 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.295, AvgAccy:0.138, AvgAccy2:0.362, DiffPOS:0.000
+Epoch: 63 Validation Finished, Avg Loss:0.294405, AvgAccy:0.128, AvgAccy2:0.351, DiffPOS:0.000
+
+Epoch: 64 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1401, AvgAccy:0.096, AvgAccy2:0.103, DiffPOS:0.000
+Epoch: 64 Training Finished, AvgTrainingLoss:0.140095, AvgAccy:0.096, DiffPOS:0.000, Time:34.2734, Time2:0.1283
+Epoch: 64 Training Finished, Merge:[]
+Epoch: 64 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.298, AvgAccy:0.071, AvgAccy2:0.091, DiffPOS:0.000
+Epoch: 64 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.294, AvgAccy:0.073, AvgAccy2:0.087, DiffPOS:0.000
+Epoch: 64 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.297, AvgAccy:0.083, AvgAccy2:0.116, DiffPOS:0.000
+Epoch: 64 Validation Finished, Avg Loss:0.296239, AvgAccy:0.076, AvgAccy2:0.098, DiffPOS:0.000
+
+Epoch: 65 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1381, AvgAccy:0.089, AvgAccy2:0.000, DiffPOS:0.000
+Epoch: 65 Training Finished, AvgTrainingLoss:0.138118, AvgAccy:0.089, DiffPOS:0.000, Time:29.0150, Time2:0.1287
+Epoch: 65 Training Finished, Merge:[]
+Epoch: 65 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.299, AvgAccy:0.129, AvgAccy2:0.045, DiffPOS:0.000
+Epoch: 65 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.296, AvgAccy:0.160, AvgAccy2:0.058, DiffPOS:0.000
+Epoch: 65 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.299, AvgAccy:0.134, AvgAccy2:0.047, DiffPOS:0.000
+Epoch: 65 Validation Finished, Avg Loss:0.297931, AvgAccy:0.141, AvgAccy2:0.050, DiffPOS:0.000
+
+Epoch: 66 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1390, AvgAccy:0.075, AvgAccy2:0.003, DiffPOS:0.000
+Epoch: 66 Training Finished, AvgTrainingLoss:0.139038, AvgAccy:0.075, DiffPOS:0.000, Time:28.5792, Time2:0.1551
+Epoch: 66 Training Finished, Merge:[]
+Epoch: 66 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.301, AvgAccy:0.074, AvgAccy2:0.106, DiffPOS:0.000
+Epoch: 66 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.297, AvgAccy:0.075, AvgAccy2:0.101, DiffPOS:0.000
+Epoch: 66 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.300, AvgAccy:0.088, AvgAccy2:0.135, DiffPOS:0.000
+Epoch: 66 Validation Finished, Avg Loss:0.299178, AvgAccy:0.079, AvgAccy2:0.114, DiffPOS:0.000
+
+Epoch: 67 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1395, AvgAccy:0.081, AvgAccy2:0.015, DiffPOS:0.000
+Epoch: 67 Training Finished, AvgTrainingLoss:0.139478, AvgAccy:0.081, DiffPOS:0.000, Time:31.0620, Time2:0.1569
+Epoch: 67 Training Finished, Merge:[]
+Epoch: 67 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.302, AvgAccy:0.096, AvgAccy2:0.218, DiffPOS:0.000
+Epoch: 67 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.298, AvgAccy:0.098, AvgAccy2:0.225, DiffPOS:0.000
+Epoch: 67 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.301, AvgAccy:0.104, AvgAccy2:0.233, DiffPOS:0.000
+Epoch: 67 Validation Finished, Avg Loss:0.300577, AvgAccy:0.099, AvgAccy2:0.225, DiffPOS:0.000
+
+Epoch: 68 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1376, AvgAccy:0.123, AvgAccy2:0.029, DiffPOS:0.000
+Epoch: 68 Training Finished, AvgTrainingLoss:0.137611, AvgAccy:0.123, DiffPOS:0.000, Time:36.1325, Time2:0.1519
+Epoch: 68 Training Finished, Merge:[]
+Epoch: 68 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.303, AvgAccy:0.068, AvgAccy2:0.091, DiffPOS:0.000
+Epoch: 68 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.300, AvgAccy:0.069, AvgAccy2:0.082, DiffPOS:0.000
+Epoch: 68 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.303, AvgAccy:0.087, AvgAccy2:0.117, DiffPOS:0.000
+Epoch: 68 Validation Finished, Avg Loss:0.301863, AvgAccy:0.075, AvgAccy2:0.097, DiffPOS:0.000
+
+Epoch: 69 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1418, AvgAccy:0.112, AvgAccy2:0.031, DiffPOS:0.000
+Epoch: 69 Training Finished, AvgTrainingLoss:0.141777, AvgAccy:0.112, DiffPOS:0.000, Time:31.6430, Time2:0.1427
+Epoch: 69 Training Finished, Merge:[]
+Epoch: 69 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.305, AvgAccy:0.230, AvgAccy2:0.443, DiffPOS:0.000
+Epoch: 69 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.301, AvgAccy:0.224, AvgAccy2:0.438, DiffPOS:0.000
+Epoch: 69 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.304, AvgAccy:0.259, AvgAccy2:0.477, DiffPOS:0.000
+Epoch: 69 Validation Finished, Avg Loss:0.303429, AvgAccy:0.238, AvgAccy2:0.453, DiffPOS:0.000
+
+Epoch: 70 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1453, AvgAccy:0.163, AvgAccy2:0.281, DiffPOS:0.000
+Epoch: 70 Training Finished, AvgTrainingLoss:0.145268, AvgAccy:0.163, DiffPOS:0.000, Time:31.0257, Time2:0.1446
+Epoch: 70 Training Finished, Merge:[]
+Epoch: 70 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.307, AvgAccy:0.040, AvgAccy2:0.011, DiffPOS:0.000
+Epoch: 70 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.303, AvgAccy:0.036, AvgAccy2:0.014, DiffPOS:0.000
+Epoch: 70 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.306, AvgAccy:0.023, AvgAccy2:0.011, DiffPOS:0.000
+Epoch: 70 Validation Finished, Avg Loss:0.305133, AvgAccy:0.033, AvgAccy2:0.012, DiffPOS:0.000
+
+Epoch: 71 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1372, AvgAccy:0.067, AvgAccy2:0.001, DiffPOS:0.000
+Epoch: 71 Training Finished, AvgTrainingLoss:0.137206, AvgAccy:0.067, DiffPOS:0.000, Time:34.9379, Time2:1.0269
+Epoch: 71 Training Finished, Merge:[]
+Epoch: 71 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.308, AvgAccy:0.232, AvgAccy2:0.441, DiffPOS:0.000
+Epoch: 71 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.304, AvgAccy:0.230, AvgAccy2:0.441, DiffPOS:0.000
+Epoch: 71 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.307, AvgAccy:0.261, AvgAccy2:0.479, DiffPOS:0.000
+Epoch: 71 Validation Finished, Avg Loss:0.306211, AvgAccy:0.241, AvgAccy2:0.454, DiffPOS:0.000
+
+Epoch: 72 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1350, AvgAccy:0.236, AvgAccy2:0.291, DiffPOS:0.000
+Epoch: 72 Training Finished, AvgTrainingLoss:0.135007, AvgAccy:0.236, DiffPOS:0.000, Time:30.3663, Time2:0.1601
+Epoch: 72 Training Finished, Merge:[]
+Epoch: 72 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.309, AvgAccy:0.135, AvgAccy2:0.410, DiffPOS:0.000
+Epoch: 72 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.305, AvgAccy:0.131, AvgAccy2:0.408, DiffPOS:0.000
+Epoch: 72 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.308, AvgAccy:0.141, AvgAccy2:0.443, DiffPOS:0.000
+Epoch: 72 Validation Finished, Avg Loss:0.307182, AvgAccy:0.136, AvgAccy2:0.420, DiffPOS:0.000
+
+Epoch: 73 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1422, AvgAccy:0.161, AvgAccy2:0.195, DiffPOS:0.000
+Epoch: 73 Training Finished, AvgTrainingLoss:0.142189, AvgAccy:0.161, DiffPOS:0.000, Time:29.7430, Time2:0.1198
+Epoch: 73 Training Finished, Merge:[]
+Epoch: 73 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.310, AvgAccy:0.333, AvgAccy2:0.464, DiffPOS:0.000
+Epoch: 73 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.306, AvgAccy:0.317, AvgAccy2:0.451, DiffPOS:0.000
+Epoch: 73 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.308, AvgAccy:0.366, AvgAccy2:0.495, DiffPOS:0.000
+Epoch: 73 Validation Finished, Avg Loss:0.308044, AvgAccy:0.339, AvgAccy2:0.470, DiffPOS:0.000
+
+Epoch: 74 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1383, AvgAccy:0.279, AvgAccy2:0.305, DiffPOS:0.000
+Epoch: 74 Training Finished, AvgTrainingLoss:0.138254, AvgAccy:0.279, DiffPOS:0.000, Time:30.7358, Time2:0.1181
+Epoch: 74 Training Finished, Merge:[]
+Epoch: 74 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.311, AvgAccy:0.184, AvgAccy2:0.432, DiffPOS:0.000
+Epoch: 74 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.307, AvgAccy:0.182, AvgAccy2:0.431, DiffPOS:0.000
+Epoch: 74 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.310, AvgAccy:0.198, AvgAccy2:0.468, DiffPOS:0.000
+Epoch: 74 Validation Finished, Avg Loss:0.309246, AvgAccy:0.188, AvgAccy2:0.444, DiffPOS:0.000
+
+Epoch: 75 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1340, AvgAccy:0.147, AvgAccy2:0.234, DiffPOS:0.000
+Epoch: 75 Training Finished, AvgTrainingLoss:0.134041, AvgAccy:0.147, DiffPOS:0.000, Time:32.6030, Time2:0.1297
+Epoch: 75 Training Finished, Merge:[]
+Epoch: 75 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.312, AvgAccy:0.150, AvgAccy2:0.426, DiffPOS:0.000
+Epoch: 75 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.308, AvgAccy:0.161, AvgAccy2:0.424, DiffPOS:0.000
+Epoch: 75 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.311, AvgAccy:0.168, AvgAccy2:0.462, DiffPOS:0.000
+Epoch: 75 Validation Finished, Avg Loss:0.310344, AvgAccy:0.160, AvgAccy2:0.437, DiffPOS:0.000
+
+Epoch: 76 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1362, AvgAccy:0.209, AvgAccy2:0.242, DiffPOS:0.000
+Epoch: 76 Training Finished, AvgTrainingLoss:0.136174, AvgAccy:0.209, DiffPOS:0.000, Time:29.5120, Time2:0.1234
+Epoch: 76 Training Finished, Merge:[]
+Epoch: 76 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.313, AvgAccy:0.384, AvgAccy2:0.471, DiffPOS:0.000
+Epoch: 76 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.309, AvgAccy:0.362, AvgAccy2:0.455, DiffPOS:0.000
+Epoch: 76 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.311, AvgAccy:0.410, AvgAccy2:0.504, DiffPOS:0.000
+Epoch: 76 Validation Finished, Avg Loss:0.311123, AvgAccy:0.385, AvgAccy2:0.477, DiffPOS:0.000
+
+Epoch: 77 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1363, AvgAccy:0.343, AvgAccy2:0.396, DiffPOS:0.000
+Epoch: 77 Training Finished, AvgTrainingLoss:0.136294, AvgAccy:0.343, DiffPOS:0.000, Time:28.9206, Time2:0.1339
+Epoch: 77 Training Finished, Merge:[]
+Epoch: 77 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.314, AvgAccy:0.254, AvgAccy2:0.444, DiffPOS:0.000
+Epoch: 77 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.310, AvgAccy:0.246, AvgAccy2:0.441, DiffPOS:0.000
+Epoch: 77 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.313, AvgAccy:0.287, AvgAccy2:0.483, DiffPOS:0.000
+Epoch: 77 Validation Finished, Avg Loss:0.312346, AvgAccy:0.262, AvgAccy2:0.456, DiffPOS:0.000
+
+Epoch: 78 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1377, AvgAccy:0.311, AvgAccy2:0.303, DiffPOS:0.000
+Epoch: 78 Training Finished, AvgTrainingLoss:0.137658, AvgAccy:0.311, DiffPOS:0.000, Time:30.7518, Time2:0.1243
+Epoch: 78 Training Finished, Merge:[]
+Epoch: 78 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.315, AvgAccy:0.428, AvgAccy2:0.476, DiffPOS:0.000
+Epoch: 78 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.312, AvgAccy:0.394, AvgAccy2:0.460, DiffPOS:0.000
+Epoch: 78 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.314, AvgAccy:0.454, AvgAccy2:0.508, DiffPOS:0.000
+Epoch: 78 Validation Finished, Avg Loss:0.313571, AvgAccy:0.425, AvgAccy2:0.481, DiffPOS:0.000
+
+Epoch: 79 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1326, AvgAccy:0.398, AvgAccy2:0.415, DiffPOS:0.000
+Epoch: 79 Training Finished, AvgTrainingLoss:0.132567, AvgAccy:0.398, DiffPOS:0.000, Time:32.9231, Time2:0.1615
+Epoch: 79 Training Finished, Merge:[]
+Epoch: 79 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.316, AvgAccy:0.142, AvgAccy2:0.415, DiffPOS:0.000
+Epoch: 79 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.313, AvgAccy:0.154, AvgAccy2:0.414, DiffPOS:0.000
+Epoch: 79 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.315, AvgAccy:0.157, AvgAccy2:0.453, DiffPOS:0.000
+Epoch: 79 Validation Finished, Avg Loss:0.314629, AvgAccy:0.151, AvgAccy2:0.427, DiffPOS:0.000
+
+Epoch: 80 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1348, AvgAccy:0.162, AvgAccy2:0.234, DiffPOS:0.000
+Epoch: 80 Training Finished, AvgTrainingLoss:0.134799, AvgAccy:0.162, DiffPOS:0.000, Time:28.7731, Time2:0.1571
+Epoch: 80 Training Finished, Merge:[]
+Epoch: 80 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.317, AvgAccy:0.162, AvgAccy2:0.419, DiffPOS:0.000
+Epoch: 80 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.313, AvgAccy:0.167, AvgAccy2:0.421, DiffPOS:0.000
+Epoch: 80 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.316, AvgAccy:0.182, AvgAccy2:0.459, DiffPOS:0.000
+Epoch: 80 Validation Finished, Avg Loss:0.315382, AvgAccy:0.170, AvgAccy2:0.433, DiffPOS:0.000
+
+Epoch: 81 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1364, AvgAccy:0.142, AvgAccy2:0.229, DiffPOS:0.000
+Epoch: 81 Training Finished, AvgTrainingLoss:0.136420, AvgAccy:0.142, DiffPOS:0.000, Time:30.2266, Time2:0.1736
+Epoch: 81 Training Finished, Merge:[]
+Epoch: 81 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.318, AvgAccy:0.064, AvgAccy2:0.093, DiffPOS:0.000
+Epoch: 81 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.314, AvgAccy:0.069, AvgAccy2:0.076, DiffPOS:0.000
+Epoch: 81 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.317, AvgAccy:0.087, AvgAccy2:0.105, DiffPOS:0.000
+Epoch: 81 Validation Finished, Avg Loss:0.316538, AvgAccy:0.073, AvgAccy2:0.091, DiffPOS:0.000
+
+Epoch: 82 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1378, AvgAccy:0.061, AvgAccy2:0.000, DiffPOS:0.000
+Epoch: 82 Training Finished, AvgTrainingLoss:0.137750, AvgAccy:0.061, DiffPOS:0.000, Time:32.0661, Time2:0.1281
+Epoch: 82 Training Finished, Merge:[]
+Epoch: 82 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.318, AvgAccy:0.326, AvgAccy2:0.287, DiffPOS:0.000
+Epoch: 82 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.315, AvgAccy:0.345, AvgAccy2:0.310, DiffPOS:0.000
+Epoch: 82 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.318, AvgAccy:0.316, AvgAccy2:0.287, DiffPOS:0.000
+Epoch: 82 Validation Finished, Avg Loss:0.317004, AvgAccy:0.329, AvgAccy2:0.295, DiffPOS:0.000
+
+Epoch: 83 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1326, AvgAccy:0.368, AvgAccy2:0.262, DiffPOS:0.000
+Epoch: 83 Training Finished, AvgTrainingLoss:0.132578, AvgAccy:0.368, DiffPOS:0.000, Time:29.7045, Time2:0.1505
+Epoch: 83 Training Finished, Merge:[]
+Epoch: 83 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.320, AvgAccy:0.078, AvgAccy2:0.153, DiffPOS:0.000
+Epoch: 83 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.316, AvgAccy:0.085, AvgAccy2:0.154, DiffPOS:0.000
+Epoch: 83 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.319, AvgAccy:0.090, AvgAccy2:0.177, DiffPOS:0.000
+Epoch: 83 Validation Finished, Avg Loss:0.318239, AvgAccy:0.084, AvgAccy2:0.161, DiffPOS:0.000
+
+Epoch: 84 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1396, AvgAccy:0.097, AvgAccy2:0.067, DiffPOS:0.000
+Epoch: 84 Training Finished, AvgTrainingLoss:0.139613, AvgAccy:0.097, DiffPOS:0.000, Time:29.8050, Time2:0.1614
+Epoch: 84 Training Finished, Merge:[]
+Epoch: 84 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.321, AvgAccy:0.085, AvgAccy2:0.189, DiffPOS:0.000
+Epoch: 84 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.318, AvgAccy:0.087, AvgAccy2:0.200, DiffPOS:0.000
+Epoch: 84 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.321, AvgAccy:0.091, AvgAccy2:0.209, DiffPOS:0.000
+Epoch: 84 Validation Finished, Avg Loss:0.319815, AvgAccy:0.088, AvgAccy2:0.199, DiffPOS:0.000
+
+Epoch: 85 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1393, AvgAccy:0.119, AvgAccy2:0.087, DiffPOS:0.000
+Epoch: 85 Training Finished, AvgTrainingLoss:0.139295, AvgAccy:0.119, DiffPOS:0.000, Time:30.5639, Time2:0.1404
+Epoch: 85 Training Finished, Merge:[]
+Epoch: 85 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.322, AvgAccy:0.095, AvgAccy2:0.285, DiffPOS:0.000
+Epoch: 85 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.318, AvgAccy:0.099, AvgAccy2:0.285, DiffPOS:0.000
+Epoch: 85 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.321, AvgAccy:0.101, AvgAccy2:0.302, DiffPOS:0.000
+Epoch: 85 Validation Finished, Avg Loss:0.320366, AvgAccy:0.098, AvgAccy2:0.291, DiffPOS:0.000
+
+Epoch: 86 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1357, AvgAccy:0.092, AvgAccy2:0.100, DiffPOS:0.000
+Epoch: 86 Training Finished, AvgTrainingLoss:0.135667, AvgAccy:0.092, DiffPOS:0.000, Time:34.5945, Time2:0.1529
+Epoch: 86 Training Finished, Merge:[]
+Epoch: 86 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.323, AvgAccy:0.140, AvgAccy2:0.035, DiffPOS:0.000
+Epoch: 86 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.319, AvgAccy:0.146, AvgAccy2:0.034, DiffPOS:0.000
+Epoch: 86 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.323, AvgAccy:0.121, AvgAccy2:0.027, DiffPOS:0.000
+Epoch: 86 Validation Finished, Avg Loss:0.321717, AvgAccy:0.136, AvgAccy2:0.032, DiffPOS:0.000
+
+Epoch: 87 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1356, AvgAccy:0.235, AvgAccy2:0.088, DiffPOS:0.000
+Epoch: 87 Training Finished, AvgTrainingLoss:0.135638, AvgAccy:0.235, DiffPOS:0.000, Time:28.9861, Time2:0.1616
+Epoch: 87 Training Finished, Merge:[]
+Epoch: 87 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.324, AvgAccy:0.094, AvgAccy2:0.267, DiffPOS:0.000
+Epoch: 87 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.320, AvgAccy:0.097, AvgAccy2:0.271, DiffPOS:0.000
+Epoch: 87 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.323, AvgAccy:0.100, AvgAccy2:0.292, DiffPOS:0.000
+Epoch: 87 Validation Finished, Avg Loss:0.322600, AvgAccy:0.097, AvgAccy2:0.277, DiffPOS:0.000
+
+Epoch: 88 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1341, AvgAccy:0.124, AvgAccy2:0.123, DiffPOS:0.000
+Epoch: 88 Training Finished, AvgTrainingLoss:0.134115, AvgAccy:0.124, DiffPOS:0.000, Time:28.6055, Time2:0.1786
+Epoch: 88 Training Finished, Merge:[]
+Epoch: 88 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.325, AvgAccy:0.292, AvgAccy2:0.440, DiffPOS:0.000
+Epoch: 88 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.321, AvgAccy:0.291, AvgAccy2:0.442, DiffPOS:0.000
+Epoch: 88 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.324, AvgAccy:0.325, AvgAccy2:0.479, DiffPOS:0.000
+Epoch: 88 Validation Finished, Avg Loss:0.323013, AvgAccy:0.303, AvgAccy2:0.454, DiffPOS:0.000
+
+Epoch: 89 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1356, AvgAccy:0.188, AvgAccy2:0.267, DiffPOS:0.000
+Epoch: 89 Training Finished, AvgTrainingLoss:0.135609, AvgAccy:0.188, DiffPOS:0.000, Time:31.1366, Time2:0.1507
+Epoch: 89 Training Finished, Merge:[]
+Epoch: 89 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.326, AvgAccy:0.147, AvgAccy2:0.037, DiffPOS:0.000
+Epoch: 89 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.322, AvgAccy:0.150, AvgAccy2:0.036, DiffPOS:0.000
+Epoch: 89 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.325, AvgAccy:0.125, AvgAccy2:0.028, DiffPOS:0.000
+Epoch: 89 Validation Finished, Avg Loss:0.324430, AvgAccy:0.141, AvgAccy2:0.034, DiffPOS:0.000
+
+Epoch: 90 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1333, AvgAccy:0.302, AvgAccy2:0.184, DiffPOS:0.000
+Epoch: 90 Training Finished, AvgTrainingLoss:0.133264, AvgAccy:0.302, DiffPOS:0.000, Time:35.0662, Time2:0.1713
+Epoch: 90 Training Finished, Merge:[]
+Epoch: 90 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.326, AvgAccy:0.064, AvgAccy2:0.103, DiffPOS:0.000
+Epoch: 90 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.322, AvgAccy:0.072, AvgAccy2:0.095, DiffPOS:0.000
+Epoch: 90 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.326, AvgAccy:0.082, AvgAccy2:0.124, DiffPOS:0.000
+Epoch: 90 Validation Finished, Avg Loss:0.324667, AvgAccy:0.073, AvgAccy2:0.107, DiffPOS:0.000
+
+Epoch: 91 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1323, AvgAccy:0.144, AvgAccy2:0.063, DiffPOS:0.000
+Epoch: 91 Training Finished, AvgTrainingLoss:0.132333, AvgAccy:0.144, DiffPOS:0.000, Time:29.4311, Time2:0.1385
+Epoch: 91 Training Finished, Merge:[]
+Epoch: 91 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.327, AvgAccy:0.470, AvgAccy2:0.478, DiffPOS:0.000
+Epoch: 91 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.323, AvgAccy:0.460, AvgAccy2:0.463, DiffPOS:0.000
+Epoch: 91 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.326, AvgAccy:0.506, AvgAccy2:0.514, DiffPOS:0.000
+Epoch: 91 Validation Finished, Avg Loss:0.325317, AvgAccy:0.479, AvgAccy2:0.485, DiffPOS:0.000
+
+Epoch: 92 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1368, AvgAccy:0.445, AvgAccy2:0.432, DiffPOS:0.000
+Epoch: 92 Training Finished, AvgTrainingLoss:0.136796, AvgAccy:0.445, DiffPOS:0.000, Time:29.4532, Time2:0.1497
+Epoch: 92 Training Finished, Merge:[]
+Epoch: 92 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.327, AvgAccy:0.339, AvgAccy2:0.451, DiffPOS:0.000
+Epoch: 92 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.324, AvgAccy:0.330, AvgAccy2:0.445, DiffPOS:0.000
+Epoch: 92 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.327, AvgAccy:0.375, AvgAccy2:0.488, DiffPOS:0.000
+Epoch: 92 Validation Finished, Avg Loss:0.325982, AvgAccy:0.348, AvgAccy2:0.461, DiffPOS:0.000
+
+Epoch: 93 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1353, AvgAccy:0.300, AvgAccy2:0.301, DiffPOS:0.000
+Epoch: 93 Training Finished, AvgTrainingLoss:0.135253, AvgAccy:0.300, DiffPOS:0.000, Time:29.0892, Time2:0.1471
+Epoch: 93 Training Finished, Merge:[]
+Epoch: 93 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.328, AvgAccy:0.436, AvgAccy2:0.474, DiffPOS:0.000
+Epoch: 93 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.325, AvgAccy:0.422, AvgAccy2:0.456, DiffPOS:0.000
+Epoch: 93 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.327, AvgAccy:0.463, AvgAccy2:0.506, DiffPOS:0.000
+Epoch: 93 Validation Finished, Avg Loss:0.326804, AvgAccy:0.440, AvgAccy2:0.479, DiffPOS:0.000
+
+Epoch: 94 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1330, AvgAccy:0.477, AvgAccy2:0.355, DiffPOS:0.000
+Epoch: 94 Training Finished, AvgTrainingLoss:0.132977, AvgAccy:0.477, DiffPOS:0.000, Time:28.6837, Time2:0.1319
+Epoch: 94 Training Finished, Merge:[]
+Epoch: 94 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.330, AvgAccy:0.486, AvgAccy2:0.479, DiffPOS:0.000
+Epoch: 94 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.326, AvgAccy:0.477, AvgAccy2:0.466, DiffPOS:0.000
+Epoch: 94 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.328, AvgAccy:0.524, AvgAccy2:0.516, DiffPOS:0.000
+Epoch: 94 Validation Finished, Avg Loss:0.327967, AvgAccy:0.496, AvgAccy2:0.487, DiffPOS:0.000
+
+Epoch: 95 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1347, AvgAccy:0.476, AvgAccy2:0.445, DiffPOS:0.000
+Epoch: 95 Training Finished, AvgTrainingLoss:0.134745, AvgAccy:0.476, DiffPOS:0.000, Time:29.4244, Time2:0.1493
+Epoch: 95 Training Finished, Merge:[]
+Epoch: 95 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.330, AvgAccy:0.481, AvgAccy2:0.480, DiffPOS:0.000
+Epoch: 95 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.326, AvgAccy:0.472, AvgAccy2:0.465, DiffPOS:0.000
+Epoch: 95 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.328, AvgAccy:0.514, AvgAccy2:0.515, DiffPOS:0.000
+Epoch: 95 Validation Finished, Avg Loss:0.328186, AvgAccy:0.489, AvgAccy2:0.487, DiffPOS:0.000
+
+Epoch: 96 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1350, AvgAccy:0.497, AvgAccy2:0.456, DiffPOS:0.000
+Epoch: 96 Training Finished, AvgTrainingLoss:0.135024, AvgAccy:0.497, DiffPOS:0.000, Time:30.0652, Time2:0.1367
+Epoch: 96 Training Finished, Merge:[]
+Epoch: 96 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.330, AvgAccy:0.478, AvgAccy2:0.479, DiffPOS:0.000
+Epoch: 96 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.327, AvgAccy:0.468, AvgAccy2:0.465, DiffPOS:0.000
+Epoch: 96 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.329, AvgAccy:0.509, AvgAccy2:0.514, DiffPOS:0.000
+Epoch: 96 Validation Finished, Avg Loss:0.328738, AvgAccy:0.485, AvgAccy2:0.486, DiffPOS:0.000
+
+Epoch: 97 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1331, AvgAccy:0.484, AvgAccy2:0.453, DiffPOS:0.000
+Epoch: 97 Training Finished, AvgTrainingLoss:0.133075, AvgAccy:0.484, DiffPOS:0.000, Time:33.8055, Time2:0.1299
+Epoch: 97 Training Finished, Merge:[]
+Epoch: 97 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.331, AvgAccy:0.391, AvgAccy2:0.453, DiffPOS:0.000
+Epoch: 97 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.328, AvgAccy:0.375, AvgAccy2:0.453, DiffPOS:0.000
+Epoch: 97 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.330, AvgAccy:0.419, AvgAccy2:0.499, DiffPOS:0.000
+Epoch: 97 Validation Finished, Avg Loss:0.329822, AvgAccy:0.395, AvgAccy2:0.468, DiffPOS:0.000
+
+Epoch: 98 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1389, AvgAccy:0.344, AvgAccy2:0.316, DiffPOS:0.000
+Epoch: 98 Training Finished, AvgTrainingLoss:0.138877, AvgAccy:0.344, DiffPOS:0.000, Time:29.8976, Time2:0.1215
+Epoch: 98 Training Finished, Merge:[]
+Epoch: 98 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.332, AvgAccy:0.345, AvgAccy2:0.440, DiffPOS:0.000
+Epoch: 98 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.328, AvgAccy:0.322, AvgAccy2:0.430, DiffPOS:0.000
+Epoch: 98 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.331, AvgAccy:0.356, AvgAccy2:0.479, DiffPOS:0.000
+Epoch: 98 Validation Finished, Avg Loss:0.330495, AvgAccy:0.341, AvgAccy2:0.450, DiffPOS:0.000
+
+Epoch: 99 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1365, AvgAccy:0.335, AvgAccy2:0.305, DiffPOS:0.000
+Epoch: 99 Training Finished, AvgTrainingLoss:0.136453, AvgAccy:0.335, DiffPOS:0.000, Time:29.4735, Time2:0.1521
+Epoch: 99 Training Finished, Merge:[]
+Epoch: 99 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.332, AvgAccy:0.362, AvgAccy2:0.443, DiffPOS:0.000
+Epoch: 99 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.329, AvgAccy:0.345, AvgAccy2:0.440, DiffPOS:0.000
+Epoch: 99 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.331, AvgAccy:0.384, AvgAccy2:0.485, DiffPOS:0.000
+Epoch: 99 Validation Finished, Avg Loss:0.330873, AvgAccy:0.364, AvgAccy2:0.456, DiffPOS:0.000
+
+Epoch: 100 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1325, AvgAccy:0.263, AvgAccy2:0.255, DiffPOS:0.000
+Epoch: 100 Training Finished, AvgTrainingLoss:0.132455, AvgAccy:0.263, DiffPOS:0.000, Time:30.9061, Time2:0.1263
+Epoch: 100 Training Finished, Merge:[]
+Epoch: 100 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.333, AvgAccy:0.463, AvgAccy2:0.493, DiffPOS:0.000
+Epoch: 100 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.329, AvgAccy:0.462, AvgAccy2:0.496, DiffPOS:0.000
+Epoch: 100 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.333, AvgAccy:0.422, AvgAccy2:0.465, DiffPOS:0.000
+Epoch: 100 Validation Finished, Avg Loss:0.331671, AvgAccy:0.449, AvgAccy2:0.485, DiffPOS:0.000
+
+Epoch: 101 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1343, AvgAccy:0.478, AvgAccy2:0.477, DiffPOS:0.000
+Epoch: 101 Training Finished, AvgTrainingLoss:0.134302, AvgAccy:0.478, DiffPOS:0.000, Time:30.9633, Time2:0.1398
+Epoch: 101 Training Finished, Merge:[]
+Epoch: 101 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.333, AvgAccy:0.078, AvgAccy2:0.221, DiffPOS:0.000
+Epoch: 101 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.330, AvgAccy:0.086, AvgAccy2:0.231, DiffPOS:0.000
+Epoch: 101 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.333, AvgAccy:0.091, AvgAccy2:0.248, DiffPOS:0.000
+Epoch: 101 Validation Finished, Avg Loss:0.331998, AvgAccy:0.085, AvgAccy2:0.233, DiffPOS:0.000
+
+Epoch: 102 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1317, AvgAccy:0.111, AvgAccy2:0.014, DiffPOS:0.000
+Epoch: 102 Training Finished, AvgTrainingLoss:0.131694, AvgAccy:0.111, DiffPOS:0.000, Time:28.3558, Time2:0.1276
+Epoch: 102 Training Finished, Merge:[]
+Epoch: 102 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.333, AvgAccy:0.339, AvgAccy2:0.296, DiffPOS:0.000
+Epoch: 102 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.330, AvgAccy:0.342, AvgAccy2:0.327, DiffPOS:0.000
+Epoch: 102 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.333, AvgAccy:0.324, AvgAccy2:0.305, DiffPOS:0.000
+Epoch: 102 Validation Finished, Avg Loss:0.332018, AvgAccy:0.335, AvgAccy2:0.309, DiffPOS:0.000
+
+Epoch: 103 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1302, AvgAccy:0.159, AvgAccy2:0.083, DiffPOS:0.000
+Epoch: 103 Training Finished, AvgTrainingLoss:0.130154, AvgAccy:0.159, DiffPOS:0.000, Time:28.7332, Time2:0.1272
+Epoch: 103 Training Finished, Merge:[]
+Epoch: 103 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.334, AvgAccy:0.481, AvgAccy2:0.479, DiffPOS:0.000
+Epoch: 103 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.331, AvgAccy:0.464, AvgAccy2:0.463, DiffPOS:0.000
+Epoch: 103 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.333, AvgAccy:0.510, AvgAccy2:0.514, DiffPOS:0.000
+Epoch: 103 Validation Finished, Avg Loss:0.332614, AvgAccy:0.485, AvgAccy2:0.485, DiffPOS:0.000
+
+Epoch: 104 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1332, AvgAccy:0.464, AvgAccy2:0.443, DiffPOS:0.000
+Epoch: 104 Training Finished, AvgTrainingLoss:0.133237, AvgAccy:0.464, DiffPOS:0.000, Time:30.8186, Time2:0.1435
+Epoch: 104 Training Finished, Merge:[]
+Epoch: 104 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.334, AvgAccy:0.092, AvgAccy2:0.257, DiffPOS:0.000
+Epoch: 104 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.331, AvgAccy:0.096, AvgAccy2:0.271, DiffPOS:0.000
+Epoch: 104 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.334, AvgAccy:0.103, AvgAccy2:0.290, DiffPOS:0.000
+Epoch: 104 Validation Finished, Avg Loss:0.333073, AvgAccy:0.097, AvgAccy2:0.273, DiffPOS:0.000
+
+Epoch: 105 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1308, AvgAccy:0.099, AvgAccy2:0.112, DiffPOS:0.000
+Epoch: 105 Training Finished, AvgTrainingLoss:0.130751, AvgAccy:0.099, DiffPOS:0.000, Time:28.4520, Time2:0.1222
+Epoch: 105 Training Finished, Merge:[]
+Epoch: 105 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.335, AvgAccy:0.218, AvgAccy2:0.364, DiffPOS:0.000
+Epoch: 105 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.331, AvgAccy:0.216, AvgAccy2:0.359, DiffPOS:0.000
+Epoch: 105 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.334, AvgAccy:0.217, AvgAccy2:0.380, DiffPOS:0.000
+Epoch: 105 Validation Finished, Avg Loss:0.333511, AvgAccy:0.217, AvgAccy2:0.368, DiffPOS:0.000
+
+Epoch: 106 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1386, AvgAccy:0.344, AvgAccy2:0.235, DiffPOS:0.000
+Epoch: 106 Training Finished, AvgTrainingLoss:0.138568, AvgAccy:0.344, DiffPOS:0.000, Time:29.8347, Time2:0.1590
+Epoch: 106 Training Finished, Merge:[]
+Epoch: 106 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.335, AvgAccy:0.452, AvgAccy2:0.477, DiffPOS:0.000
+Epoch: 106 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.332, AvgAccy:0.449, AvgAccy2:0.458, DiffPOS:0.000
+Epoch: 106 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.334, AvgAccy:0.491, AvgAccy2:0.510, DiffPOS:0.000
+Epoch: 106 Validation Finished, Avg Loss:0.333674, AvgAccy:0.464, AvgAccy2:0.482, DiffPOS:0.000
+
+Epoch: 107 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1356, AvgAccy:0.379, AvgAccy2:0.392, DiffPOS:0.000
+Epoch: 107 Training Finished, AvgTrainingLoss:0.135594, AvgAccy:0.379, DiffPOS:0.000, Time:30.7517, Time2:0.1578
+Epoch: 107 Training Finished, Merge:[]
+Epoch: 107 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.336, AvgAccy:0.464, AvgAccy2:0.493, DiffPOS:0.000
+Epoch: 107 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.333, AvgAccy:0.467, AvgAccy2:0.496, DiffPOS:0.000
+Epoch: 107 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.336, AvgAccy:0.423, AvgAccy2:0.465, DiffPOS:0.000
+Epoch: 107 Validation Finished, Avg Loss:0.335114, AvgAccy:0.451, AvgAccy2:0.485, DiffPOS:0.000
+
+Epoch: 108 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1329, AvgAccy:0.495, AvgAccy2:0.492, DiffPOS:0.000
+Epoch: 108 Training Finished, AvgTrainingLoss:0.132914, AvgAccy:0.495, DiffPOS:0.000, Time:34.0549, Time2:0.1440
+Epoch: 108 Training Finished, Merge:[]
+Epoch: 108 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.337, AvgAccy:0.039, AvgAccy2:0.015, DiffPOS:0.000
+Epoch: 108 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.333, AvgAccy:0.041, AvgAccy2:0.016, DiffPOS:0.000
+Epoch: 108 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.336, AvgAccy:0.048, AvgAccy2:0.018, DiffPOS:0.000
+Epoch: 108 Validation Finished, Avg Loss:0.335456, AvgAccy:0.043, AvgAccy2:0.016, DiffPOS:0.000
+
+Epoch: 109 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1296, AvgAccy:0.055, AvgAccy2:0.000, DiffPOS:0.000
+Epoch: 109 Training Finished, AvgTrainingLoss:0.129594, AvgAccy:0.055, DiffPOS:0.000, Time:28.2599, Time2:0.1468
+Epoch: 109 Training Finished, Merge:[]
+Epoch: 109 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.337, AvgAccy:0.038, AvgAccy2:0.006, DiffPOS:0.000
+Epoch: 109 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.333, AvgAccy:0.034, AvgAccy2:0.009, DiffPOS:0.000
+Epoch: 109 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.337, AvgAccy:0.040, AvgAccy2:0.013, DiffPOS:0.000
+Epoch: 109 Validation Finished, Avg Loss:0.335734, AvgAccy:0.037, AvgAccy2:0.009, DiffPOS:0.000
+
+Epoch: 110 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1329, AvgAccy:0.118, AvgAccy2:0.001, DiffPOS:0.000
+Epoch: 110 Training Finished, AvgTrainingLoss:0.132872, AvgAccy:0.118, DiffPOS:0.000, Time:29.1504, Time2:0.1635
+Epoch: 110 Training Finished, Merge:[]
+Epoch: 110 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.338, AvgAccy:0.461, AvgAccy2:0.490, DiffPOS:0.000
+Epoch: 110 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.334, AvgAccy:0.460, AvgAccy2:0.496, DiffPOS:0.000
+Epoch: 110 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.337, AvgAccy:0.422, AvgAccy2:0.464, DiffPOS:0.000
+Epoch: 110 Validation Finished, Avg Loss:0.336362, AvgAccy:0.448, AvgAccy2:0.483, DiffPOS:0.000
+
+Epoch: 111 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1329, AvgAccy:0.304, AvgAccy2:0.332, DiffPOS:0.000
+Epoch: 111 Training Finished, AvgTrainingLoss:0.132872, AvgAccy:0.304, DiffPOS:0.000, Time:30.0706, Time2:0.1476
+Epoch: 111 Training Finished, Merge:[]
+Epoch: 111 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.339, AvgAccy:0.303, AvgAccy2:0.393, DiffPOS:0.000
+Epoch: 111 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.335, AvgAccy:0.307, AvgAccy2:0.387, DiffPOS:0.000
+Epoch: 111 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.338, AvgAccy:0.317, AvgAccy2:0.416, DiffPOS:0.000
+Epoch: 111 Validation Finished, Avg Loss:0.337337, AvgAccy:0.309, AvgAccy2:0.399, DiffPOS:0.000
+
+Epoch: 112 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1362, AvgAccy:0.369, AvgAccy2:0.274, DiffPOS:0.000
+Epoch: 112 Training Finished, AvgTrainingLoss:0.136167, AvgAccy:0.369, DiffPOS:0.000, Time:35.4649, Time2:0.1381
+Epoch: 112 Training Finished, Merge:[]
+Epoch: 112 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.340, AvgAccy:0.378, AvgAccy2:0.436, DiffPOS:0.000
+Epoch: 112 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.336, AvgAccy:0.374, AvgAccy2:0.426, DiffPOS:0.000
+Epoch: 112 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.339, AvgAccy:0.392, AvgAccy2:0.469, DiffPOS:0.000
+Epoch: 112 Validation Finished, Avg Loss:0.338078, AvgAccy:0.381, AvgAccy2:0.444, DiffPOS:0.000
+
+Epoch: 113 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1326, AvgAccy:0.338, AvgAccy2:0.360, DiffPOS:0.000
+Epoch: 113 Training Finished, AvgTrainingLoss:0.132634, AvgAccy:0.338, DiffPOS:0.000, Time:29.8610, Time2:0.1509
+Epoch: 113 Training Finished, Merge:[]
+Epoch: 113 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.340, AvgAccy:0.376, AvgAccy2:0.412, DiffPOS:0.000
+Epoch: 113 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.336, AvgAccy:0.390, AvgAccy2:0.409, DiffPOS:0.000
+Epoch: 113 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.340, AvgAccy:0.362, AvgAccy2:0.401, DiffPOS:0.000
+Epoch: 113 Validation Finished, Avg Loss:0.338466, AvgAccy:0.376, AvgAccy2:0.407, DiffPOS:0.000
+
+Epoch: 114 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1295, AvgAccy:0.254, AvgAccy2:0.268, DiffPOS:0.000
+Epoch: 114 Training Finished, AvgTrainingLoss:0.129506, AvgAccy:0.254, DiffPOS:0.000, Time:28.2696, Time2:0.1410
+Epoch: 114 Training Finished, Merge:[]
+Epoch: 114 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.340, AvgAccy:0.360, AvgAccy2:0.426, DiffPOS:0.000
+Epoch: 114 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.336, AvgAccy:0.366, AvgAccy2:0.417, DiffPOS:0.000
+Epoch: 114 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.339, AvgAccy:0.387, AvgAccy2:0.460, DiffPOS:0.000
+Epoch: 114 Validation Finished, Avg Loss:0.338554, AvgAccy:0.371, AvgAccy2:0.434, DiffPOS:0.000
+
+Epoch: 115 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1362, AvgAccy:0.457, AvgAccy2:0.398, DiffPOS:0.000
+Epoch: 115 Training Finished, AvgTrainingLoss:0.136204, AvgAccy:0.457, DiffPOS:0.000, Time:29.8240, Time2:0.1345
+Epoch: 115 Training Finished, Merge:[]
+Epoch: 115 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.341, AvgAccy:0.451, AvgAccy2:0.470, DiffPOS:0.000
+Epoch: 115 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.337, AvgAccy:0.436, AvgAccy2:0.457, DiffPOS:0.000
+Epoch: 115 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.340, AvgAccy:0.481, AvgAccy2:0.510, DiffPOS:0.000
+Epoch: 115 Validation Finished, Avg Loss:0.339307, AvgAccy:0.456, AvgAccy2:0.479, DiffPOS:0.000
+
+Epoch: 116 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1281, AvgAccy:0.434, AvgAccy2:0.425, DiffPOS:0.000
+Epoch: 116 Training Finished, AvgTrainingLoss:0.128097, AvgAccy:0.434, DiffPOS:0.000, Time:28.0865, Time2:0.1445
+Epoch: 116 Training Finished, Merge:[]
+Epoch: 116 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.341, AvgAccy:0.375, AvgAccy2:0.411, DiffPOS:0.000
+Epoch: 116 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.337, AvgAccy:0.389, AvgAccy2:0.412, DiffPOS:0.000
+Epoch: 116 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.341, AvgAccy:0.358, AvgAccy2:0.402, DiffPOS:0.000
+Epoch: 116 Validation Finished, Avg Loss:0.339767, AvgAccy:0.374, AvgAccy2:0.408, DiffPOS:0.000
+
+Epoch: 117 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1303, AvgAccy:0.410, AvgAccy2:0.436, DiffPOS:0.000
+Epoch: 117 Training Finished, AvgTrainingLoss:0.130303, AvgAccy:0.410, DiffPOS:0.000, Time:28.3552, Time2:0.1269
+Epoch: 117 Training Finished, Merge:[]
+Epoch: 117 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.342, AvgAccy:0.149, AvgAccy2:0.253, DiffPOS:0.000
+Epoch: 117 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.338, AvgAccy:0.166, AvgAccy2:0.274, DiffPOS:0.000
+Epoch: 117 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.341, AvgAccy:0.176, AvgAccy2:0.288, DiffPOS:0.000
+Epoch: 117 Validation Finished, Avg Loss:0.340242, AvgAccy:0.164, AvgAccy2:0.272, DiffPOS:0.000
+
+Epoch: 118 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1291, AvgAccy:0.241, AvgAccy2:0.189, DiffPOS:0.000
+Epoch: 118 Training Finished, AvgTrainingLoss:0.129095, AvgAccy:0.241, DiffPOS:0.000, Time:29.8414, Time2:0.1222
+Epoch: 118 Training Finished, Merge:[]
+Epoch: 118 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.342, AvgAccy:0.279, AvgAccy2:0.353, DiffPOS:0.000
+Epoch: 118 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.338, AvgAccy:0.288, AvgAccy2:0.346, DiffPOS:0.000
+Epoch: 118 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.341, AvgAccy:0.292, AvgAccy2:0.365, DiffPOS:0.000
+Epoch: 118 Validation Finished, Avg Loss:0.340662, AvgAccy:0.286, AvgAccy2:0.355, DiffPOS:0.000
+
+Epoch: 119 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1321, AvgAccy:0.161, AvgAccy2:0.142, DiffPOS:0.000
+Epoch: 119 Training Finished, AvgTrainingLoss:0.132131, AvgAccy:0.161, DiffPOS:0.000, Time:33.5387, Time2:0.1600
+Epoch: 119 Training Finished, Merge:[]
+Epoch: 119 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.343, AvgAccy:0.463, AvgAccy2:0.493, DiffPOS:0.000
+Epoch: 119 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.339, AvgAccy:0.463, AvgAccy2:0.497, DiffPOS:0.000
+Epoch: 119 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.343, AvgAccy:0.423, AvgAccy2:0.466, DiffPOS:0.000
+Epoch: 119 Validation Finished, Avg Loss:0.341658, AvgAccy:0.450, AvgAccy2:0.485, DiffPOS:0.000
+
+Epoch: 120 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1371, AvgAccy:0.521, AvgAccy2:0.523, DiffPOS:0.000
+Epoch: 120 Training Finished, AvgTrainingLoss:0.137146, AvgAccy:0.521, DiffPOS:0.000, Time:29.6200, Time2:0.1250
+Epoch: 120 Training Finished, Merge:[]
+Epoch: 120 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.343, AvgAccy:0.463, AvgAccy2:0.493, DiffPOS:0.000
+Epoch: 120 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.340, AvgAccy:0.466, AvgAccy2:0.497, DiffPOS:0.000
+Epoch: 120 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.343, AvgAccy:0.423, AvgAccy2:0.466, DiffPOS:0.000
+Epoch: 120 Validation Finished, Avg Loss:0.342094, AvgAccy:0.451, AvgAccy2:0.485, DiffPOS:0.000
+
+Epoch: 121 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1314, AvgAccy:0.480, AvgAccy2:0.487, DiffPOS:0.000
+Epoch: 121 Training Finished, AvgTrainingLoss:0.131448, AvgAccy:0.480, DiffPOS:0.000, Time:29.7870, Time2:0.1281
+Epoch: 121 Training Finished, Merge:[]
+Epoch: 121 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.344, AvgAccy:0.354, AvgAccy2:0.423, DiffPOS:0.000
+Epoch: 121 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.340, AvgAccy:0.355, AvgAccy2:0.416, DiffPOS:0.000
+Epoch: 121 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.343, AvgAccy:0.383, AvgAccy2:0.452, DiffPOS:0.000
+Epoch: 121 Validation Finished, Avg Loss:0.342176, AvgAccy:0.364, AvgAccy2:0.430, DiffPOS:0.000
+
+Epoch: 122 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1334, AvgAccy:0.331, AvgAccy2:0.362, DiffPOS:0.000
+Epoch: 122 Training Finished, AvgTrainingLoss:0.133441, AvgAccy:0.331, DiffPOS:0.000, Time:29.0653, Time2:0.1323
+Epoch: 122 Training Finished, Merge:[]
+Epoch: 122 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.344, AvgAccy:0.166, AvgAccy2:0.062, DiffPOS:0.000
+Epoch: 122 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.340, AvgAccy:0.158, AvgAccy2:0.070, DiffPOS:0.000
+Epoch: 122 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.344, AvgAccy:0.140, AvgAccy2:0.059, DiffPOS:0.000
+Epoch: 122 Validation Finished, Avg Loss:0.342706, AvgAccy:0.155, AvgAccy2:0.064, DiffPOS:0.000
+
+Epoch: 123 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1337, AvgAccy:0.377, AvgAccy2:0.247, DiffPOS:0.000
+Epoch: 123 Training Finished, AvgTrainingLoss:0.133701, AvgAccy:0.377, DiffPOS:0.000, Time:28.8289, Time2:0.1287
+Epoch: 123 Training Finished, Merge:[]
+Epoch: 123 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.345, AvgAccy:0.463, AvgAccy2:0.493, DiffPOS:0.000
+Epoch: 123 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.341, AvgAccy:0.465, AvgAccy2:0.497, DiffPOS:0.000
+Epoch: 123 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.345, AvgAccy:0.423, AvgAccy2:0.466, DiffPOS:0.000
+Epoch: 123 Validation Finished, Avg Loss:0.343803, AvgAccy:0.450, AvgAccy2:0.485, DiffPOS:0.000
+
+Epoch: 124 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1335, AvgAccy:0.518, AvgAccy2:0.520, DiffPOS:0.000
+Epoch: 124 Training Finished, AvgTrainingLoss:0.133550, AvgAccy:0.518, DiffPOS:0.000, Time:28.9895, Time2:0.1616
+Epoch: 124 Training Finished, Merge:[]
+Epoch: 124 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.345, AvgAccy:0.456, AvgAccy2:0.488, DiffPOS:0.000
+Epoch: 124 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.342, AvgAccy:0.457, AvgAccy2:0.494, DiffPOS:0.000
+Epoch: 124 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.345, AvgAccy:0.417, AvgAccy2:0.463, DiffPOS:0.000
+Epoch: 124 Validation Finished, Avg Loss:0.344064, AvgAccy:0.443, AvgAccy2:0.482, DiffPOS:0.000
+
+Epoch: 125 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1310, AvgAccy:0.479, AvgAccy2:0.495, DiffPOS:0.000
+Epoch: 125 Training Finished, AvgTrainingLoss:0.131032, AvgAccy:0.479, DiffPOS:0.000, Time:28.8800, Time2:0.1410
+Epoch: 125 Training Finished, Merge:[]
+Epoch: 125 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.346, AvgAccy:0.178, AvgAccy2:0.289, DiffPOS:0.000
+Epoch: 125 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.342, AvgAccy:0.190, AvgAccy2:0.294, DiffPOS:0.000
+Epoch: 125 Batch ValDoc# 3000, Switch:0, Preprocess:1, AvgLoss:0.345, AvgAccy:0.205, AvgAccy2:0.312, DiffPOS:0.000
+Epoch: 125 Validation Finished, Avg Loss:0.344239, AvgAccy:0.191, AvgAccy2:0.298, DiffPOS:0.000
+
+Epoch: 126 Batch TrainDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.1241, AvgAccy:0.316, AvgAccy2:0.168, DiffPOS:0.000
+Epoch: 126 Training Finished, AvgTrainingLoss:0.124111, AvgAccy:0.316, DiffPOS:0.000, Time:28.4965, Time2:0.1238
+Epoch: 126 Training Finished, Merge:[]
+Epoch: 126 Batch ValDoc# 1000, Switch:0, Preprocess:1, AvgLoss:0.346, AvgAccy:0.391, AvgAccy2:0.459, DiffPOS:0.000
+Epoch: 126 Batch ValDoc# 2000, Switch:0, Preprocess:1, AvgLoss:0.343, AvgAccy:0.396, AvgAccy2:0.443, DiffPOS:0.000
