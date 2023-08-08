@@ -18,8 +18,6 @@ with open('./first1000_testset.plk','rb') as f:
     test1=pickle.load(f)
 with open('./test_totalCorpora.plk','rb') as f:
     totalCount=pickle.load(f)
-with open('./test_posCorpora.plk','rb') as f:
-    posCount=pickle.load(f)
 with open('./test_negCorpora.plk','rb') as f:
     negCount=pickle.load(f)
 
@@ -28,9 +26,8 @@ accy=pd.read_csv('./ResultLog/Curl_BaseCase_val.csv')
 for k in totalCount.keys():
     total=totalCount[k]
     neg=negCount[k]
-    pos=negCount[k]
     negCount[k]=neg/total
-    posCount[k]=pos/total
+
 posidx=np.array(test1[test1['label']==1].index)
 negidx=np.array(test1[test1['label']==0].index)
 samplesize=200
@@ -42,21 +39,36 @@ tok2id=vocab['tok2id']
 id2tok=vocab['id2tok']
 endid=tok2id['e0s']
 docs=nlp.pipe(test1['text'])
-negtextFreq = [ [ negCount[token.text] for token in doc if(token.is_stop==False and token.is_punct==False)] for doc in docs ]
+negtextFreq = []
+poslist=[]
+for doc in docs:
+    countlist=[]
+    plist=[]
+    for token in doc:
+        if(token.is_stop==False and token.is_punct==False):
+            countlist.append(negCount[token.text])
+            if(token.text!='s0s' and token.text!='e0s'):
+                plist.append(token.pos)
+            elif(token.text=='s0s'):
+                plist.append(70)
+            else:
+                plist.append(78)
+    negtextFreq.append(countlist)
+    poslist.append(plist)
+
 for i,r in enumerate(negtextFreq):
     if len(r)<175:
         negtextFreq[i]=(r+([negCount['e0s']]*(175-len(r))))
     else:
         negtextFreq[i]=negtextFreq[i][:175]
-#docs=nlp.pipe(test1['text'])
-#postextFreq = [ [ posCount[token.text] for token in doc if(token.is_stop==False and token.is_punct==False)] for doc in docs ]
-#for i,r in enumerate(postextFreq):
-#    if len(r)<175:
-#        postextFreq[i]=(r+([posCount['e0s']]*(175-len(r))))
-#    else:
-#        postextFreq[i]=postextFreq[i][:175]
+for i,r in enumerate(poslist):
+    if len(r)<175:
+        poslist[i]=(r+([78]*(175-len(r))))
+    else:
+        poslist[i]=poslist[i][:175]
 
 negtextFreq=np.array(negtextFreq)
+poslist=np.array(poslist)
 #postextFreq=np.array(postextFreq)
 path='/home/dick/RunpodData/Curl_BaseCase_R1_seqlen25_sldie25_batch1000_opt25_dynamicOptFalse_train15000_ksize2_e3_BiDirectionTrue_HL3_HS3_P0.0_MaxMerge2_MinMerge2_preprocess1.0_20230724-111115'
 curdataList = glob.glob(f'{path}/val_curldata_*.plk')
@@ -75,27 +87,26 @@ negFreq=negtextFreq[:]
 #posFreq=postextFreq[:]
 negcolormap = cm.bwr
 norm = Normalize()
-#colors=np.zeros((1000,175))
-#colors[posidx,:]=1
-#norm.autoscale(colors)
-#nco=negcolormap(norm(colors))
 norm.autoscale(negFreq)
 nco=negcolormap(norm(negFreq))
 keys=list(curldata[0]['forward'].keys())
 plt.rcParams['grid.color'] = "black"
-with pymp.Parallel(5) as p:
-    for epoch in p.range(10,lastepoch):
+with pymp.Parallel(6) as p:
+    for epoch in p.range(10,lastepoch+1):
         direction='forward'
         epoch_in=curldata[epoch][direction][0][:,:25,:]
         epoch_curl=curldata[epoch][direction][0][:,25:,:]
-        #epoch_div[epoch][direction][0][:,25:,:]
+
         for k in range(1,len(keys)):
             epoch_in = np.hstack((epoch_in,curldata[epoch][direction][keys[k]][:,:25,:]))
             epoch_curl = np.hstack((epoch_curl,curldata[epoch][direction][keys[k]][:,25:,:]))
-        l=np.linalg.norm(epoch_in,axis=-1)
-        epoch_in=epoch_in/l.reshape(1000,175,1)
-        sample=epoch_in[:]
-        sample_curl=epoch_curl[:]
+        in_l=np.linalg.norm(epoch_in,axis=-1)
+        epoch_in_unit = epoch_in/ in_l.reshape(1000,175,1)
+        curl_l=np.linalg.norm(epoch_curl,axis=-1)
+        epoch_curl_unit = epoch_curl/ curl_l.reshape(1000,175,1)
+
+        sample=epoch_in_unit[:]
+        sample_curl=epoch_curl_unit[:]
         start,stop=0,175
         plt.close('all')
         divfig=plt.figure(figsize=(10,10))
@@ -106,10 +117,12 @@ with pymp.Parallel(5) as p:
             keep=np.ceil((i/test1['length'])*100)
             keep=np.where(keep>=100,-1,keep)
             p = [ int(k) for k in keep if(k!=-1)]
-            keep1=np.where(keep!=-1)[0]
-            curlax.quiver(sample[keep1,i:i+1,0], sample[keep1,i:i+1,1], sample[keep1,i:i+1,2],
-                          sample_curl[keep1,i:i+1,0] , sample_curl[keep1,i:i+1,1], sample_curl[keep1,i:i+1,2] ,
-                          length=0.2,colors=nco[:,i:i+1],normalize=True)#
+            keep=np.where(keep!=-1)[0]
+            curlax.scatter3D(sample_curl[keep,i:i+1,0], sample_curl[keep,i:i+1,1], 
+                             sample_curl[keep,i:i+1,2],c=nco[keep,i:i+1],s=0.05)
+            #curlax.quiver(sample[keep,i:i+1,0], sample[keep,i:i+1,1], sample[keep,i:i+1,2],
+            #              sample_curl[keep,i:i+1,0] , sample_curl[keep,i:i+1,1], sample_curl[keep,i:i+1,2] ,
+            #              length=0.2,colors=nco[keep,i:i+1],normalize=True)#
         curlax.set_xlabel('LSTM output dim 1')
         curlax.set_ylabel('LSTM output dim 2')
         curlax.set_zlabel('LSTM output dim 3')
