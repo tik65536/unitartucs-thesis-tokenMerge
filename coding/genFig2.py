@@ -23,7 +23,7 @@ with open('./test_posCorpora.plk','rb') as f:
 with open('./test_negCorpora.plk','rb') as f:
     negCount=pickle.load(f)
 
-accy=pd.read_csv('./ResultLog/Curl_MergePROPN_R1_val.csv')
+accy=pd.read_csv('./ResultLog/Curl_BaseCase_val.csv')
 
 for k in totalCount.keys():
     total=totalCount[k]
@@ -58,25 +58,15 @@ for i,r in enumerate(negtextFreq):
 
 negtextFreq=np.array(negtextFreq)
 #postextFreq=np.array(postextFreq)
-path='/home/dick/RunpodData/Curl_MergePROPN_R1_seqlen25_sldie25_batch1000_opt25_dynamicOptFalse_train15000_ksize2_e3_BiDirectionTrue_HL3_HS3_P1.0_MaxMerge3_MinMerge2_preprocess1.0_20230724-111533'
+path='/home/dick/RunpodData/Curl_BaseCase_R1_seqlen25_sldie25_batch1000_opt25_dynamicOptFalse_train15000_ksize2_e3_BiDirectionTrue_HL3_HS3_P0.0_MaxMerge2_MinMerge2_preprocess1.0_20230724-111115'
 curdataList = glob.glob(f'{path}/val_curldata_*.plk')
-divdataList = glob.glob(f'{path}/val_divdata_*.plk')
 curldata={}
-divdata={}
 for file in curdataList:
     with open(f'{file}','rb') as f:
         try:
             tmp=pickle.load(f)
             i=list(tmp.keys())[0]
             curldata[i]=tmp[i]
-        except EOFError:
-            pass
-for file in divdataList:
-    with open(f'{file}','rb') as f:
-        try:
-            tmp=pickle.load(f)
-            i=list(tmp.keys())[0]
-            divdata[i]=tmp[i]
         except EOFError:
             pass
 lastepoch=sorted(list(curldata.keys()))[-1]
@@ -98,11 +88,10 @@ with pymp.Parallel(5) as p:
         direction='forward'
         epoch_in=curldata[epoch][direction][0][:,:25,:]
         epoch_curl=curldata[epoch][direction][0][:,25:,:]
-        epoch_div=divdata[epoch][direction][0][:,25:,:]
+        #epoch_div[epoch][direction][0][:,25:,:]
         for k in range(1,len(keys)):
             epoch_in = np.hstack((epoch_in,curldata[epoch][direction][keys[k]][:,:25,:]))
             epoch_curl = np.hstack((epoch_curl,curldata[epoch][direction][keys[k]][:,25:,:]))
-            epoch_div = np.hstack((epoch_div,divdata[epoch][direction][keys[k]][:,25:,:]))
         l=np.linalg.norm(epoch_in,axis=-1)
         epoch_in=epoch_in/l.reshape(1000,175,1)
         sample=epoch_in[:]
@@ -114,8 +103,12 @@ with pymp.Parallel(5) as p:
         for i in range(start,stop):
             #n=epoch_in[:,i:i+1,:]
             #n=np.linalg.norm(n,axis=-1).reshape(-1,)
-            curlax.quiver(sample[:,i:i+1,0], sample[:,i:i+1,1], sample[:,i:i+1,2],
-                          sample_curl[:,i:i+1,0] , sample_curl[:,i:i+1,1], sample_curl[:,i:i+1,2] ,
+            keep=np.ceil((i/test1['length'])*100)
+            keep=np.where(keep>=100,-1,keep)
+            p = [ int(k) for k in keep if(k!=-1)]
+            keep1=np.where(keep!=-1)[0]
+            curlax.quiver(sample[keep1,i:i+1,0], sample[keep1,i:i+1,1], sample[keep1,i:i+1,2],
+                          sample_curl[keep1,i:i+1,0] , sample_curl[keep1,i:i+1,1], sample_curl[keep1,i:i+1,2] ,
                           length=0.2,colors=nco[:,i:i+1],normalize=True)#
         curlax.set_xlabel('LSTM output dim 1')
         curlax.set_ylabel('LSTM output dim 2')
