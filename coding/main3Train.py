@@ -444,13 +444,13 @@ for epoch in range(epochs):
             if(len(data)>maxlen):
                 data=data[:maxlen-1]+[endid]
                 pos=pos[:maxlen]
-                tmp[-1]=2
+                tmp[-1]=3
             else:
                 orglen=len(data)
                 idx=orglen-1
                 data=(data+([endid]*(maxlen-orglen)))
                 pos=(pos+(['e0s']*(maxlen-orglen)))
-                tmp[orglen:]=2
+                tmp[orglen:]=3
             idxarray.append(idx)
             targets.append(tmp)
             sequences.append(data)
@@ -458,7 +458,7 @@ for epoch in range(epochs):
         targets=torch.tensor(np.array(targets),dtype=torch.long).to(device)
         sequences=np.array(sequences)
         idxarray=np.array(idxarray)
-        predict_history=np.zeros((batchsize,maxlen,3))
+        predict_history=np.zeros((batchsize,maxlen,4))
         tokenpos=np.array(tokenpos)
         c=1 if(seqlen>=maxlen) else (maxlen-seqlen)
         t=train_label[d:d+batchsize].to_numpy()
@@ -723,13 +723,13 @@ for epoch in range(epochs):
             if(len(data)>maxlen):
                 data=data[:maxlen-1]+[endid]
                 pos=pos[:maxlen]
-                tmp[-1]=2
+                tmp[-1]=3
             else:
                 orglen=len(data)
                 idx=orglen-1
                 data=(data+([endid]*(maxlen-orglen)))
                 pos=(pos+['e0s']*(maxlen-orglen))
-                tmp[orglen:]=2
+                tmp[orglen:]=3
             idxarray.append(idx)
             targets.append(tmp)
             sequences.append(data)
@@ -738,7 +738,7 @@ for epoch in range(epochs):
         targets=torch.tensor(np.array(targets),dtype=torch.long).to(device)
         sequences=np.array(sequences)
         tokenpos=np.array(tokenpos)
-        predict_history=np.zeros((batchsize,maxlen,3))
+        predict_history=np.zeros((batchsize,maxlen,4))
         target=test_label[d:d+batchsize].to_numpy()
         nidx=np.where(target==0)[0]
         pidx=np.where(target==1)[0]

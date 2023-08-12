@@ -118,7 +118,7 @@ class PredictLSTMIntervionP(nn.Module):
         #                                                   kernel_size=self.predict_kernelSize,
         #                                                   padding=0).to(self.device)
         #else:
-        self.predict = torch.nn.Linear(self.bidirection*self.lstm_size,3).to(self.device) if (self.softmax==True) else torch.nn.Linear(self.bidirection*self.lstm_size,1).to(self.device)
+        self.predict = torch.nn.Linear(self.bidirection*self.lstm_size,4).to(self.device) if (self.softmax==True) else torch.nn.Linear(self.bidirection*self.lstm_size,1).to(self.device)
         if(self.GRU==False):
             self.RNN = nn.LSTM(
                     input_size=self.embedding_dim,
