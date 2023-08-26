@@ -390,6 +390,8 @@ for name,para in model.predict.named_parameters():
         weightHistory[name]['deathrate']=[]
         weightHistory[name]['previous_pop']=torch.count_nonzero(data)
 criterion = torch.nn.CrossEntropyLoss()
+if(len(inhibitlist)>0):
+    criterion = torch.nn.CrossEntropyLoss(reduction='none')
 criterion2 = torch.nn.MSELoss()
 optimizer = torch.optim.RMSprop(model.parameters()) if (RMS==True) else torch.optim.Adam(model.parameters())
 currentbestaccy=0
@@ -516,7 +518,7 @@ for epoch in range(epochs):
                 loss+=criterion2(codeword_norm,torch.zeros_like(codeword_norm))
             for idx,l in enumerate(loss):
                 inhibit_idx = np.where(inhibit[idx,:]>0)[0]
-                if(len(inhibit_idx)>0 or len(promote_idx)>0):
+                if(len(inhibit_idx)>0):
                     loss[idx,inhibit_idx]= torch.normal(mean=0.5,std=neps,size=(1,1))
             losses.append(loss.item())
             trainloss.append(loss.item())
