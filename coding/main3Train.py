@@ -392,7 +392,6 @@ for name,para in model.predict.named_parameters():
 criterion = torch.nn.CrossEntropyLoss()
 if(len(inhibitlist)>0):
     criterion = torch.nn.CrossEntropyLoss(reduction='none')
-criterion2 = torch.nn.MSELoss()
 optimizer = torch.optim.RMSprop(model.parameters()) if (RMS==True) else torch.optim.Adam(model.parameters())
 currentbestaccy=0
 test_text=test_pd['text']
@@ -513,15 +512,14 @@ for epoch in range(epochs):
                     mergeStatistic.update(pos)
 
             loss=criterion(pred,target)
-            if(criterion2==True):
-                codeword_norm=torch.mean(torch.mean(torch.norm(codeword,dim=-1),dim=1))
-                loss+=criterion2(codeword_norm,torch.zeros_like(codeword_norm))
+            print(loss.shape)
             for idx,l in enumerate(loss):
                 inhibit_idx = np.where(inhibit[idx,:]>0)[0]
                 if(len(inhibit_idx)>0):
                     loss[idx,inhibit_idx]= torch.normal(mean=0.5,std=neps,size=(1,1))
             if(len(inhibitlist)>0):
                 loss=loss.mean()
+            print(loss.shape)
             losses.append(loss.item())
             trainloss.append(loss.item())
             pred=torch.nn.functional.softmax(pred,dim=1)
