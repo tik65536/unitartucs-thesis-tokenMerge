@@ -30,7 +30,7 @@ def prepareMerge(x,token,permuteidx,seqlen,maxMerge):
     return tmp,individualmergeidx
 
 class PredictLSTMIntervionP(nn.Module):
-    def __init__( self, wordsize,embeddingDim,seqlen,outseqlen,minMerge,maxMerge,batchsize,GRU,num_layers,hidden_size,bidirection=False,softmax=False,numofconv1d=1,groupRelu=1,convpredict=False,kernelsize=2,mergeRate=2):
+    def __init__( self, wordsize,embeddingDim,seqlen,numclass,minMerge,maxMerge,batchsize,GRU,num_layers,hidden_size,bidirection=False,softmax=False,numofconv1d=1,groupRelu=1,convpredict=False,kernelsize=2,mergeRate=2):
         super(PredictLSTMIntervionP, self).__init__()
         if torch.cuda.is_available():
             self.device = torch.device('cuda')
@@ -40,7 +40,7 @@ class PredictLSTMIntervionP(nn.Module):
         self.embedding_dim = embeddingDim
         self.num_layers = num_layers
         self.seqlen=seqlen
-        self.outseqlen= seqlen if(outseqlen==0 or outseqlen>seqlen) else outseqlen
+        self.numclass=numclass
         self.batchsize=batchsize
         self.n_vocab = wordsize
         self.kernelSize=2
@@ -118,7 +118,7 @@ class PredictLSTMIntervionP(nn.Module):
         #                                                   kernel_size=self.predict_kernelSize,
         #                                                   padding=0).to(self.device)
         #else:
-        self.predict = torch.nn.Linear(self.bidirection*self.lstm_size,4).to(self.device) if (self.softmax==True) else torch.nn.Linear(self.bidirection*self.lstm_size,1).to(self.device)
+        self.predict = torch.nn.Linear(self.bidirection*self.lstm_size,self.numclass).to(self.device) if (self.softmax==True) else torch.nn.Linear(self.bidirection*self.lstm_size,1).to(self.device)
         if(self.GRU==False):
             self.RNN = nn.LSTM(
                     input_size=self.embedding_dim,
@@ -215,9 +215,6 @@ class PredictLSTMIntervionP(nn.Module):
                 rotate=self.kernelSize-1
                 o = torch.cat([o,o[:,:,0:rotate]],dim=-1)
                 o = self.conv1d(o)
-            if(self.seqlen==self.outseqlen):
-                rotate=self.predict_kernelSize-1
-                o = torch.cat([o,o[:,:,0:rotate]],dim=-1)
         out = self.predict(o) # o.shape = N*L*1
         if(self.convpredict==False and self.softmax==True):
             out=out.permute(0,2,1)

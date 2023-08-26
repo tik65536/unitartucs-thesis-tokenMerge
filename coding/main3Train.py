@@ -227,6 +227,14 @@ parser.add_argument('-minmerge', type=int, default=2,
 parser.add_argument('-remark', type=str, default='',
                     help='Remark on filename')
 
+parser.add_argument('-inhibit', nargs="*", default=[],
+                    help='list of pos for inhibit learning')
+
+parser.add_argument('-inhibiteps', type=float, default=0.0,
+                    help='variance for inhibit loss with mean=0.5')
+
+parser.add_argument('-numClass', type=int, default=3,
+                    help='num of Class 3 or 4')
 
 parser.add_argument('-permuteidx', nargs="*", default=None,
                     help='Permute Token idx')
@@ -269,6 +277,9 @@ maxlen =args.maxlen
 remark = args.remark
 trainSize=args.trainSize
 numOfConvBlock=args.numconv1d
+inhibitlist=args.inhibit
+neps = args.inhibiteps
+numClass = args.numClass
 permuteidx = list(range(seqlen)) if(args.permuteidx is None) else [ int(x) for x in args.permuteidx ]
 mergeRate =args.mergeRate
 onlyMerge=args.onlyMerge
@@ -431,10 +442,12 @@ for epoch in range(epochs):
             for t in x:
                 if(preprocessswitch==0):
                     data+= [tok2id[t.text]]
+                    inhibit+= [1] if(t.pos_ in inhibitlist ) else [0]
                     pos+= [t.pos_]
                 elif(t.is_stop==False and t.is_punct==False):
                     if(t.pos_ not in skipPOS):
                         data+= [tok2id[t.text]]
+                        inhibit+= [1] if(t.pos_ in inhibitlist ) else [0]
                         pos += [t.pos_ if(t.text!='s0s' and t.text!='e0e') else 's0e']
             tmp=np.zeros(maxlen)
             c=5 if(seqlen>=maxlen) else seqlen
@@ -443,22 +456,27 @@ for epoch in range(epochs):
             idx=maxlen-1
             if(len(data)>maxlen):
                 data=data[:maxlen-1]+[endid]
+                inhibit=inhibit[:maxlen]
                 pos=pos[:maxlen]
                 tmp[-1]=3
             else:
                 orglen=len(data)
                 idx=orglen-1
                 data=(data+([endid]*(maxlen-orglen)))
+                inhibit=(inhibit+([0]*(maxlen-orglen)))
                 pos=(pos+(['e0s']*(maxlen-orglen)))
                 tmp[orglen:]=3
             idxarray.append(idx)
             targets.append(tmp)
             sequences.append(data)
+            sequences.append(data)
+            inhibitlists.append(inhibit)
             tokenpos.append(pos)
         targets=torch.tensor(np.array(targets),dtype=torch.long).to(device)
         sequences=np.array(sequences)
         idxarray=np.array(idxarray)
-        predict_history=np.zeros((batchsize,maxlen,4))
+        predict_history=np.zeros((batchsize,maxlen,numClass))
+        inhibitlists=np.array(inhibitlists)
         tokenpos=np.array(tokenpos)
         c=1 if(seqlen>=maxlen) else (maxlen-seqlen)
         t=train_label[d:d+batchsize].to_numpy()
@@ -468,6 +486,7 @@ for epoch in range(epochs):
         for i in range(0,c,sliding):
             sequence=sequences[:,i:i+seqlen]
             target=targets[:,i:i+seqlen]
+            inhibit=inhibitlists[:,i:i+seqlen]
             poslist = tokenpos[:,i:i+seqlen]
             permuteposlist = poslist[:,permuteidx]
             if(not carryforward):
@@ -496,6 +515,10 @@ for epoch in range(epochs):
             if(criterion2==True):
                 codeword_norm=torch.mean(torch.mean(torch.norm(codeword,dim=-1),dim=1))
                 loss+=criterion2(codeword_norm,torch.zeros_like(codeword_norm))
+            for idx,l in enumerate(loss):
+                inhibit_idx = np.where(inhibit[idx,:]>0)[0]
+                if(len(inhibit_idx)>0 or len(promote_idx)>0):
+                    loss[idx,inhibit_idx]= torch.normal(mean=0.5,std=neps,size=(1,1))
             losses.append(loss.item())
             trainloss.append(loss.item())
             pred=torch.nn.functional.softmax(pred,dim=1)
