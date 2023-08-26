@@ -761,7 +761,7 @@ for epoch in range(epochs):
         targets=torch.tensor(np.array(targets),dtype=torch.long).to(device)
         sequences=np.array(sequences)
         tokenpos=np.array(tokenpos)
-        predict_history=np.zeros((batchsize,maxlen,4))
+        predict_history=np.zeros((batchsize,maxlen,numclass))
         target=test_label[d:d+batchsize].to_numpy()
         nidx=np.where(target==0)[0]
         pidx=np.where(target==1)[0]
