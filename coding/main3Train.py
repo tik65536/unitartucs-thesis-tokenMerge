@@ -449,7 +449,7 @@ for epoch in range(epochs):
                 elif(t.is_stop==False and t.is_punct==False):
                     if(t.pos_ not in skipPOS):
                         data+= [tok2id[t.text]]
-                        inhibit+= [1] if(t.pos_ in inhibitlist ) else [0]
+                        inhibit+= [1] if(t.text!='s0s' and t.text!='e0e' and t.pos_ in inhibitlist ) else [0]
                         pos += [t.pos_ if(t.text!='s0s' and t.text!='e0e') else 's0e']
             tmp=np.zeros(maxlen)
             c=5 if(seqlen>=maxlen) else seqlen
