@@ -469,7 +469,6 @@ for epoch in range(epochs):
             idxarray.append(idx)
             targets.append(tmp)
             sequences.append(data)
-            sequences.append(data)
             inhibitlists.append(inhibit)
             tokenpos.append(pos)
         targets=torch.tensor(np.array(targets),dtype=torch.long).to(device)
