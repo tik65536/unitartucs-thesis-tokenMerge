@@ -390,9 +390,6 @@ for name,para in model.predict.named_parameters():
         weightHistory[name]['deathrate']=[]
         weightHistory[name]['previous_pop']=torch.count_nonzero(data)
 criterion = torch.nn.CrossEntropyLoss()
-val_criterion = torch.nn.CrossEntropyLoss()
-if(len(inhibitlist)>0):
-    criterion = torch.nn.CrossEntropyLoss(reduction='none')
 optimizer = torch.optim.RMSprop(model.parameters()) if (RMS==True) else torch.optim.Adam(model.parameters())
 currentbestaccy=0
 test_text=test_pd['text']
@@ -455,6 +452,7 @@ for epoch in range(epochs):
             c=5 if(seqlen>=maxlen) else seqlen
             tmp[:c]=2
             tmp[c:]=train_label[d+i]
+            tmp[np.where(inhibit==1)]=(not train_label[d+i])
             idx=maxlen-1
             if(len(data)>maxlen):
                 data=data[:maxlen-1]+[endid]
@@ -513,12 +511,6 @@ for epoch in range(epochs):
                     mergeStatistic.update(pos)
 
             loss=criterion(pred,target)
-            for idx,l in enumerate(loss):
-                inhibit_idx = np.where(inhibit[idx,:]>0)[0]
-                if(len(inhibit_idx)>0):
-                    loss[idx,inhibit_idx]= torch.normal(mean=0.5,std=neps,size=(1,1))
-            if(len(inhibitlist)>0):
-                loss=loss.mean()
             losses.append(loss.item())
             trainloss.append(loss.item())
             pred=torch.nn.functional.softmax(pred,dim=1)
@@ -801,7 +793,7 @@ for epoch in range(epochs):
             permuteposlist = poslist[:,permuteidx]
             diffcount+=np.sum(poslist!=permuteposlist,axis=-1)
             pred,output,input_,state,mergeidx =model(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
-            loss=val_criterion(pred,t)
+            loss=criterion(pred,t)
             losses.append(loss.item())
             pred=torch.nn.functional.softmax(pred,dim=1)
             pred=pred.permute(0,2,1)
