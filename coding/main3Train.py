@@ -520,6 +520,8 @@ for epoch in range(epochs):
                 inhibit_idx = np.where(inhibit[idx,:]>0)[0]
                 if(len(inhibit_idx)>0):
                     loss[idx,inhibit_idx]= torch.normal(mean=0.5,std=neps,size=(1,1))
+            if(len(inhibitlist)>0):
+                loss=loss.mean()
             losses.append(loss.item())
             trainloss.append(loss.item())
             pred=torch.nn.functional.softmax(pred,dim=1)
