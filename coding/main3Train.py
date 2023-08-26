@@ -460,14 +460,14 @@ for epoch in range(epochs):
                 data=data[:maxlen-1]+[endid]
                 inhibit=inhibit[:maxlen]
                 pos=pos[:maxlen]
-                tmp[-1]=3
+                tmp[-1]=2 if (numClass==3) else 3
             else:
                 orglen=len(data)
                 idx=orglen-1
                 data=(data+([endid]*(maxlen-orglen)))
                 inhibit=(inhibit+([0]*(maxlen-orglen)))
                 pos=(pos+(['e0s']*(maxlen-orglen)))
-                tmp[orglen:]=3
+                tmp[orglen:]=2 if(numClass==3) else 3
             idxarray.append(idx)
             targets.append(tmp)
             sequences.append(data)
@@ -746,13 +746,13 @@ for epoch in range(epochs):
             if(len(data)>maxlen):
                 data=data[:maxlen-1]+[endid]
                 pos=pos[:maxlen]
-                tmp[-1]=3
+                tmp[-1]=2 if (numClass==3) else 3
             else:
                 orglen=len(data)
                 idx=orglen-1
                 data=(data+([endid]*(maxlen-orglen)))
                 pos=(pos+['e0s']*(maxlen-orglen))
-                tmp[orglen:]=3
+                tmp[orglen:]=2 if (numClass==3) else 3
             idxarray.append(idx)
             targets.append(tmp)
             sequences.append(data)
