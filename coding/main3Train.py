@@ -357,7 +357,7 @@ print(f'Vocab len: {n_vocab}',flush=True)
 writer=SummaryWriter(log_dir=tensorboardpath)
 bernoulli= Bernoulli(torch.tensor([interventionP]))
 preprocessP= Bernoulli(torch.tensor([preprocess]))
-model=PredictLSTMIntervionP(n_vocab,embeddingDim,seqlen,seqlen,minmerge,maxmerge,batchsize,GRU,hiddenLayer,hiddenSize,bidirectional,True,numOfConvBlock,groupRelu,convpredict,kernelsize,mergeRate)
+model=PredictLSTMIntervionP(n_vocab,embeddingDim,seqlen,numClass,minmerge,maxmerge,batchsize,GRU,hiddenLayer,hiddenSize,bidirectional,True,numOfConvBlock,groupRelu,convpredict,kernelsize,mergeRate)
 weightHistory={}
 gate=['igone','forget','learn','output']
 print(model.predict.weight.shape)
