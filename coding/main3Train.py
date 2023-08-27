@@ -390,6 +390,9 @@ for name,para in model.predict.named_parameters():
         weightHistory[name]['deathrate']=[]
         weightHistory[name]['previous_pop']=torch.count_nonzero(data)
 criterion = torch.nn.CrossEntropyLoss()
+#val_criterion = torch.nn.CrossEntropyLoss()
+#if(len(inhibitlist)>0):
+#    criterion = torch.nn.CrossEntropyLoss(reduction='none')
 optimizer = torch.optim.RMSprop(model.parameters()) if (RMS==True) else torch.optim.Adam(model.parameters())
 currentbestaccy=0
 test_text=test_pd['text']
@@ -452,20 +455,22 @@ for epoch in range(epochs):
             c=5 if(seqlen>=maxlen) else seqlen
             tmp[:c]=2
             tmp[c:]=train_label[d+i]
-            tmp[np.where(inhibit==1)]=(not train_label[d+i])
+            ma=maxlen if (len(data)>maxlen) else -1
+            tmp[np.where(np.array(inhibit[:ma])==1)[0]]=0 if(train_label[d+i]==1) else 1
             idx=maxlen-1
+            endclass=2 if(numClass==3) else 3
             if(len(data)>maxlen):
                 data=data[:maxlen-1]+[endid]
                 inhibit=inhibit[:maxlen]
                 pos=pos[:maxlen]
-                tmp[-1]=2 if (numClass==3) else 3
+                tmp[-1]=endclass
             else:
                 orglen=len(data)
                 idx=orglen-1
                 data=(data+([endid]*(maxlen-orglen)))
                 inhibit=(inhibit+([0]*(maxlen-orglen)))
                 pos=(pos+(['e0s']*(maxlen-orglen)))
-                tmp[orglen:]=2 if(numClass==3) else 3
+                tmp[orglen:]=endclass
             idxarray.append(idx)
             targets.append(tmp)
             sequences.append(data)
@@ -509,8 +514,12 @@ for epoch in range(epochs):
                     pos = permuteposlist[:,midx]
                     pos=[ "_".join(pos[pidx]) for pidx in range(len(pos))  ]
                     mergeStatistic.update(pos)
-
             loss=criterion(pred,target)
+            #for idx,l in enumerate(loss):
+            #    inhibit_idx = np.where(inhibit[idx,:]>0)[0]
+            #    if(len(inhibit_idx)>0):
+            #        loss[idx,inhibit_idx]= torch.normal(mean=0.5,std=neps,size=(1,1))
+            #        print(loss[idx,inhibit_idx])
             losses.append(loss.item())
             trainloss.append(loss.item())
             pred=torch.nn.functional.softmax(pred,dim=1)
