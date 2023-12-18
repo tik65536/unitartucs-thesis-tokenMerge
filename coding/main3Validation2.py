@@ -7,6 +7,7 @@ import itertools
 from datasets import load_dataset
 import spacy
 import argparse
+import copy
 from torch.utils.tensorboard import SummaryWriter
 from Model.PredictLSTMIntervionP2 import PredictLSTMIntervionP
 from torch.distributions.bernoulli import Bernoulli
@@ -318,11 +319,14 @@ endid=tok2id['e0s']
 n_vocab=len(vocab['wordlist'])
 print(f'Vocab len: {n_vocab}',flush=True)
 bernoulli= Bernoulli(torch.tensor([interventionP]))
-basecaseweightPath=f'./LSTMWeight/'
-mergeweightPath=f'./LSTMWeight/'
+weightPath=f'./LSTMWeight'
+basecaseweightPath=f'./LSTMWeight/basecase_25_dim3_weight_bestVal.pt'
+mergeweightPath=f'./LSTMWeight/RandMerge_weight_R100.pt'
 model=torch.load(basecaseweightPath)
 mergeModel=torch.load(mergeweightPath)
-model.mergeConv1D.load_state_dict(mergeModel.mergeConv1D.state_dict())
+#model.mergeConv1D.load_state_dict(mergeModel.mergeConv1D.state_dict())
+model.mergeConv1D=copy.deepcopy(mergeModel.mergeConv1D)
+model.maxMerge=maxmerge
 criterion = torch.nn.CrossEntropyLoss()
 #val_criterion = torch.nn.CrossEntropyLoss()
 #if(len(inhibitlist)>0):
@@ -386,7 +390,7 @@ for d in range(0,len(test_text),batchsize):
         losses.append(loss.item())
         pred=torch.nn.functional.softmax(pred,dim=1)
         pred=pred.permute(0,2,1)
-        predict_history[:,i:i+seqlen,:]=pred
+        predict_history[:,i:i+seqlen,:]=pred.detach().cpu().numpy()
     avgloss=np.mean(losses)
     vallosses.append(avgloss)
     est_prediction=[]
