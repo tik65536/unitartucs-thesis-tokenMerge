@@ -318,8 +318,8 @@ endid=tok2id['e0s']
 n_vocab=len(vocab['wordlist'])
 print(f'Vocab len: {n_vocab}',flush=True)
 bernoulli= Bernoulli(torch.tensor([interventionP]))
-weightPath=f'./LSTMWeight/{weightfile}'
-model=torch.load(weightPath)
+weightPath=f'./LSTMWeight'
+model=torch.load(f'{weightPath}/RandMerge_weight_R100.pt')
 criterion = torch.nn.CrossEntropyLoss()
 #val_criterion = torch.nn.CrossEntropyLoss()
 #if(len(inhibitlist)>0):
@@ -329,102 +329,103 @@ test_label=test_pd['label']
 vallosses=[]
 valAvgAccy=[]
 valAvgAccy2=[]
-for d in range(0,len(test_text),batchsize):
-    state=model.init_state()
-    losses=[]
-    switch=bernoulli.sample()
-    sequences,targets,idxarray,tokenpos,negNorm,posNorm,blocknegNorm,blockposNorm=[],[],[],[],[],[],[],[]
-    for i,x in enumerate(nlp.pipe(test_text[d:d+batchsize])):
-        data=[]
-        pos=[]
-        for t in x:
-            if(t.is_stop==False and t.is_punct==False):
-                if(t.pos_ not in skipPOS):
-                    data+= [tok2id[t.text]]
-                    pos += [t.pos_ if(t.text!='s0s' and t.text!='e0e') else 's0e']
-        tmp=np.zeros(maxlen)
-        c=5 if(seqlen>=maxlen) else seqlen
-        tmp[:c]=2
-        tmp[c:]=test_label[d+i]
-        idx=maxlen-1
-        if(len(data)>maxlen):
-            data=data[:maxlen-1]+[endid]
-            pos=pos[:maxlen]
-            tmp[-1]=2 if (numClass==3) else 3
-        else:
-            orglen=len(data)
-            idx=orglen-1
-            data=(data+([endid]*(maxlen-orglen)))
-            pos=(pos+['e0s']*(maxlen-orglen))
-            tmp[orglen:]=2 if (numClass==3) else 3
-        idxarray.append(idx)
-        targets.append(tmp)
-        sequences.append(data)
-        tokenpos.append(pos)
-    idxarray=np.array(idxarray)
-    targets=torch.tensor(np.array(targets),dtype=torch.long).to(device)
-    sequences=np.array(sequences)
-    tokenpos=np.array(tokenpos)
-    predict_history=np.zeros((batchsize,maxlen,numClass))
-    target=test_label[d:d+batchsize].to_numpy()
-    nidx=np.where(target==0)[0]
-    pidx=np.where(target==1)[0]
-    #nmind=np.zeros((len(nidx),maxlen//seqlen))
-    #pmind=np.zeros((len(pidx),maxlen//seqlen))
-    c=1 if (seqlen>=maxlen) else (maxlen-seqlen)
-    minlen =len(pidx)-1 if (len(nidx)>len(pidx)) else len(nidx)-1
-    previousOutput=None
-    for i in range(0,c,sliding):
-        sequence=sequences[:,i:i+seqlen]
-        t=targets[:,i:i+seqlen]
-        poslist = tokenpos[:,i:i+seqlen]
-        pred,output,input_,state,mergeidx =model(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
-        loss=criterion(pred,t)
-        losses.append(loss.item())
-        pred=torch.nn.functional.softmax(pred,dim=1)
-        pred=pred.permute(0,2,1)
-        predict_history[:,i:i+seqlen,:]=pred
-    avgloss=np.mean(losses)
-    vallosses.append(avgloss)
-    est_prediction=[]
-    est_prediction2=[]
-    est_magnitude=[]
-    drawcount=0
-    #[ predict_median.append(np.median(predict_history[i, :idxarray[i]-1])) for i in range(batchsize) ]
-    #[ predict_mean.append(np.mean(predict_history[i, :idxarray[i]-1])) for i in range(batchsize) ]
-    maxidx= [ np.argmax(predict_history[i, idxarray[i]-21:idxarray[i]-1, :],axis=-1) for i in range(batchsize)]
+with torch.no_grad():
+    for d in range(0,len(test_text),batchsize):
+        state=model.init_state()
+        losses=[]
+        switch=bernoulli.sample()
+        sequences,targets,idxarray,tokenpos,negNorm,posNorm,blocknegNorm,blockposNorm=[],[],[],[],[],[],[],[]
+        for i,x in enumerate(nlp.pipe(test_text[d:d+batchsize])):
+            data=[]
+            pos=[]
+            for t in x:
+                if(t.is_stop==False and t.is_punct==False):
+                    if(t.pos_ not in skipPOS):
+                        data+= [tok2id[t.text]]
+                        pos += [t.pos_ if(t.text!='s0s' and t.text!='e0e') else 's0e']
+            tmp=np.zeros(maxlen)
+            c=5 if(seqlen>=maxlen) else seqlen
+            tmp[:c]=2
+            tmp[c:]=test_label[d+i]
+            idx=maxlen-1
+            if(len(data)>maxlen):
+                data=data[:maxlen-1]+[endid]
+                pos=pos[:maxlen]
+                tmp[-1]=2 if (numClass==3) else 3
+            else:
+                orglen=len(data)
+                idx=orglen-1
+                data=(data+([endid]*(maxlen-orglen)))
+                pos=(pos+['e0s']*(maxlen-orglen))
+                tmp[orglen:]=2 if (numClass==3) else 3
+            idxarray.append(idx)
+            targets.append(tmp)
+            sequences.append(data)
+            tokenpos.append(pos)
+        idxarray=np.array(idxarray)
+        targets=torch.tensor(np.array(targets),dtype=torch.long).to(device)
+        sequences=np.array(sequences)
+        tokenpos=np.array(tokenpos)
+        predict_history=np.zeros((batchsize,maxlen,numClass))
+        target=test_label[d:d+batchsize].to_numpy()
+        nidx=np.where(target==0)[0]
+        pidx=np.where(target==1)[0]
+        #nmind=np.zeros((len(nidx),maxlen//seqlen))
+        #pmind=np.zeros((len(pidx),maxlen//seqlen))
+        c=1 if (seqlen>=maxlen) else (maxlen-seqlen)
+        minlen =len(pidx)-1 if (len(nidx)>len(pidx)) else len(nidx)-1
+        previousOutput=None
+        for i in range(0,c,sliding):
+            sequence=sequences[:,i:i+seqlen]
+            t=targets[:,i:i+seqlen]
+            poslist = tokenpos[:,i:i+seqlen]
+            pred,output,input_,state,mergeidx =model(sequence,state,switch,permuteidx,onlyMerge,poslist,consecutive)
+            loss=criterion(pred,t)
+            losses.append(loss.item())
+            pred=torch.nn.functional.softmax(pred,dim=1)
+            pred=pred.permute(0,2,1).detach().cpu().numpy()
+            predict_history[:,i:i+seqlen,:]=pred
+        avgloss=np.mean(losses)
+        vallosses.append(avgloss)
+        est_prediction=[]
+        est_prediction2=[]
+        est_magnitude=[]
+        drawcount=0
+        #[ predict_median.append(np.median(predict_history[i, :idxarray[i]-1])) for i in range(batchsize) ]
+        #[ predict_mean.append(np.mean(predict_history[i, :idxarray[i]-1])) for i in range(batchsize) ]
+        maxidx= [ np.argmax(predict_history[i, idxarray[i]-21:idxarray[i]-1, :],axis=-1) for i in range(batchsize)]
 
-    for i,each in enumerate(maxidx):
-        if(each.shape[0]==0):
-            if(idxarray[i]<20):
-                maxidx[i]=np.argmax(predict_history[i, idxarray[i]-6:idxarray[i]-1, :],axis=-1)
-                drawcount+=1
-    [ est_prediction.append(np.mean(maxidx[i],axis=-1)) for i in range(batchsize) ]
-    [ est_magnitude.append(np.mean(np.diag(predict_history[i, idxarray[i]-maxidx[i].shape[0]:idxarray[i]-1,:].T[maxidx[i]]),axis=-1)) for i in range(batchsize) ]
-    est_prediction = np.where(np.isnan(est_prediction)==True,2,est_prediction)
-    if(d<batchsize):
-        with open(f'{weightPath}/EstPred_validation.plk','wb') as f:
-            pickle.dump(est_prediction,f)
-    batchaccy=np.sum(np.abs(est_prediction-target)<0.05)/batchsize
-    batchmagnitude=np.median(est_magnitude)
-    cr=classification_report(target,np.round(est_prediction),output_dict=True)
-    c=5 if(seqlen>=maxlen) else seqlen
-    maxidx= [ np.argmax(predict_history[i, c:idxarray[i]-1, :],axis=-1) for i in range(batchsize)]
-    [ est_prediction2.append(np.mean(maxidx[i],axis=-1)) for i in range(batchsize) ]
-    batchaccy2=np.sum(np.abs(est_prediction2-target)<0.05)/batchsize
-    key=list(cr.keys())
-    del cr[key[0]]['support']
-    del cr[key[1]]['support']
-    del cr['macro avg']['support']
-    valAvgAccy.append(batchaccy)
-    valAvgAccy2.append(batchaccy2)
-    print(f'Batch ValDoc#{(d+batchsize):5d}, Switch:{int(switch):1d}, AvgLoss:{avgloss:0.3f}, AvgAccy:{batchaccy:0.3f}, AvgAccy2:{batchaccy2:0.3f}',flush=True)
-avgValloss=np.mean(vallosses)
-valAvgAccy = np.mean(valAvgAccy)
-valAvgAccy2 = np.mean(valAvgAccy2)
-print(f'Validation Finished, Avg Loss:{avgValloss:0.6f}, AvgAccy:{valAvgAccy:0.3f}, AvgAccy2:{valAvgAccy2:0.3f}',flush=True)
-#print(f'Epoch: {epoch:2d} Validation Finished, Merge: {valmergeStatistic.most_common(n=10)}',flush=True)
-#with open(f'{tensorboardpath}/trainOverAllTop10_MergeStatistic_{epoch}.pkl','wb') as f:
-#    pickle.dump(overallTop10Merge,f)
-#with open(f'{tensorboardpath}/ValMergeStatistic_{epoch}.pkl','wb') as f:
-#    pickle.dump(valmergeStatistic,f)
+        for i,each in enumerate(maxidx):
+            if(each.shape[0]==0):
+                if(idxarray[i]<20):
+                    maxidx[i]=np.argmax(predict_history[i, idxarray[i]-6:idxarray[i]-1, :],axis=-1)
+                    drawcount+=1
+        [ est_prediction.append(np.mean(maxidx[i],axis=-1)) for i in range(batchsize) ]
+        [ est_magnitude.append(np.mean(np.diag(predict_history[i, idxarray[i]-maxidx[i].shape[0]:idxarray[i]-1,:].T[maxidx[i]]),axis=-1)) for i in range(batchsize) ]
+        est_prediction = np.where(np.isnan(est_prediction)==True,2,est_prediction)
+        if(d<batchsize):
+            with open(f'{weightPath}/EstPred_validation.plk','wb') as f:
+                pickle.dump(est_prediction,f)
+        batchaccy=np.sum(np.abs(est_prediction-target)<0.05)/batchsize
+        batchmagnitude=np.median(est_magnitude)
+        cr=classification_report(target,np.round(est_prediction),output_dict=True)
+        c=5 if(seqlen>=maxlen) else seqlen
+        maxidx= [ np.argmax(predict_history[i, c:idxarray[i]-1, :],axis=-1) for i in range(batchsize)]
+        [ est_prediction2.append(np.mean(maxidx[i],axis=-1)) for i in range(batchsize) ]
+        batchaccy2=np.sum(np.abs(est_prediction2-target)<0.05)/batchsize
+        key=list(cr.keys())
+        del cr[key[0]]['support']
+        del cr[key[1]]['support']
+        del cr['macro avg']['support']
+        valAvgAccy.append(batchaccy)
+        valAvgAccy2.append(batchaccy2)
+        print(f'Batch ValDoc#{(d+batchsize):5d}, Switch:{int(switch):1d}, AvgLoss:{avgloss:0.3f}, AvgAccy:{batchaccy:0.3f}, AvgAccy2:{batchaccy2:0.3f}',flush=True)
+    avgValloss=np.mean(vallosses)
+    valAvgAccy = np.mean(valAvgAccy)
+    valAvgAccy2 = np.mean(valAvgAccy2)
+    print(f'Validation Finished, Avg Loss:{avgValloss:0.6f}, AvgAccy:{valAvgAccy:0.3f}, AvgAccy2:{valAvgAccy2:0.3f}',flush=True)
+    #print(f'Epoch: {epoch:2d} Validation Finished, Merge: {valmergeStatistic.most_common(n=10)}',flush=True)
+    #with open(f'{tensorboardpath}/trainOverAllTop10_MergeStatistic_{epoch}.pkl','wb') as f:
+    #    pickle.dump(overallTop10Merge,f)
+    #with open(f'{tensorboardpath}/ValMergeStatistic_{epoch}.pkl','wb') as f:
+    #    pickle.dump(valmergeStatistic,f)
