@@ -326,6 +326,7 @@ model=torch.load(basecaseweightPath)
 mergeModel=torch.load(mergeweightPath)
 #model.mergeConv1D.load_state_dict(mergeModel.mergeConv1D.state_dict())
 model.mergeConv1D=copy.deepcopy(mergeModel.mergeConv1D)
+model.embeddingSpace=copy.deepcopy(mergeModel.embeddingSpace)
 model.maxMerge=maxmerge
 criterion = torch.nn.CrossEntropyLoss()
 #val_criterion = torch.nn.CrossEntropyLoss()
