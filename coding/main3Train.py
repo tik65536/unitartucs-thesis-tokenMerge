@@ -828,7 +828,7 @@ for epoch in range(epochs):
                     negbtwBlock.append(negbtw) # negbtw(sample,25)
                     posbtwBlock.append(posbtw)
                 previousOutput=output.detach().clone()
-            if(d<batchsize and i<(sliding*7)):
+            if(d<batchsize and i<(sliding*7) and hiddenSize==3):
                 u,v,w,u2,v2,w2,bu,bv,bw,bu2,bv2,bw2=curl(input_,output)
                 #p_u,p_v,p_w,p_u2,p_v2,p_w2,p_bu,p_bv,p_bw,p_bu2,p_bv2,p_bw2=curlPrediction(output,pred)
                 output=output.detach().cpu().numpy()
