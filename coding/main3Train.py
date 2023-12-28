@@ -248,6 +248,8 @@ parser.add_argument('-skipPOS', nargs="*", default=[],
 parser.add_argument('-consecutive', type=int, default=0,
                     help='Consecutive merge')
 
+parser.add_argument('-curl', type=bool, default=False,
+                    help='')
 
 args = parser.parse_args()
 seqlen=args.seqlen
@@ -286,6 +288,7 @@ onlyMerge=args.onlyMerge
 skipPOS=args.skipPOS
 consecutive = True if(args.consecutive==1) else False
 mincodeword = True if(args.codewordNorm==1) else False
+calcurl=args.curl
 
 print(f'Run Para : {args}',flush=True)
 
@@ -644,32 +647,6 @@ for epoch in range(epochs):
         writer.add_scalars('Training ClassificationReport MarcoAvg',cr['macro avg'],trainbatchcount)
         negendidx=idxarray[nidx[negsampleidx]]
         posendidx=idxarray[pidx[possampleidx]]
-        #axes[1].set_title(f'GT:{target[nidx[negsampleidx]]} Pred:{est_prediction[nidx[negsampleidx]]},{est_prediction2[nidx[negsampleidx]]}')
-        #axes[1].plot(predict_history[nidx[negsampleidx],:negendidx,0].T,label='NegProb',marker='x')
-        #axes[1].plot(predict_history[nidx[negsampleidx],:negendidx,1].T,label='PosProb',marker='o')
-        #axes[1].set_xticks(list(range(negendidx)))
-        #axes[1].set_xticklabels(negsampletext[:negendidx], rotation=90, ha='right',fontdict={'fontsize':4})
-        #axes[3].set_title(f'GT:{target[pidx[possampleidx]]} Pred:{est_prediction[pidx[possampleidx]]},{est_prediction2[pidx[possampleidx]]}')
-        #axes[3].plot(predict_history[pidx[possampleidx],:posendidx,0].T,label='NegProb',marker='x')
-        #axes[3].plot(predict_history[pidx[possampleidx],:posendidx,1].T,label='PosProb',marker='o')
-        #axes[3].set_xticks(list(range(posendidx)))
-        #axes[3].set_xticklabels(possampletext[:posendidx], rotation=90, ha='right',fontdict={'fontsize':4})
-        #axes[2].plot(posSampleDiff[:posendidx].T,label='Diff',color='g',marker='o',markersize=0.7,alpha=0.5)
-        #axes[2].axhline(y=0,color='r')
-        #axes[0].plot(negSampleDiff[:negendidx].T,label='Diff',color='g',marker='o',markersize=0.7,alpha=0.5)
-        #axes[0].axhline(y=0,color='r')
-        #if(len(posidx)>0): [ axes[2].axvline(i,linewidth=2,c='#F39C12') for i in posidx ]
-        #if(len(posidx2)>0): [ axes[2].axvline(i,linewidth=2,c='#0000EE') for i in posidx2]
-        #if(len(negidx)>0): [ axes[0].axvline(i,linewidth=2,c='#F39C12') for i in negidx]
-        #if(len(negidx2)>0): [ axes[0].axvline(i,linewidth=2,c='#0000EE') for i in negidx2]
-        #fig.suptitle(f'Batch Accy : {batchaccy} {batchaccy2}')
-        #axes[2].set_title(",".join([ id2tok[x] for x in trainneglabel if(id2tok[x] in possampletext)]))
-        #axes[0].set_title(",".join([ id2tok[x] for x in trainposlabel if(id2tok[x] in negsampletext)]))
-        #[ axes[i].legend() for i in range(4) ]
-        #plt.tight_layout()
-        #fig.savefig(f'{tensorboardpath}/Training_Epoch_{epoch}_batch_{trainbatchcount}_switch{int(switch)}_preprocess{int(preprocessswitch)}_{avgloss:0.6f}_plot.png',dpi=400)
-        #[ axes[i].clear() for i in range(4) ]
-        #plt.cla()
         diffcount=np.mean(diffcount/idxarray)
         avgdiffcount.append(diffcount)
         e=time.time()
@@ -828,11 +805,9 @@ for epoch in range(epochs):
                     negbtwBlock.append(negbtw) # negbtw(sample,25)
                     posbtwBlock.append(posbtw)
                 previousOutput=output.detach().clone()
-            if(d<batchsize and i<(sliding*7) and hiddenSize==3):
+            if(d<batchsize and i<(sliding*7) and hiddenSize==3 and calcurl):
                 u,v,w,u2,v2,w2,bu,bv,bw,bu2,bv2,bw2=curl(input_,output)
-                #p_u,p_v,p_w,p_u2,p_v2,p_w2,p_bu,p_bv,p_bw,p_bu2,p_bv2,p_bw2=curlPrediction(output,pred)
                 output=output.detach().cpu().numpy()
-                #pred=pred.detach().cpu().numpy()
                 curlax.quiver(output[nidx,:,0], output[nidx,:,1], output[nidx,:,2], u[nidx], v[nidx], w[nidx], color=nco[i:i+sliding],length=0.3,normalize=True )
                 curlax.quiver(output[pidx,:,0], output[pidx,:,1], output[pidx,:,2], u[pidx], v[pidx], w[pidx], color=pco[i:i+sliding],length=0.3,normalize=True )
                 divax.quiver(output[nidx,:,0], output[nidx,:,1], output[nidx,:,2], u2[nidx], v2[nidx], w2[nidx], color=nco[i:i+sliding],length=0.3,normalize=True )
@@ -841,27 +816,13 @@ for epoch in range(epochs):
                 backwardcurlax.quiver(output[pidx,:,0], output[pidx,:,1], output[pidx,:,2], bu[pidx], bv[pidx], bw[pidx], color=pco[i:i+sliding],length=0.3,normalize=True )
                 backwarddivax.quiver(output[nidx,:,0], output[nidx,:,1], output[nidx,:,2], bu2[nidx], bv2[nidx], bw2[nidx], color=nco[i:i+sliding],length=0.3,normalize=True )
                 backwarddivax.quiver(output[pidx,:,0], output[pidx,:,1], output[pidx,:,2], bu2[pidx], bv2[pidx], bw2[pidx], color=pco[i:i+sliding],length=0.3,normalize=True )
-                #curlaxpredict.quiver(pred[nidx,:,0], pred[nidx,:,1], pred[nidx,:,2], p_u[nidx], p_v[nidx], p_w[nidx], color=nco[i:i+sliding],length=0.3,normalize=True )
-                #curlaxpredict.quiver(pred[pidx,:,0], pred[pidx,:,1], pred[pidx,:,2], p_u[pidx], p_v[pidx], p_w[pidx], color=pco[i:i+sliding],length=0.3,normalize=True )
-                #divaxpredict.quiver(pred[nidx,:,0], pred[nidx,:,1], pred[nidx,:,2], p_u2[nidx], p_v2[nidx], p_w2[nidx], color=nco[i:i+sliding],length=0.3,normalize=True )
-                #divaxpredict.quiver(pred[pidx,:,0], pred[pidx,:,1], pred[pidx,:,2], p_u2[pidx], p_v2[pidx], p_w2[pidx], color=pco[i:i+sliding],length=0.3,normalize=True )
-                #backwardcurlaxpredict.quiver(pred[nidx,:,0], pred[nidx,:,1], pred[nidx,:,2], p_bu[nidx], p_bv[nidx], p_bw[nidx], color=nco[i:i+sliding],length=0.3,normalize=True )
-                #backwardcurlaxpredict.quiver(pred[pidx,:,0], pred[pidx,:,1], pred[pidx,:,2], p_bu[pidx], p_bv[pidx], p_bw[pidx], color=pco[i:i+sliding],length=0.3,normalize=True )
-                #backwarddivaxpredict.quiver(pred[nidx,:,0], pred[nidx,:,1], pred[nidx,:,2], p_bu2[nidx], p_bv2[nidx], p_bw2[nidx], color=nco[i:i+sliding],length=0.3,normalize=True )
-                #backwarddivaxpredict.quiver(pred[pidx,:,0], pred[pidx,:,1], pred[pidx,:,2], p_bu2[pidx], p_bv2[pidx], p_bw2[pidx], color=pco[i:i+sliding],length=0.3,normalize=True )
                 u=np.stack((u,v,w),axis=-1)
                 u2=np.stack((u2,v2,w2),axis=-1)
                 curldata[epoch]['LSTM']['forward'][i]=np.hstack((output[:,:,:3],u,u2))
-                #p_u=np.stack((p_u,p_v,p_w),axis=-1)
-                #p_u2=np.stack((p_u2,p_v2,p_w2),axis=-1)
-                #curldata[epoch]['Predict']['forward'][i]=np.hstack((pred,p_u,p_u2))
                 u=np.stack((bu,bv,bw),axis=-1)
                 u2=np.stack((bu2,bv2,bw2),axis=-1)
                 curldata[epoch]['LSTM']['backward'][i]=np.hstack((output[:,:,3:],u,u2))
-                #p_u=np.stack((p_bu,p_bv,p_bw),axis=-1)
-                #p_u2=np.stack((p_bu2,p_bv2,p_bw2),axis=-1)
-                #curldata[epoch]['Predict']['backward'][i]=np.hstack((pred,p_u,p_u2))
-                optimizer.zero_grad()
+            optimizer.zero_grad()
             if(torch.is_tensor(pred)):
                 pred=pred.detach().cpu().numpy()
             predict_history[:,i:i+seqlen,:]=pred
